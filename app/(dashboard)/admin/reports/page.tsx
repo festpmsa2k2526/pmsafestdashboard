@@ -359,7 +359,7 @@ export default function AdminReports() {
                 <SelectValue placeholder="All Teams" />
               </div>
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white">
               <SelectItem value="all">All Teams</SelectItem>
               {teams.map(t => (
                 <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
@@ -489,7 +489,7 @@ export default function AdminReports() {
                         <SelectTrigger className="w-full bg-white border-slate-300 h-10 shadow-sm">
                             <SelectValue placeholder="Choose an event to view..." />
                         </SelectTrigger>
-                        <SelectContent className="max-h-[300px]">
+                        <SelectContent className="max-h-[300px] bg-white">
                             {events.map(e => (
                                 <SelectItem key={e.id} value={e.id}>
                                     <span className="font-medium text-slate-700">{e.name}</span>
@@ -517,7 +517,7 @@ export default function AdminReports() {
                                 <Printer className="w-4 h-4" /> Bulk Download <ChevronDown className="w-3 h-3 opacity-50"/>
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent align="end" className="bg-white">
                             <DropdownMenuItem onClick={() => handleBulkDownload('ON STAGE')}>
                                 All ON STAGE Events
                             </DropdownMenuItem>

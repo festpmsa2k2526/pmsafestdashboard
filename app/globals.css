@@ -135,7 +135,6 @@
     --radius: 0.5rem;
   }
 
-  /* Added Orange Theme (Requested) */
   .theme-orange {
     --background: 30 50% 98%;
     --foreground: 20 14% 4%;
@@ -229,7 +228,6 @@
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   }
 
-  /* Custom Marquee Animation */
   .animate-marquee {
     display: inline-block;
     animation: marquee 15s linear infinite;

@@ -126,12 +126,12 @@ export function CsvUploadDialog({ open, onOpenChange, teams, onSuccess }: CsvUpl
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] bg-white">
         <DialogHeader>
           <DialogTitle>Import Students via CSV</DialogTitle>
           <DialogDescription>
             Upload a CSV file to add students in bulk.
-            <a href="/template_students.csv" download className="text-primary hover:underline ml-1 font-medium">
+            <a href="/template_students.csv" download className="text-green-700 hover:underline ml-1 font-medium">
               Download Template
             </a>
           </DialogDescription>

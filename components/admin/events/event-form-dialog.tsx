@@ -133,7 +133,7 @@ export function EventFormDialog({ open, onOpenChange, event, onSuccess }: EventF
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] bg-background">
+      <DialogContent className="sm:max-w-[600px] bg-white">
         <DialogHeader>
           <DialogTitle>{event ? "Edit Event" : "Create New Event"}</DialogTitle>
           <DialogDescription>
@@ -178,7 +178,7 @@ export function EventFormDialog({ open, onOpenChange, event, onSuccess }: EventF
                     <SelectTrigger>
                         <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                         {CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                     </SelectContent>
                 </Select>
@@ -192,7 +192,7 @@ export function EventFormDialog({ open, onOpenChange, event, onSuccess }: EventF
                     <SelectTrigger>
                         <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                         {SECTIONS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                     </SelectContent>
                 </Select>
@@ -218,7 +218,7 @@ export function EventFormDialog({ open, onOpenChange, event, onSuccess }: EventF
                     <SelectTrigger>
                         <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                         {GRADES.map(g => <SelectItem key={g} value={g}>Grade {g}</SelectItem>)}
                     </SelectContent>
                 </Select>

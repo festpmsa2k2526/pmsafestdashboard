@@ -73,7 +73,7 @@ export function GradeSettingsDialog({ open, onOpenChange, onSuccess }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] bg-background border-border/50 shadow-lg">
+      <DialogContent className="sm:max-w-[600px] bg-white border-border/50 shadow-lg">
         <DialogHeader>
           <DialogTitle>Scoring Configuration</DialogTitle>
           <DialogDescription>Adjust points awarded for each grade type.</DialogDescription>

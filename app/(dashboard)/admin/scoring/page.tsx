@@ -81,7 +81,7 @@ export default function ScoringPage() {
                             <TabsTrigger
                                 key={sec.id}
                                 value={sec.id}
-                                className="rounded-t-lg rounded-b-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-background/50 px-3 py-2.5 text-xs md:text-sm whitespace-nowrap text-muted-foreground transition-all hover:text-foreground"
+                                className="rounded-t-lg rounded-b-none border-b-2 border-transparent data-[state=active]:border-black data-[state=active]:text-primary data-[state=active]:bg-background/50 px-3 py-2.5 text-xs md:text-sm whitespace-nowrap text-muted-foreground transition-all hover:text-foreground"
                             >
                                 {sec.label.replace('Senior', 'Sen').replace('Junior', 'Jun').replace('Sub-Jr', 'Sub').replace('General', 'Gen')}
                             </TabsTrigger>

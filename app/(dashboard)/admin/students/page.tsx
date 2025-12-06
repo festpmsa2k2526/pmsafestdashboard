@@ -143,7 +143,7 @@ export default function AdminStudents() {
                 <Upload className="w-4 h-4" /> Import CSV
             </Button>
             {students.length > 0 && (
-                <Button variant="destructive" onClick={() => setIsBulkDeleteOpen(true)} className="gap-2">
+                <Button variant="outline" onClick={() => setIsBulkDeleteOpen(true)} className="gap-2">
                     <Trash2 className="w-4 h-4" /> Delete All
                 </Button>
             )}
@@ -166,7 +166,7 @@ export default function AdminStudents() {
 
             <Select value={filterTeam} onValueChange={setFilterTeam}>
               <SelectTrigger className="w-full xl:w-[200px] bg-white"><SelectValue placeholder="All Teams" /></SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 <SelectItem value="all">All Teams</SelectItem>
                 {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
               </SelectContent>
@@ -174,7 +174,7 @@ export default function AdminStudents() {
 
             <Select value={filterSection} onValueChange={setFilterSection}>
               <SelectTrigger className="w-full xl:w-[180px] bg-white"><SelectValue placeholder="All Sections" /></SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 <SelectItem value="all">All Sections</SelectItem>
                 <SelectItem value="Senior">Senior</SelectItem>
                 <SelectItem value="Junior">Junior</SelectItem>
@@ -184,7 +184,7 @@ export default function AdminStudents() {
 
             <Select value={filterClass} onValueChange={setFilterClass}>
               <SelectTrigger className="w-full xl:w-[150px] bg-white"><SelectValue placeholder="All Classes" /></SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 <SelectItem value="all">All Classes</SelectItem>
                 {availableClasses.map(cls => <SelectItem key={cls as string} value={cls as string}>{cls}</SelectItem>)}
               </SelectContent>
@@ -258,21 +258,21 @@ export default function AdminStudents() {
 
       {/* DELETE CONFIRMATION */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-white">
             <AlertDialogHeader>
                 <AlertDialogTitle>Delete Student?</AlertDialogTitle>
                 <AlertDialogDescription>This action cannot be undone. This will permanently remove the student and their event participations.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
+                <AlertDialogAction onClick={handleDelete} className="bg-red-500 hover:bg-red-800">Delete</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
       {/* BULK DELETE CONFIRMATION */}
       <AlertDialog open={isBulkDeleteOpen} onOpenChange={setIsBulkDeleteOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-white">
             <AlertDialogHeader>
                 <AlertDialogTitle className="flex items-center gap-2 text-destructive"><AlertTriangle className="w-5 h-5" /> Danger Zone: Delete All?</AlertDialogTitle>
                 <AlertDialogDescription>
@@ -282,7 +282,7 @@ export default function AdminStudents() {
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleBulkDelete} className="bg-destructive hover:bg-destructive/90">Yes, Delete Everything</AlertDialogAction>
+                <AlertDialogAction onClick={handleBulkDelete} className="bg-red-500 hover:bg-red-800">Yes, Delete Everything</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

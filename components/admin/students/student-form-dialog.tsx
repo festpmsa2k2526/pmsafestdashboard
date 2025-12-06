@@ -128,7 +128,7 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] bg-white">
         <DialogHeader>
           <DialogTitle>{student ? "Edit Student" : "Add New Student"}</DialogTitle>
           <DialogDescription>
@@ -172,7 +172,7 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   {SECTIONS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                 </SelectContent>
               </Select>
@@ -189,7 +189,7 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   {CLASSES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                 </SelectContent>
               </Select>
@@ -206,7 +206,7 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
                 <SelectTrigger>
                   <SelectValue placeholder="Select Team" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent  className="bg-white">
                   {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
                 </SelectContent>
               </Select>

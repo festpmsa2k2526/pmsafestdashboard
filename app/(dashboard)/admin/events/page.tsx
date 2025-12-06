@@ -120,7 +120,7 @@ export default function AdminEvents() {
                 <Upload className="w-4 h-4" /> Import CSV
             </Button>
             {events.length > 0 && (
-                <Button variant="destructive" onClick={() => setIsBulkDeleteOpen(true)} className="gap-2">
+                <Button variant="outline" onClick={() => setIsBulkDeleteOpen(true)} className="gap-2">
                     <Trash2 className="w-4 h-4" /> Delete All
                 </Button>
             )}
@@ -256,27 +256,27 @@ export default function AdminEvents() {
 
       {/* DELETE CONFIRMATION */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-white">
             <AlertDialogHeader>
                 <AlertDialogTitle>Delete Event?</AlertDialogTitle>
                 <AlertDialogDescription>This will permanently remove the event and all associated student results/participations.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
+                <AlertDialogAction onClick={handleDelete} className="bg-red-500 hover:bg-red-800">Delete</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
       <AlertDialog open={isBulkDeleteOpen} onOpenChange={setIsBulkDeleteOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-white">
             <AlertDialogHeader>
                 <AlertDialogTitle className="text-destructive flex items-center gap-2"><AlertTriangle className="w-5 h-5" /> Delete All Events?</AlertDialogTitle>
                 <AlertDialogDescription>This is extremely destructive. It will wipe all events and scoring data. Are you sure?</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleBulkDelete} className="bg-destructive hover:bg-destructive/90">Yes, Delete All</AlertDialogAction>
+                <AlertDialogAction onClick={handleBulkDelete} className="bg-red-500 hover:bg-red-800">Yes, Delete All</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

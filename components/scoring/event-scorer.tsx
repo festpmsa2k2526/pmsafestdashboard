@@ -202,7 +202,7 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
                     <div onClick={(e) => e.stopPropagation()}>
                         <Select value={selectedEventId} onValueChange={(v) => { setSelectedEventId(v); setFirstPlace([]); setSecondPlace([]); setThirdPlace([]) }}>
                             <SelectTrigger className="bg-background shadow-sm h-10"><SelectValue placeholder="-- Choose Event --" /></SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-white">
                                 {events.map(e => <SelectItem key={e.id} value={e.id}>{e.name} ({e.event_code})</SelectItem>)}
                             </SelectContent>
                         </Select>

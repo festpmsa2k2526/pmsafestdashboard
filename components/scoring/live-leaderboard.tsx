@@ -106,10 +106,10 @@ export function LiveLeaderboard({ refreshTrigger }: { refreshTrigger: number }) 
                 <TableRow className="bg-muted/40 hover:bg-muted/40 border-border/50">
                 <TableHead className="w-[35%] text-foreground font-semibold">Team</TableHead>
                 <TableHead className="text-center font-bold text-primary">Total</TableHead>
-                <TableHead className="text-center text-xs text-muted-foreground hidden md:table-cell">Sen</TableHead>
-                <TableHead className="text-center text-xs text-muted-foreground hidden md:table-cell">Jun</TableHead>
-                <TableHead className="text-center text-xs text-muted-foreground hidden md:table-cell">Sub</TableHead>
-                <TableHead className="text-center text-xs text-muted-foreground hidden md:table-cell">Gen</TableHead>
+                <TableHead className="text-center text-xs text-muted-foreground md:table-cell">Sen</TableHead>
+                <TableHead className="text-center text-xs text-muted-foreground md:table-cell">Jun</TableHead>
+                <TableHead className="text-center text-xs text-muted-foreground md:table-cell">Sub</TableHead>
+                <TableHead className="text-center text-xs text-muted-foreground md:table-cell">Gen</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -123,10 +123,10 @@ export function LiveLeaderboard({ refreshTrigger }: { refreshTrigger: number }) 
                     <TableCell className="text-center font-bold text-lg text-primary">
                     {team.total}
                     </TableCell>
-                    <TableCell className="text-center text-muted-foreground text-sm hidden md:table-cell">{team.senior ?? 0}</TableCell>
-                    <TableCell className="text-center text-muted-foreground text-sm hidden md:table-cell">{team.junior ?? 0}</TableCell>
-                    <TableCell className="text-center text-muted-foreground text-sm hidden md:table-cell">{team.subJunior ?? 0}</TableCell>
-                    <TableCell className="text-center text-muted-foreground text-sm hidden md:table-cell">
+                    <TableCell className="text-center text-muted-foreground text-sm md:table-cell">{team.senior ?? 0}</TableCell>
+                    <TableCell className="text-center text-muted-foreground text-sm md:table-cell">{team.junior ?? 0}</TableCell>
+                    <TableCell className="text-center text-muted-foreground text-sm md:table-cell">{team.subJunior ?? 0}</TableCell>
+                    <TableCell className="text-center text-muted-foreground text-sm md:table-cell">
                         {team.general ?? 0}
                     </TableCell>
                 </TableRow>
