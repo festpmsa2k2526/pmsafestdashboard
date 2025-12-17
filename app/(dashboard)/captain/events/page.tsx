@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react"
 import { createClient } from "@/lib/supabase"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Loader2, Check, Search, Info } from "lucide-react"
+import { Loader2, Check, Search, Info, Lock } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 // --- TYPES ---
@@ -36,6 +36,15 @@ interface Profile {
   team_id: string | null
 }
 
+interface Team {
+    id: string
+    access_override: boolean | null
+}
+
+interface AppConfig {
+    registration_open: boolean
+}
+
 interface SectionLimit {
   section: string
   category: string
@@ -61,6 +70,8 @@ export default function MatrixRegistration() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const [teamId, setTeamId] = useState<string | null>(null)
 
+  const [isLocked, setIsLocked] = useState(false)
+  const [lockReason, setLockReason] = useState("")
   // Data State
   const [students, setStudents] = useState<Student[]>([])
   const [events, setEvents] = useState<Event[]>([])
@@ -85,17 +96,39 @@ export default function MatrixRegistration() {
         setTeamId(profile.team_id)
 
         // Fetch All Data needed for the matrix
-        const [stuRes, evtRes, partRes, limitRes] = await Promise.all([
+        const [stuRes, evtRes, partRes, limitRes, configRes, teamRes] = await Promise.all([
           supabase.from('students').select('*').eq('team_id', profile.team_id).order('name'),
           supabase.from('events').select('*').order('name'),
           supabase.from('participations').select('*').eq('team_id', profile.team_id),
-          supabase.from('section_limits').select('*')
+          supabase.from('section_limits').select('*'),
+          supabase.from('app_config').select('*').single(),
+          supabase.from('teams').select('access_override').eq('id', profile.team_id).single()
         ])
 
         if (stuRes.data) setStudents(stuRes.data as unknown as Student[])
         if (evtRes.data) setEvents(evtRes.data as unknown as Event[])
         if (partRes.data) setParticipations(partRes.data as unknown as Participation[])
         if (limitRes.data) setLimits(limitRes.data as unknown as SectionLimit[])
+
+          // CHECK LOCK STATUS
+        const config = configRes.data as unknown as AppConfig
+        const team = teamRes.data as unknown as Team
+
+        const globalOpen = config?.registration_open ?? false
+        const teamOverride = team?.access_override
+
+        // Logic: Override takes precedence. If null, use global.
+        let access = false
+        if (teamOverride === true) access = true // Force Open
+        else if (teamOverride === false) access = false // Force Closed
+        else access = globalOpen // Follow Global
+
+        if (!access) {
+            setIsLocked(true)
+            setLockReason(teamOverride === false ? "Your team's registration has been locked by Admin." : "Registration is currently closed.")
+        } else {
+            setIsLocked(false)
+        }
 
       } catch (e) {
         console.error("Load error", e)
@@ -175,6 +208,11 @@ export default function MatrixRegistration() {
   const handleToggle = async (studentId: string, eventId: string, isChecked: boolean) => {
     if (!teamId) return
 
+    if (isLocked) {
+        alert(`Action Blocked: ${lockReason}`)
+        return
+    }
+
     // REMOVE
     if (!isChecked) {
       setParticipations(prev => prev.filter(p => !(p.student_id === studentId && p.event_id === eventId)))
@@ -246,7 +284,12 @@ export default function MatrixRegistration() {
 
   return (
     <div className="flex flex-col space-y-4 animate-in fade-in h-[calc(100vh-6rem)] md:h-[calc(100vh-8rem)] w-full overflow-hidden p-2 md:p-4">
-
+      {isLocked && (
+        <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium animate-in slide-in-from-top-2">
+            <Lock className="w-4 h-4" />
+            {lockReason}
+        </div>
+      )}
       {/* HEADER */}
       <div className="flex flex-col gap-4 shrink-0 w-full">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4 w-full">
@@ -294,8 +337,10 @@ export default function MatrixRegistration() {
       </div>
 
       {/* MATRIX TABLE */}
-      <div className="flex-1 border border-slate-200 rounded-xl bg-white relative shadow-sm w-full overflow-hidden flex flex-col min-h-0">
-
+      <div className={cn(
+        "flex-1 border border-slate-200 rounded-xl bg-white relative shadow-sm w-full overflow-hidden flex flex-col min-h-0",
+        isLocked && "opacity-75 pointer-events-none grayscale" // Visual indication of lock
+      )}>
         {filteredEvents.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-slate-400">
                 <Info className="w-12 h-12 mb-2 opacity-20" />

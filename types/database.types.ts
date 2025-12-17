@@ -53,6 +53,7 @@ export interface Database {
           slug: string
           color_hex: string
           created_at: string
+          access_override: boolean | null
         }
         Insert: {
           id?: string
@@ -67,6 +68,7 @@ export interface Database {
           slug?: string
           color_hex?: string
           created_at?: string
+          access_override: boolean | null
         }
       }
       students: {

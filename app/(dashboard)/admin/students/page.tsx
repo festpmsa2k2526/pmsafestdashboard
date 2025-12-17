@@ -148,7 +148,7 @@ export default function AdminStudents() {
                 <Upload className="w-4 h-4" /> Import CSV
             </Button>
             {students.length > 0 && (
-                <Button variant="destructive" onClick={() => setIsBulkDeleteOpen(true)} className="gap-2">
+                <Button variant="outline" onClick={() => setIsBulkDeleteOpen(true)} className="gap-2">
                     <Trash2 className="w-4 h-4" /> Delete All
                 </Button>
             )}
@@ -282,7 +282,7 @@ export default function AdminStudents() {
 
       {/* BULK DELETE CONFIRMATION */}
       <AlertDialog open={isBulkDeleteOpen} onOpenChange={setIsBulkDeleteOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-white">
             <AlertDialogHeader>
                 <AlertDialogTitle className="flex items-center gap-2 text-destructive"><AlertTriangle className="w-5 h-5" /> Danger Zone: Delete All?</AlertDialogTitle>
                 <AlertDialogDescription>
@@ -292,7 +292,7 @@ export default function AdminStudents() {
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleBulkDelete} className="bg-destructive hover:bg-destructive/90">Yes, Delete Everything</AlertDialogAction>
+                <AlertDialogAction onClick={handleBulkDelete} className="bg-red-600 hover:bg-red-800">Yes, Delete Everything</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

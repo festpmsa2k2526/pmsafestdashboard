@@ -114,7 +114,7 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
             </div>
 
             {/* Tabs & Content */}
-            <div className="flex-1 p-6 min-h-0 flex flex-col">
+            <div className="flex-1 p-6 min-h-0 flex flex-col bg-white">
                 <Tabs value={activeSection} onValueChange={setActiveSection} className="h-full flex flex-col">
                     <TabsList className="w-full justify-start border-b rounded-none bg-transparent p-0 mb-4 shrink-0">
                         {SECTIONS.map(sec => (

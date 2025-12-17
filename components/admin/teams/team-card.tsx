@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Users, Trophy, Shield, Edit2, Eye } from "lucide-react"
 
 interface Team {
@@ -10,6 +9,7 @@ interface Team {
   name: string
   slug: string
   color_hex: string
+  access_override: boolean | null
 }
 
 interface TeamWithCounts extends Team {
@@ -24,13 +24,17 @@ interface TeamCardProps {
 
 export function TeamCard({ team, onEdit, onView }: TeamCardProps) {
   return (
-    <Card className="overflow-hidden border-border/60 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 bg-card/50 backdrop-blur-sm group flex flex-col h-full">
-      {/* Colored Top Border with Glow */}
+    <Card className="overflow-hidden border-border/60 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 bg-card/50 backdrop-blur-sm group flex flex-col h-full relative">
+      {/* NOTE: Removed internal access_override badges here to prevent duplication.
+        The parent page now handles the lock/unlock UI overlay.
+      */}
+
+      {/* Colored Top Border */}
       <div className="h-2 w-full relative" style={{ backgroundColor: team.color_hex }}>
         <div className="absolute inset-0 opacity-50 blur-sm" style={{ backgroundColor: team.color_hex }}></div>
       </div>
 
-      <CardHeader className="pb-2 flex-1">
+      <CardHeader className="pb-2 flex-1 pt-6">
         <div className="flex justify-between items-start">
           <div>
             <CardTitle className="text-xl font-heading tracking-tight">{team.name}</CardTitle>
@@ -60,11 +64,11 @@ export function TeamCard({ team, onEdit, onView }: TeamCardProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="pt-2 border-t bg-muted/10 p-3 flex gap-2">
-        <Button variant="outline" size="sm" className="flex-1 gap-2 text-xs" onClick={() => onEdit(team)}>
+      <CardFooter className="pt-2 border-t border-border/50 bg-muted/10 p-3 flex gap-2">
+        <Button variant="outline" size="sm" className="flex-1 gap-2 text-xs h-8 bg-background hover:bg-muted" onClick={() => onEdit(team)}>
             <Edit2 className="w-3 h-3" /> Edit
         </Button>
-        <Button size="sm" className="flex-1 gap-2 text-xs" onClick={() => onView(team)}>
+        <Button size="sm" className="flex-1 gap-2 text-xs h-8" onClick={() => onView(team)}>
             <Eye className="w-3 h-3" /> Report
         </Button>
       </CardFooter>
