@@ -6,9 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Loader2, User, Medal } from "lucide-react"
+import { Loader2, User, Medal, ChevronRight } from "lucide-react"
+import { StudentDetailsModal } from "./student-details-modal"
 
-// Types
 interface StudentScore {
   id: string
   name: string
@@ -16,9 +16,6 @@ interface StudentScore {
   section: string
   team: { name: string; color_hex: string }
   total: number
-  gradeA: number
-  gradeB: number
-  gradeC: number
 }
 
 export function IndividualLeaderboard({ refreshTrigger }: { refreshTrigger: number }) {
@@ -28,21 +25,20 @@ export function IndividualLeaderboard({ refreshTrigger }: { refreshTrigger: numb
     "Sub-Junior": []
   })
   const [loading, setLoading] = useState(true)
+  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null)
+
   const supabase = createClient()
 
   useEffect(() => {
     async function fetchRankings() {
       setLoading(true)
-
-      // Fetch participations where student is winner
-      // Added 'section' to students query
       const { data } = await supabase
         .from('participations')
         .select(`
           points_earned,
           student_id,
           events ( grade_type, applicable_section ),
-          students ( name, chest_no, section, team:teams(name, color_hex) )
+          students ( id, name, chest_no, section, team:teams(name, color_hex) )
         `)
         .not('student_id', 'is', null)
         .gt('points_earned', 0)
@@ -52,8 +48,9 @@ export function IndividualLeaderboard({ refreshTrigger }: { refreshTrigger: numb
       const studentMap = new Map<string, StudentScore>()
 
       data.forEach((p: any) => {
-        // EXCLUDE GENERAL EVENTS
+        // EXCLUDE GENERAL EVENTS & GRADE C (TEAM EVENTS)
         if (p.events?.applicable_section?.includes('General')) return
+        if (p.events?.grade_type === 'C') return
 
         const sid = p.student_id
         if (!studentMap.has(sid)) {
@@ -61,31 +58,21 @@ export function IndividualLeaderboard({ refreshTrigger }: { refreshTrigger: numb
             id: sid,
             name: p.students.name,
             chest_no: p.students.chest_no,
-            section: p.students.section, // Store section
+            section: p.students.section,
             team: p.students.team,
-            total: 0,
-            gradeA: 0,
-            gradeB: 0,
-            gradeC: 0
+            total: 0
           })
         }
 
         const student = studentMap.get(sid)!
         student.total += p.points_earned
-
-        const grade = p.events?.grade_type
-        if (grade === 'A') student.gradeA += p.points_earned
-        if (grade === 'B') student.gradeB += p.points_earned
-        if (grade === 'C') student.gradeC += p.points_earned
       })
 
-      // Separate into sections and Sort
       const allStudents = Array.from(studentMap.values())
-
       const grouped = {
-        Senior: allStudents.filter(s => s.section === 'Senior').sort((a, b) => b.total - a.total).slice(0, 5),
-        Junior: allStudents.filter(s => s.section === 'Junior').sort((a, b) => b.total - a.total).slice(0, 5),
-        "Sub-Junior": allStudents.filter(s => s.section === 'Sub-Junior').sort((a, b) => b.total - a.total).slice(0, 5),
+        Senior: allStudents.filter(s => s.section === 'Senior').sort((a, b) => b.total - a.total).slice(0, 10),
+        Junior: allStudents.filter(s => s.section === 'Junior').sort((a, b) => b.total - a.total).slice(0, 10),
+        "Sub-Junior": allStudents.filter(s => s.section === 'Sub-Junior').sort((a, b) => b.total - a.total).slice(0, 10),
       }
 
       setRankings(grouped)
@@ -95,77 +82,60 @@ export function IndividualLeaderboard({ refreshTrigger }: { refreshTrigger: numb
     fetchRankings()
   }, [refreshTrigger])
 
-  if (loading) return <div className="flex justify-center p-8"><Loader2 className="animate-spin text-muted-foreground" /></div>
+  if (loading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin text-primary" /></div>
 
   return (
-    <Card className="glass-card shadow-md border-border/50 h-full flex flex-col">
-      <CardHeader className="py-3 border-b border-border/50 bg-muted/20 shrink-0">
-        <CardTitle className="text-lg font-heading flex items-center gap-2 text-foreground">
-          <User className="w-4 h-4 text-primary" /> Individual Champions
-        </CardTitle>
-      </CardHeader>
+    <div className="space-y-4 pb-10">
+      <Tabs defaultValue="Senior" className="w-full">
+        <TabsList className="w-full grid grid-cols-3 h-9 bg-slate-100 p-1 mb-4">
+          <TabsTrigger value="Senior" className="text-[10px] font-bold uppercase">Senior</TabsTrigger>
+          <TabsTrigger value="Junior" className="text-[10px] font-bold uppercase">Junior</TabsTrigger>
+          <TabsTrigger value="Sub-Junior" className="text-[10px] font-bold uppercase">Sub-Jr</TabsTrigger>
+        </TabsList>
 
-      <Tabs defaultValue="Senior" className="flex-1 flex flex-col min-h-0">
-        <div className="shrink-0 border-b border-border/50 bg-background/50">
-            <TabsList className="w-full justify-start h-auto p-0 bg-transparent rounded-none">
-                {['Senior', 'Junior', 'Sub-Junior'].map(sec => (
-                    <TabsTrigger
-                        key={sec}
-                        value={sec}
-                        className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary py-2 text-xs"
-                    >
-                        {sec}
-                    </TabsTrigger>
-                ))}
-            </TabsList>
-        </div>
-
-        <CardContent className="p-0 overflow-auto flex-1 min-h-0">
-          {['Senior', 'Junior', 'Sub-Junior'].map(section => (
-            <TabsContent key={section} value={section} className="m-0 h-full">
-                <Table>
-                    <TableHeader>
-                        <TableRow className="bg-muted/40 hover:bg-muted/40 border-border/50">
-                        <TableHead className="w-[10%] text-xs">#</TableHead>
-                        <TableHead className="w-[40%] text-xs">Student</TableHead>
-                        <TableHead className="text-center text-[10px] w-8">A</TableHead>
-                        <TableHead className="text-center text-[10px] w-8">B</TableHead>
-                        <TableHead className="text-center text-[10px] w-8">C</TableHead>
-                        <TableHead className="text-right text-xs font-bold">Pts</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {rankings[section as keyof typeof rankings]?.map((student, idx) => (
-                        <TableRow key={student.id} className="hover:bg-muted/20 border-border/50">
-                            <TableCell className="font-mono text-xs text-muted-foreground py-2">
-                            {idx < 3 ? <Medal className={`w-3.5 h-3.5 ${idx===0?'text-yellow-500':idx===1?'text-slate-400':'text-orange-600'}`} /> : idx + 1}
-                            </TableCell>
-                            <TableCell className="py-2">
-                            <div className="font-medium text-sm truncate max-w-[100px]">{student.name}</div>
-                            <div className="flex items-center gap-1 text-[10px] mt-0.5">
-                                <span className="font-mono bg-muted/50 px-1 rounded text-muted-foreground">{student.chest_no}</span>
-                                <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5 border-0" style={{ backgroundColor: student.team.color_hex + '20', color: student.team.color_hex }}>
-                                {student.team.name.substring(0, 3)}
-                                </Badge>
-                            </div>
-                            </TableCell>
-                            <TableCell className="text-center text-xs text-muted-foreground py-2">{student.gradeA}</TableCell>
-                            <TableCell className="text-center text-xs text-muted-foreground py-2">{student.gradeB}</TableCell>
-                            <TableCell className="text-center text-xs text-muted-foreground py-2">{student.gradeC}</TableCell>
-                            <TableCell className="text-right font-bold text-primary py-2">{student.total}</TableCell>
-                        </TableRow>
-                        ))}
-                        {rankings[section as keyof typeof rankings]?.length === 0 && (
-                            <TableRow>
-                                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground text-xs">No individual scores yet for {section}.</TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </TabsContent>
-          ))}
-        </CardContent>
+        {['Senior', 'Junior', 'Sub-Junior'].map(section => (
+          <TabsContent key={section} value={section} className="m-0">
+            <div className="space-y-2">
+              {rankings[section]?.map((student, idx) => (
+                <div
+                  key={student.id}
+                  onClick={() => setSelectedStudentId(student.id)}
+                  className="bg-white border border-slate-100 p-3 rounded-xl hover:border-primary/30 hover:shadow-sm transition-all cursor-pointer flex items-center justify-between group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-7 h-7 flex items-center justify-center rounded-full bg-slate-50 font-bold text-xs text-slate-400 group-hover:text-primary transition-colors">
+                      {idx < 3 ? <Medal className={`w-4 h-4 ${idx===0?'text-yellow-500':idx===1?'text-slate-400':'text-orange-600'}`} /> : idx + 1}
+                    </div>
+                    <div>
+                      <div className="font-bold text-sm text-slate-700">{student.name}</div>
+                      <div className="flex items-center gap-2 text-[10px] mt-0.5">
+                        <span className="font-mono text-muted-foreground bg-slate-50 px-1 rounded">#{student.chest_no}</span>
+                        <span style={{ color: student.team.color_hex }} className="font-bold">{student.team.name}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="text-right">
+                      <div className="text-lg font-black text-primary leading-none">{student.total}</div>
+                      <div className="text-[8px] uppercase font-bold text-slate-300 tracking-wider">Points</div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors" />
+                  </div>
+                </div>
+              ))}
+              {rankings[section]?.length === 0 && (
+                <div className="text-center py-10 text-slate-400 text-xs italic">No entries for {section} yet.</div>
+              )}
+            </div>
+          </TabsContent>
+        ))}
       </Tabs>
-    </Card>
+
+      <StudentDetailsModal
+        studentId={selectedStudentId}
+        open={!!selectedStudentId}
+        onOpenChange={(open) => !open && setSelectedStudentId(null)}
+      />
+    </div>
   )
 }
