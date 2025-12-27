@@ -132,6 +132,7 @@ export interface Database {
           created_at: string
           result_position: 'FIRST' | 'SECOND' | 'THIRD' | null
           points_earned: number
+          performance_grade: 'A' | 'B' | 'C' | 'NONE' | null
         }
         Insert: {
           id?: string
@@ -142,6 +143,7 @@ export interface Database {
           created_at?: string
           result_position?: 'FIRST' | 'SECOND' | 'THIRD' | null
           points_earned?: number
+          performance_grade?: 'A' | 'B' | 'C' | 'NONE' | null
         }
         Update: {
             id?: string
@@ -152,6 +154,7 @@ export interface Database {
             created_at?: string
             result_position?: 'FIRST' | 'SECOND' | 'THIRD' | null
             points_earned?: number
+            performance_grade?: 'A' | 'B' | 'C' | 'NONE' | null
         }
       }
     }

@@ -4,12 +4,12 @@ import { useState } from "react"
 import { EventScorer } from "@/components/scoring/event-scorer"
 import { LiveLeaderboard } from "@/components/scoring/live-leaderboard"
 import { IndividualLeaderboard } from "@/components/scoring/individual-leaderboard"
+import { ChampionsBoard } from "@/components/scoring/champions-board" // NEW IMPORT
 import { GradeSettingsDialog } from "@/components/scoring/grade-settings-dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Settings, BarChart3, Edit3 } from "lucide-react"
 
-// UPDATED SECTIONS to include Foundation
 const SECTIONS = [
   { id: 'SENIOR_ON', label: 'Senior On-Stage', section: 'Senior', cat: 'ON STAGE' },
   { id: 'SENIOR_OFF', label: 'Senior Off-Stage', section: 'Senior', cat: 'OFF STAGE' },
@@ -19,7 +19,6 @@ const SECTIONS = [
   { id: 'SUB_OFF', label: 'Sub-Jr Off-Stage', section: 'Sub-Junior', cat: 'OFF STAGE' },
   { id: 'GENERAL_ON', label: 'General On-Stage', section: 'General', cat: 'ON STAGE' },
   { id: 'GENERAL_OFF', label: 'General Off-Stage', section: 'General', cat: 'OFF STAGE' },
-  // ADDED FOUNDATION
   { id: 'FOUNDATION_ON', label: 'Foundation On-Stage', section: 'Foundation', cat: 'ON STAGE' },
   { id: 'FOUNDATION_OFF', label: 'Foundation Off-Stage', section: 'Foundation', cat: 'OFF STAGE' },
 ]
@@ -71,6 +70,11 @@ export default function ScoringPage() {
          <Button variant="outline" size="sm" onClick={() => setIsSettingsOpen(true)} className="gap-2 hidden md:flex">
             <Settings className="w-4 h-4" /> Rules
          </Button>
+      </div>
+
+      {/* CHAMPIONS BOARD: Visible on Desktop, or on Mobile only in Leaderboard View */}
+      <div className={`shrink-0 ${mobileView === 'SCORING' ? 'hidden lg:block' : 'block'}`}>
+         <ChampionsBoard refreshTrigger={refreshTrigger} />
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-0 relative">
