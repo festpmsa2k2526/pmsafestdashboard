@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { createClient } from "@/lib/supabase"
 import { EventFormDialog } from "@/components/admin/events/event-form-dialog"
 import { EventsCsvUpload } from "@/components/admin/events/events-csv-upload"
@@ -12,9 +12,16 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
 } from "@/components/ui/alert-dialog"
-import { Loader2, Trash2, Search, Edit2, Upload, Plus, AlertTriangle } from "lucide-react"
+import { Loader2, Trash2, Search, Edit2, Upload, Plus, AlertTriangle, Filter, X } from "lucide-react"
 
 interface Event {
   id: string
@@ -27,10 +34,16 @@ interface Event {
   applicable_section: string[]
 }
 
+const SECTIONS_LIST = ['Senior', 'Junior', 'Sub-Junior', 'General', 'Foundation']
+
 export default function AdminEvents() {
   const [loading, setLoading] = useState(true)
   const [events, setEvents] = useState<Event[]>([])
+
+  // Filters State
   const [filterCategory, setFilterCategory] = useState<string>("all")
+  const [filterSection, setFilterSection] = useState<string>("all")
+  const [filterGrade, setFilterGrade] = useState<string>("all")
   const [searchQuery, setSearchQuery] = useState("")
 
   // Modals
@@ -94,12 +107,29 @@ export default function AdminEvents() {
     }
   }
 
-  const filteredEvents = events.filter(e => {
-    const matchesCategory = filterCategory === "all" || e.category === filterCategory
-    const matchesSearch = e.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          e.event_code?.toLowerCase().includes(searchQuery.toLowerCase())
-    return matchesCategory && matchesSearch
-  })
+  const filteredEvents = useMemo(() => {
+    return events.filter(e => {
+        const matchesCategory = filterCategory === "all" || e.category === filterCategory
+
+        const matchesSection = filterSection === "all" || (e.applicable_section && e.applicable_section.includes(filterSection))
+
+        const matchesGrade = filterGrade === "all" || e.grade_type === filterGrade
+
+        const matchesSearch = e.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                              e.event_code?.toLowerCase().includes(searchQuery.toLowerCase())
+
+        return matchesCategory && matchesSection && matchesGrade && matchesSearch
+    })
+  }, [events, filterCategory, filterSection, filterGrade, searchQuery])
+
+  const clearFilters = () => {
+      setFilterCategory("all")
+      setFilterSection("all")
+      setFilterGrade("all")
+      setSearchQuery("")
+  }
+
+  const hasActiveFilters = filterCategory !== "all" || filterSection !== "all" || filterGrade !== "all" || searchQuery !== ""
 
   if (loading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin text-primary" /></div>
 
@@ -107,97 +137,148 @@ export default function AdminEvents() {
     <div className="space-y-6 animate-in fade-in duration-500 pb-10">
 
       {/* Header */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white p-4 rounded-xl border shadow-sm">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Events Manager</h2>
-          <p className="text-muted-foreground">Manage competition events and regulations.</p>
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">Events Manager</h2>
+          <p className="text-muted-foreground text-sm">Manage competition events and regulations.</p>
         </div>
-        <div className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={() => { setEditingEvent(null); setIsAddOpen(true); }} className="gap-2">
+        <div className="flex flex-wrap gap-2 w-full lg:w-auto">
+            <Button onClick={() => { setEditingEvent(null); setIsAddOpen(true); }} className="gap-2 flex-1 lg:flex-none bg-primary hover:bg-primary/90">
                 <Plus className="w-4 h-4" /> New Event
             </Button>
-            <Button variant="outline" onClick={() => setIsUploadOpen(true)} className="gap-2">
+            <Button variant="outline" onClick={() => setIsUploadOpen(true)} className="gap-2 flex-1 lg:flex-none">
                 <Upload className="w-4 h-4" /> Import CSV
             </Button>
             {events.length > 0 && (
-                <Button variant="outline" onClick={() => setIsBulkDeleteOpen(true)} className="gap-2">
-                    <Trash2 className="w-4 h-4" /> Delete All
+                <Button variant="outline" onClick={() => setIsBulkDeleteOpen(true)} className="gap-2 flex-1 lg:flex-none bg-red-50 text-red-600">
+                    <Trash2 className="w-4 h-4" /> Reset
                 </Button>
             )}
         </div>
       </div>
 
-      {/* FILTER BAR */}
-      <Card className="bg-muted/10 border-none shadow-none">
-        <CardContent className="p-0">
-          <div className="flex flex-col sm:flex-row gap-4 p-1">
-            <div className="relative flex-1">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by name or code..."
-                className="pl-9 bg-white"
+      {/* ADVANCED FILTER BAR */}
+      <div className="bg-white p-4 rounded-xl border shadow-sm space-y-4 md:space-y-0 md:flex md:items-center md:gap-4 sticky top-4 z-20">
+        {/* Search */}
+        <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+                placeholder="Search events by name or code..."
+                className="pl-9 bg-slate-50 border-slate-200 focus:bg-white transition-colors"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
+            />
+        </div>
 
-            <div className="flex gap-2 bg-white p-1 rounded-md border">
-                {['all', 'ON STAGE', 'OFF STAGE'].map(cat => (
-                <button
-                    key={cat}
-                    onClick={() => setFilterCategory(cat)}
-                    className={`px-4 py-1.5 text-sm font-medium rounded-sm transition-all ${
-                    filterCategory === cat
-                        ? 'bg-primary text-primary-foreground shadow-sm'
-                        : 'text-muted-foreground hover:bg-slate-50'
-                    }`}
+        {/* Dropdown Group */}
+        <div className="flex flex-wrap gap-2 items-center">
+            {/* Category Filter */}
+            <Select value={filterCategory} onValueChange={setFilterCategory}>
+                <SelectTrigger className="w-[140px] bg-slate-50 border-slate-200">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <Filter className="w-3.5 h-3.5" />
+                        <span className="text-xs font-semibold uppercase tracking-wider"></span>
+                    </div>
+                    <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                    <SelectItem value="all">Types</SelectItem>
+                    <SelectItem value="ON STAGE">On Stage</SelectItem>
+                    <SelectItem value="OFF STAGE">Off Stage</SelectItem>
+                </SelectContent>
+            </Select>
+
+            {/* Section Filter */}
+            <Select value={filterSection} onValueChange={setFilterSection}>
+                <SelectTrigger className="w-[140px] bg-slate-50 border-slate-200">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <Filter className="w-3.5 h-3.5" />
+                        <span className="text-xs font-semibold uppercase tracking-wider"></span>
+                    </div>
+                    <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                    <SelectItem value="all">Sections</SelectItem>
+                    {SECTIONS_LIST.map(sec => (
+                        <SelectItem key={sec} value={sec}>{sec}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+
+            {/* Grade Filter */}
+            <Select value={filterGrade} onValueChange={setFilterGrade}>
+                <SelectTrigger className="w-[130px] bg-slate-50 border-slate-200">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <Filter className="w-3.5 h-3.5" />
+                        <span className="text-xs font-semibold uppercase tracking-wider"></span>
+                    </div>
+                    <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                    <SelectItem value="all">Grades</SelectItem>
+                    <SelectItem value="A">Grade A</SelectItem>
+                    <SelectItem value="B">Grade B</SelectItem>
+                    <SelectItem value="C">Grade C</SelectItem>
+                </SelectContent>
+            </Select>
+
+            {/* Clear Button */}
+            {hasActiveFilters && (
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={clearFilters}
+                    className="h-10 w-10 text-muted-foreground hover:text-red-500 hover:bg-red-50"
+                    title="Clear Filters"
                 >
-                    {cat === 'all' ? 'All' : cat}
-                </button>
-                ))}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+                    <X className="w-4 h-4" />
+                </Button>
+            )}
+        </div>
+      </div>
 
       {/* EVENTS TABLE */}
-      <Card>
+      <Card className="border shadow-sm overflow-hidden">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
-              <TableRow className="bg-slate-50 hover:bg-slate-50">
-                <TableHead className="w-[100px]">Code</TableHead>
-                <TableHead>Event Name</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Section</TableHead>
-                <TableHead className="text-center">Grade</TableHead>
-                <TableHead className="text-center">Limit</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+              <TableRow className="bg-slate-50/80 hover:bg-slate-50">
+                <TableHead className="w-20 font-bold text-xs uppercase tracking-wider pl-4">Code</TableHead>
+                <TableHead className="font-bold text-xs uppercase tracking-wider">Event Name</TableHead>
+                <TableHead className="font-bold text-xs uppercase tracking-wider">Category</TableHead>
+                <TableHead className="font-bold text-xs uppercase tracking-wider">Section</TableHead>
+                <TableHead className="text-center font-bold text-xs uppercase tracking-wider">Grade</TableHead>
+                <TableHead className="text-center font-bold text-xs uppercase tracking-wider">Max</TableHead>
+                <TableHead className="text-right font-bold text-xs uppercase tracking-wider pr-4">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredEvents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center h-32 text-muted-foreground">
-                    No events found.
+                  <TableCell colSpan={7} className="text-center h-48 text-muted-foreground bg-slate-50/30">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                        <Search className="w-8 h-8 opacity-20" />
+                        <p>No events found matching your filters.</p>
+                        {hasActiveFilters && (
+                            <Button variant="link" onClick={clearFilters} className="text-primary">Clear all filters</Button>
+                        )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ) : (
                 filteredEvents.map((event) => (
-                  <TableRow key={event.id} className="group hover:bg-muted/30">
-                    <TableCell>
-                        <span className="font-mono text-xs font-bold bg-muted/50 px-2 py-1 rounded border border-border">
-                            {event.event_code || '---'}
-                        </span>
+                  <TableRow key={event.id} className="group hover:bg-blue-50/30 transition-colors">
+                    <TableCell className="pl-4 font-mono text-xs font-medium text-slate-500">
+                        {event.event_code || '-'}
                     </TableCell>
-                    <TableCell className="font-medium text-base">
+                    <TableCell className="font-semibold text-slate-700">
                       {event.name}
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline" className={
                         event.category === 'ON STAGE'
-                            ? 'border-orange-500/30 text-orange-600 bg-orange-500/10'
-                            : 'border-blue-500/30 text-blue-600 bg-blue-500/10'
+                            ? 'border-purple-200 text-purple-700 bg-purple-50 text-[10px]'
+                            : 'border-indigo-200 text-indigo-700 bg-indigo-50 text-[10px]'
                       }>
                         {event.category}
                       </Badge>
@@ -205,31 +286,31 @@ export default function AdminEvents() {
                     <TableCell>
                         <div className="flex flex-wrap gap-1">
                             {event.applicable_section?.map(sec => (
-                                <Badge key={sec} variant="secondary" className="text-[10px] font-normal bg-muted border-border/50 text-muted-foreground">
+                                <span key={sec} className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
                                     {sec}
-                                </Badge>
+                                </span>
                             ))}
                         </div>
                     </TableCell>
                     <TableCell className="text-center">
-                        <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold border ${
-                            event.grade_type === 'A' ? 'bg-amber-100 text-amber-700 border-amber-200' :
-                            event.grade_type === 'B' ? 'bg-slate-100 text-slate-700 border-slate-200' :
-                            'bg-orange-100 text-orange-700 border-orange-200'
+                        <Badge className={`h-5 min-w-5 justify-center px-1 text-[10px] pointer-events-none ${
+                            event.grade_type === 'A' ? 'bg-amber-100 text-amber-800 hover:bg-amber-100 border-amber-200' :
+                            event.grade_type === 'B' ? 'bg-slate-100 text-slate-700 hover:bg-slate-100 border-slate-200' :
+                            'bg-orange-100 text-orange-800 hover:bg-orange-100 border-orange-200'
                         }`}>
                             {event.grade_type}
-                        </span>
+                        </Badge>
                     </TableCell>
-                    <TableCell className="text-center text-muted-foreground font-mono text-sm">
+                    <TableCell className="text-center text-slate-500 font-mono text-xs">
                       {event.max_participants_per_team}
                     </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => handleEdit(event)}>
-                            <Edit2 className="w-4 h-4" />
+                    <TableCell className="text-right pr-4">
+                      <div className="flex justify-end gap-1">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-primary hover:bg-blue-50" onClick={() => handleEdit(event)}>
+                            <Edit2 className="w-3.5 h-3.5" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => setDeleteId(event.id)}>
-                            <Trash2 className="w-4 h-4" />
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50" onClick={() => setDeleteId(event.id)}>
+                            <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                       </div>
                     </TableCell>
