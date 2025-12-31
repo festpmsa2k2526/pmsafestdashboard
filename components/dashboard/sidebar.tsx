@@ -15,6 +15,7 @@ import {
   IdCardLanyard,
   Replace,
   LogOut,
+  Files,
   ScrollText,
   Menu,
   Palette
@@ -43,6 +44,7 @@ function NavContent({ role, setOpen }: { role: string, setOpen?: (open: boolean)
     { href: "/admin/scoring", label: "Scoring", icon: Trophy },
     { href: "/admin/replacement", label: "Replacement", icon: Replace },
     { href: "/admin/reports", label: "Reports", icon: ScrollText },
+    { href: "/admin/assets", label: "Assets Manage", icon: Files },
   ] : [
     { href: "/captain", label: "Dashboard", icon: LayoutDashboard },
     { href: "/captain/events", label: "Register Events", icon: Music },
