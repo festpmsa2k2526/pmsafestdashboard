@@ -10,7 +10,9 @@ import {
   Plus,
   Printer,
   Calendar as CalendarIcon,
-  X
+  X,
+  Trash,
+  AlertTriangle
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -55,13 +57,13 @@ export default function FinancePage() {
   const [selectedTx, setSelectedTx] = useState<Transaction | null>(null)
 
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false)
+  const [isDeleteAllOpen, setIsDeleteAllOpen] = useState(false) // New State for Delete All
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // --- 1. Fetch Data ---
   const fetchTransactions = async () => {
     try {
       setLoading(true)
-      // FIX: Cast query builder to 'any' to bypass strict table typing if not generated yet
       let query = (supabase.from('finance_transactions') as any)
         .select('*')
         .order('transaction_date', { ascending: false })
@@ -129,6 +131,29 @@ export default function FinancePage() {
     }
   }
 
+  // New: Delete All Handler
+  const handleDeleteAllConfirm = async () => {
+    try {
+      setIsSubmitting(true)
+      // We use .neq('id', '0') to simulate "delete all" because Supabase requires a where clause
+      // '00000000-0000-0000-0000-000000000000' is the NIL UUID
+      const { error } = await (supabase.from('finance_transactions') as any)
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000')
+
+      if (error) throw error
+
+      setTransactions([])
+      toast.success("All transactions cleared successfully")
+      setIsDeleteAllOpen(false)
+    } catch (error) {
+      console.error(error)
+      toast.error("Failed to clear transactions")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   const handleFormSubmit = async (formData: any) => {
     if (!formData.name || !formData.amount || !formData.transaction_date) {
       toast.error("Please fill all required fields")
@@ -147,14 +172,12 @@ export default function FinancePage() {
       }
 
       if (isEditMode && selectedTx) {
-        // FIX: Cast to 'any' for update
         const { error } = await (supabase.from('finance_transactions') as any)
           .update(payload)
           .eq('id', selectedTx.id)
         if (error) throw error
         toast.success("Transaction updated")
       } else {
-        // FIX: Cast to 'any' for insert
         const { error } = await (supabase.from('finance_transactions') as any)
           .insert([payload])
         if (error) throw error
@@ -288,22 +311,37 @@ export default function FinancePage() {
         </div>
 
         <div className="flex gap-2">
-            <Button onClick={() => { setIsEditMode(false); setIsModalOpen(true) }} className="bg-slate-900 hover:bg-slate-800 text-white gap-2">
+            <Button onClick={() => { setIsEditMode(false); setIsModalOpen(true) }} className="bg-slate-900 hover:bg-slate-800 text-white gap-2 shadow-sm">
                 <Plus className="w-4 h-4" /> Add Transaction
             </Button>
 
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="icon">
-                        <Printer className="w-4 h-4" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-white">
-                    <DropdownMenuItem onClick={() => generatePDF('ALL')}>Print All History</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => generatePDF('CREDIT')}>Print Credited Only</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => generatePDF('DEBIT')}>Print Debited Only</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Action Group */}
+            <div className="flex bg-white rounded-md border shadow-sm p-0.5">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-slate-500 hover:text-red-600 hover:bg-red-50"
+                    title="Delete All Transactions"
+                    onClick={() => setIsDeleteAllOpen(true)}
+                >
+                    <Trash className="w-4 h-4" />
+                </Button>
+
+                <div className="w-px bg-slate-200 my-1 mx-1"></div>
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="icon" className="text-slate-600 hover:bg-slate-100">
+                            <Printer className="w-4 h-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-white">
+                        <DropdownMenuItem onClick={() => generatePDF('ALL')}>Print All History</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => generatePDF('CREDIT')}>Print Credited Only</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => generatePDF('DEBIT')}>Print Debited Only</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
         </div>
       </div>
 
@@ -335,6 +373,7 @@ export default function FinancePage() {
         isSubmitting={isSubmitting}
       />
 
+      {/* Single Delete Alert */}
       <Dialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
         <DialogContent className="sm:max-w-[400px] bg-white">
             <DialogHeader>
@@ -352,6 +391,38 @@ export default function FinancePage() {
             <DialogFooter className="gap-2">
                 <Button variant="outline" onClick={() => setIsDeleteAlertOpen(false)}>Cancel</Button>
                 <Button variant="outline" onClick={handleDeleteConfirm} className="text-red-600">Delete Record</Button>
+            </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete ALL Alert */}
+      <Dialog open={isDeleteAllOpen} onOpenChange={setIsDeleteAllOpen}>
+        <DialogContent className="sm:max-w-[450px] border-red-100 bg-white">
+            <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-red-700">
+                    <AlertTriangle className="w-5 h-5" /> Delete All Transactions
+                </DialogTitle>
+                <DialogDescription className="py-3 text-red-600/90 font-medium">
+                    Warning: You are about to delete ALL financial records from the database.
+                </DialogDescription>
+            </DialogHeader>
+
+            <div className="bg-red-50 p-4 rounded-md border border-red-100 text-sm text-red-800 space-y-2">
+                <p>• This action is permanent and <strong>cannot be undone</strong>.</p>
+                <p>• All credit and debit history will be lost.</p>
+                <p>• Generated PDF reports will no longer be available.</p>
+            </div>
+
+            <DialogFooter className="gap-2 mt-4">
+                <Button variant="outline" onClick={() => setIsDeleteAllOpen(false)}>Cancel</Button>
+                <Button
+                    variant="destructive"
+                    onClick={handleDeleteAllConfirm}
+                    disabled={isSubmitting}
+                    className="bg-red-600 hover:bg-red-700"
+                >
+                    {isSubmitting ? "Deleting..." : "Yes, Delete Everything"}
+                </Button>
             </DialogFooter>
         </DialogContent>
       </Dialog>
