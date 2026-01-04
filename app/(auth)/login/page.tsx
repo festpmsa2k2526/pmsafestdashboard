@@ -53,8 +53,8 @@ export default function LoginPage() {
         throw new Error('Profile not found. Please contact administrator.');
       }
 
-      if (profile.role === 'admin') router.push('/admin');
-      else if (profile.role === 'captain') router.push('/captain');
+      if (profile.role === 'admin') router.push('/admin/dashboard');
+      else if (profile.role === 'captain') router.push('/captain/dashboard');
       else router.push('/');
 
     } catch (err: any) {

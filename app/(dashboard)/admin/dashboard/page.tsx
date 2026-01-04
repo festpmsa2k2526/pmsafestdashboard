@@ -153,121 +153,130 @@ export default function AdminOverview() {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-10">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-10">
 
       {/* HEADER SECTION */}
-      <div className="flex flex-col gap-1">
-         <h2 className="text-4xl font-heading font-extrabold tracking-tight">Dashboard Overview</h2>
-         <p className="text-muted-foreground">Live analytics and performance metrics.</p>
+      <div className="flex flex-col gap-1 px-1">
+         <h2 className="text-3xl md:text-4xl font-heading font-extrabold tracking-tight">Dashboard Overview</h2>
+         <p className="text-sm md:text-base text-muted-foreground">Live analytics and performance metrics.</p>
       </div>
 
       {/* HERO STATS ROW */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
 
-         {/* LEADING TEAM CARD (Special Design) */}
-         <div className="md:col-span-2 relative overflow-hidden rounded-xl p-6 text-white shadow-lg group transition-all hover:shadow-xl"
+         {/* LEADING TEAM CARD */}
+         <div className="md:col-span-2 relative overflow-hidden rounded-xl p-6 text-white shadow-lg group transition-all hover:shadow-xl min-h-[220px]"
               style={{ background: `linear-gradient(135deg, ${stats.leadingTeam.color} 0%, #1a1a1a 100%)` }}>
-            <div className="relative z-10 flex justify-between items-start h-full">
-                <div className="flex flex-col justify-between h-full">
-                    <div>
-                        <p className="text-white/80 font-medium text-sm uppercase tracking-wider flex items-center gap-2">
-                            <Trophy className="w-4 h-4 text-yellow-400" /> Current Leader
-                        </p>
-                        <h3 className="text-4xl font-black mt-2 tracking-tight">{stats.leadingTeam.name}</h3>
-                        <div className="text-5xl font-bold mt-4 text-white/95">{stats.leadingTeam.points} <span className="text-lg font-normal text-white/60">pts</span></div>
-                    </div>
-                    <div className="flex gap-4 mt-6">
-                        <div className="flex items-center gap-1.5 bg-black/20 px-3 py-1.5 rounded-lg backdrop-blur-sm">
-                            <Medal className="w-4 h-4 text-yellow-400" /> <span className="font-bold">{stats.leadingTeam.medals.gold}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 bg-black/20 px-3 py-1.5 rounded-lg backdrop-blur-sm">
-                            <Medal className="w-4 h-4 text-slate-300" /> <span className="font-bold">{stats.leadingTeam.medals.silver}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 bg-black/20 px-3 py-1.5 rounded-lg backdrop-blur-sm">
-                            <Medal className="w-4 h-4 text-orange-400" /> <span className="font-bold">{stats.leadingTeam.medals.bronze}</span>
-                        </div>
+            <div className="relative z-10 flex flex-col h-full justify-between">
+                <div>
+                    <p className="text-white/80 font-medium text-xs md:text-sm uppercase tracking-wider flex items-center gap-2 mb-2">
+                        <Trophy className="w-4 h-4 text-yellow-400" /> Current Leader
+                    </p>
+                    <h3 className="text-3xl md:text-4xl font-black tracking-tight leading-tight">{stats.leadingTeam.name}</h3>
+                    <div className="text-4xl md:text-5xl font-bold mt-2 text-white/95">
+                        {stats.leadingTeam.points} <span className="text-base md:text-lg font-normal text-white/60">pts</span>
                     </div>
                 </div>
-                {/* Decorative Icon */}
-                <Trophy className="w-48 h-48 absolute -right-6 -bottom-8 text-white/10 rotate-12 group-hover:scale-110 transition-transform duration-500" />
+
+                <div className="flex flex-wrap gap-3 mt-4">
+                    <div className="flex items-center gap-1.5 bg-black/20 px-2.5 py-1.5 rounded-lg backdrop-blur-sm">
+                        <Medal className="w-4 h-4 text-yellow-400" /> <span className="font-bold text-sm">{stats.leadingTeam.medals.gold}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-black/20 px-2.5 py-1.5 rounded-lg backdrop-blur-sm">
+                        <Medal className="w-4 h-4 text-slate-300" /> <span className="font-bold text-sm">{stats.leadingTeam.medals.silver}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-black/20 px-2.5 py-1.5 rounded-lg backdrop-blur-sm">
+                        <Medal className="w-4 h-4 text-orange-400" /> <span className="font-bold text-sm">{stats.leadingTeam.medals.bronze}</span>
+                    </div>
+                </div>
+
+                {/* Decorative Icon - Positioned absolutely but adjusted for mobile */}
+                <Trophy className="w-32 h-32 md:w-48 md:h-48 absolute -right-4 -bottom-4 md:-right-6 md:-bottom-8 text-white/10 rotate-12 group-hover:scale-110 transition-transform duration-500" />
             </div>
          </div>
 
          {/* REGISTRATIONS CARD */}
-         <Card className="glass-card border-l-4 border-l-blue-500 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+         <Card className="glass-card border-l-4 border-l-blue-500 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full min-h-[140px]">
             <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Participation</CardTitle>
+                <CardTitle className="text-xs md:text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Participation</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="flex items-end justify-between">
                     <div>
-                        <span className="text-4xl font-bold text-foreground">{stats.totalRegistrations}</span>
+                        <span className="text-3xl md:text-4xl font-bold text-foreground">{stats.totalRegistrations}</span>
                         <p className="text-xs text-muted-foreground mt-1">Across all events</p>
                     </div>
                     <div className="h-10 w-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
-                        <BarChart3 className="w-6 h-6" />
+                        <BarChart3 className="w-5 h-5 md:w-6 md:h-6" />
                     </div>
                 </div>
             </CardContent>
          </Card>
 
          {/* POINTS AWARDED CARD */}
-         <Card className="glass-card border-l-4 border-l-emerald-500 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+         <Card className="glass-card border-l-4 border-l-emerald-500 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full min-h-[140px]">
             <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Points Awarded</CardTitle>
+                <CardTitle className="text-xs md:text-sm font-medium text-muted-foreground uppercase tracking-wider">Points Awarded</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="flex items-end justify-between">
                     <div>
-                        <span className="text-4xl font-bold text-foreground">{stats.totalPointsAwarded}</span>
+                        <span className="text-3xl md:text-4xl font-bold text-foreground">{stats.totalPointsAwarded}</span>
                         <p className="text-xs text-muted-foreground mt-1">Total score distributed</p>
                     </div>
                     <div className="h-10 w-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600">
-                        <Activity className="w-6 h-6" />
+                        <Activity className="w-5 h-5 md:w-6 md:h-6" />
                     </div>
                 </div>
             </CardContent>
          </Card>
       </div>
 
-      {/* DETAILED CHARTS ROW */}
-      <div className="grid gap-6 md:grid-cols-3 h-[450px]">
+      {/* DETAILED CHARTS ROW - Now responsive grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* MAIN CHART: POINTS VS PARTICIPATION */}
-        <Card className="col-span-2 glass-card shadow-md border-border/50 h-full flex flex-col">
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+        <Card className="lg:col-span-2 glass-card shadow-md border-border/50 flex flex-col h-[350px] md:h-[450px]">
+            <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-base md:text-lg">
                     <TrendingUp className="w-5 h-5 text-primary" /> Team Performance
                 </CardTitle>
-                <CardDescription>Comparing total points (Bar) against participation count (Line).</CardDescription>
+                <CardDescription className="text-xs md:text-sm">Comparing total points (Bar) against participation count (Line).</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 min-h-0">
+            <CardContent className="flex-1 min-h-0 w-full pl-0">
                 <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart data={chartData} margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>
+                    <ComposedChart data={chartData} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
-                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} dy={10} />
-                        <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                        <XAxis
+                            dataKey="name"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                            dy={10}
+                            interval={0} // Force show all labels
+                        />
+                        <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
                         <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} hide />
                         <Tooltip
                             contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)', backgroundColor: 'hsl(var(--card))' }}
                             cursor={{ fill: 'hsl(var(--muted)/0.2)' }}
                         />
-                        <Bar yAxisId="left" dataKey="points" barSize={40} radius={[4, 4, 0, 0]}>
+                        <Bar yAxisId="left" dataKey="points" barSize={32} radius={[4, 4, 0, 0]}>
                             {chartData.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={entry.fill} />
                             ))}
                         </Bar>
-                        <Line yAxisId="right" type="monotone" dataKey="participants" stroke="#64748b" strokeWidth={2} dot={{ r: 4, fill: "#fff", strokeWidth: 2 }} />
+                        <Line yAxisId="right" type="monotone" dataKey="participants" stroke="#64748b" strokeWidth={2} dot={{ r: 3, fill: "#fff", strokeWidth: 2 }} />
                     </ComposedChart>
                 </ResponsiveContainer>
             </CardContent>
         </Card>
 
         {/* SECONDARY CHART: DISTRIBUTION */}
-        <Card className="col-span-1 glass-card shadow-md border-border/50 h-full flex flex-col">
-            <CardHeader>
-                <CardTitle>Event Mix</CardTitle>
-                <CardDescription>On Stage vs Off Stage</CardDescription>
+        <Card className="lg:col-span-1 glass-card shadow-md border-border/50 flex flex-col h-[350px] md:h-[450px]">
+            <CardHeader className="pb-4">
+                <CardTitle className="text-base md:text-lg">Event Mix</CardTitle>
+                <CardDescription className="text-xs md:text-sm">On Stage vs Off Stage</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 min-h-0 relative">
                 <ResponsiveContainer width="100%" height="100%">
@@ -277,7 +286,7 @@ export default function AdminOverview() {
                             cx="50%"
                             cy="50%"
                             innerRadius={60}
-                            outerRadius={90}
+                            outerRadius={80}
                             paddingAngle={5}
                             dataKey="value"
                             stroke="none"
@@ -287,14 +296,14 @@ export default function AdminOverview() {
                             ))}
                         </Pie>
                         <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
-                        <Legend verticalAlign="bottom" height={36} iconType="circle" />
+                        <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px' }}/>
                     </PieChart>
                 </ResponsiveContainer>
                 {/* Center Stat */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none pb-8">
                     <div className="text-center">
-                        <div className="text-3xl font-bold text-foreground">{stats.totalEvents}</div>
-                        <div className="text-xs text-muted-foreground uppercase tracking-wider">Events</div>
+                        <div className="text-2xl md:text-3xl font-bold text-foreground">{stats.totalEvents}</div>
+                        <div className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wider">Events</div>
                     </div>
                 </div>
             </CardContent>
@@ -303,19 +312,19 @@ export default function AdminOverview() {
       </div>
 
       {/* QUICK STATS FOOTER */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-         <div className="p-4 rounded-lg bg-muted/30 border border-border/50 flex items-center gap-3">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-md"><Users className="w-4 h-4"/></div>
-            <div>
-                <div className="text-lg font-bold">{stats.totalStudents}</div>
-                <div className="text-[10px] uppercase text-muted-foreground font-bold">Students</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+         <div className="p-3 md:p-4 rounded-lg bg-muted/30 border border-border/50 flex items-center gap-3">
+            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-md shrink-0"><Users className="w-4 h-4"/></div>
+            <div className="min-w-0">
+                <div className="text-base md:text-lg font-bold truncate">{stats.totalStudents}</div>
+                <div className="text-[10px] uppercase text-muted-foreground font-bold truncate">Students</div>
             </div>
          </div>
-         <div className="p-4 rounded-lg bg-muted/30 border border-border/50 flex items-center gap-3">
-            <div className="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-md"><Calendar className="w-4 h-4"/></div>
-            <div>
-                <div className="text-lg font-bold">{stats.totalEvents}</div>
-                <div className="text-[10px] uppercase text-muted-foreground font-bold">Events</div>
+         <div className="p-3 md:p-4 rounded-lg bg-muted/30 border border-border/50 flex items-center gap-3">
+            <div className="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-md shrink-0"><Calendar className="w-4 h-4"/></div>
+            <div className="min-w-0">
+                <div className="text-base md:text-lg font-bold truncate">{stats.totalEvents}</div>
+                <div className="text-[10px] uppercase text-muted-foreground font-bold truncate">Events</div>
             </div>
          </div>
       </div>

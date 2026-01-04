@@ -126,7 +126,7 @@ export function ParticipantStatusTab({ students }: { students: Student[] }) {
               <Trophy className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Fully Compliant</p>
+              <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Fully Completed</p>
               <p className="text-2xl font-bold text-emerald-700">
                  {processedData.rows.filter(r => r.isCompliant).length} <span className="text-sm font-normal text-emerald-600/60">Students</span>
               </p>

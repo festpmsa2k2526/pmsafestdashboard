@@ -146,7 +146,7 @@ export default function AdminTeams() {
                         <div className="flex flex-col">
                             <Label htmlFor="global-lock" className="font-bold text-sm cursor-pointer">Registration Status</Label>
                             <span className={`text-[10px] uppercase font-bold tracking-wider ${globalOpen ? 'text-emerald-600' : 'text-red-600'}`}>
-                                {globalOpen ? "Active (Open)" : "Locked (Closed)"}
+                                {globalOpen ? "Active" : "Locked"}
                             </span>
                         </div>
                         <div className="flex items-center gap-2 pl-2 border-l border-border/50">

@@ -122,7 +122,7 @@ export function GradeSettingsDialog({ open, onOpenChange, onSuccess }: Props) {
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={handleSave} disabled={saving} className="gap-2">
+          <Button onClick={handleSave} variant='outline' disabled={saving} className="gap-2">
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Save Points
           </Button>

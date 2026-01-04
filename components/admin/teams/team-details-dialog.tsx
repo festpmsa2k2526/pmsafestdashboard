@@ -206,9 +206,9 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
                   </DialogDescription>
               </div>
 
-              <div className="text-right">
+              <div className="text-right mt-2.5">
                   <div className="text-3xl font-black text-red-600 leading-none">-{penalties.total}</div>
-                  <div className="text-[10px] font-bold text-red-400 uppercase tracking-wider">Total Deduction</div>
+                  <div className="text-[10px] font-bold text-red-400 uppercase tracking-wider">Total Minus</div>
               </div>
           </div>
         </DialogHeader>
@@ -217,11 +217,11 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
         <div className="grid grid-cols-2 gap-4 p-4 bg-white border-b shrink-0">
             <div className="bg-orange-50 border border-orange-100 rounded-lg p-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-orange-100 rounded-full text-orange-600">
+                    <div className="p-2 bg-orange-100 hidden md:flex rounded-full text-orange-600">
                         <AlertCircle className="w-5 h-5" />
                     </div>
                     <div>
-                        <div className="text-xs font-bold text-orange-700 uppercase tracking-wider">Non-Compliant</div>
+                        <div className="text-xs font-bold text-orange-700 uppercase tracking-wider">Non Completed</div>
                         <div className="text-sm text-orange-600/80">{penalties.nonCompliantCount} Students</div>
                     </div>
                 </div>
@@ -233,11 +233,11 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
 
             <div className="bg-red-50 border border-red-100 rounded-lg p-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-red-100 rounded-full text-red-600">
+                    <div className="p-2 bg-red-100 hidden md:flex rounded-full text-red-600">
                         <UserMinus className="w-5 h-5" />
                     </div>
                     <div>
-                        <div className="text-xs font-bold text-red-700 uppercase tracking-wider">Absent Events</div>
+                        <div className="text-xs font-bold text-red-700 uppercase tracking-wider">Absents</div>
                         <div className="text-sm text-red-600/80">{penalties.absentCount} Events</div>
                     </div>
                 </div>
@@ -259,7 +259,7 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
                             <TabsTrigger
                                 key={sec}
                                 value={sec}
-                                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary px-2 py-3 text-xs md:text-sm font-medium text-slate-500 hover:text-slate-800 transition-all"
+                                className="rounded-none border-b-2 border-transparent data-[state=active]:bg-slate-300 data-[state=active]:text-slate-800 px-2 py-3 text-xs md:text-sm font-medium text-slate-500 hover:text-slate-800 transition-all"
                             >
                                 {sec}
                             </TabsTrigger>
@@ -282,7 +282,7 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
                         {stats.onStage.length > 0 && (
                             <section>
                                 <div className="sticky top-0 z-10 bg-slate-50/95 backdrop-blur-sm py-2 mb-2 border-b border-purple-100 flex items-center gap-2 shadow-sm">
-                                    <span className="p-1.5 rounded-md bg-purple-100 text-purple-600">
+                                    <span className="p-1.5 ml-1 rounded-md bg-purple-100 text-purple-600">
                                         <Mic2 className="w-4 h-4" />
                                     </span>
                                     <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">On Stage Events</h3>
@@ -301,7 +301,7 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
                         {stats.offStage.length > 0 && (
                             <section>
                                 <div className="sticky top-0 z-10 bg-slate-50/95 backdrop-blur-sm py-2 mb-2 border-b border-indigo-100 flex items-center gap-2 shadow-sm">
-                                    <span className="p-1.5 rounded-md bg-indigo-100 text-indigo-600">
+                                    <span className="p-1.5 ml-1 rounded-md bg-indigo-100 text-indigo-600">
                                         <LayoutGrid className="w-4 h-4" />
                                     </span>
                                     <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Off Stage Events</h3>

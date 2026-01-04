@@ -68,7 +68,7 @@ export function TeamCard({ team, onEdit, onView }: TeamCardProps) {
         <Button variant="outline" size="sm" className="flex-1 gap-2 text-xs h-8 bg-background hover:bg-muted" onClick={() => onEdit(team)}>
             <Edit2 className="w-3 h-3" /> Edit
         </Button>
-        <Button size="sm" className="flex-1 gap-2 text-xs h-8" onClick={() => onView(team)}>
+        <Button variant="outline" size="sm" className="flex-1 gap-2 text-xs h-8" onClick={() => onView(team)}>
             <Eye className="w-3 h-3" /> Report
         </Button>
       </CardFooter>

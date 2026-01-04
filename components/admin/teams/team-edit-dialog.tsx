@@ -116,7 +116,7 @@ export function TeamEditDialog({ team, open, onOpenChange, onSuccess }: TeamEdit
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleSave} disabled={loading}>
+          <Button type="submit" variant='outline' className="bg-green-600" onClick={handleSave} disabled={loading}>
             {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
             Save changes
           </Button>
