@@ -48,7 +48,7 @@ function NavContent({ role, setOpen }: { role: string, setOpen?: (open: boolean)
     { href: "/admin/payment", label: "Financial", icon: IndianRupee },
     { href: "/admin/assets", label: "Assets Manage", icon: Files },
   ] : [
-    { href: "/captain", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/captain/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/captain/events", label: "Register Events", icon: Music },
     { href: "/captain/participations", label: "Admit Card", icon: IdCardLanyard },
     { href: "/captain/status", label: "Reports", icon:  ScrollText},
