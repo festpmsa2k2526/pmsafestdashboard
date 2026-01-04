@@ -38,7 +38,7 @@ function NavContent({ role, setOpen }: { role: string, setOpen?: (open: boolean)
   }
 
   const links = role === "admin" ? [
-    { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/admin/teams", label: "Manage Teams", icon: Trophy },
     { href: "/admin/students", label: "Students", icon: Users },
     { href: "/admin/events", label: "Events", icon: Music },
@@ -55,7 +55,8 @@ function NavContent({ role, setOpen }: { role: string, setOpen?: (open: boolean)
   ]
 
   return (
-    <div className="flex flex-col h-full bg-card/95 backdrop-blur-sm">
+    // FORCE SOLID BACKGROUND: Using bg-[#f8fafc] and to ensure 100% opacity
+    <div className="flex flex-col h-full bg-[#f8fafc] text-slate-900">
       <div className="h-16 flex items-center px-6 border-b border-border/50">
         <div className="flex items-center gap-2 font-heading font-bold text-xl tracking-tight text-foreground">
           <Palette className="w-5 h-5 text-primary" />
@@ -77,8 +78,8 @@ function NavContent({ role, setOpen }: { role: string, setOpen?: (open: boolean)
               <div className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative overflow-hidden",
                 isActive
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-slate-400 text-primary"
+                  : "text-muted-foreground hover:bg-slate-400 hover:text-foreground"
               )}>
                 {/* Active Indicator Bar */}
                 {isActive && (
@@ -86,8 +87,8 @@ function NavContent({ role, setOpen }: { role: string, setOpen?: (open: boolean)
                 )}
 
                 <Icon className={cn(
-                    "w-5 h-5 transition-colors",
-                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                  "w-5 h-5 transition-colors",
+                  isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
                 )} />
                 {link.label}
               </div>
@@ -96,10 +97,10 @@ function NavContent({ role, setOpen }: { role: string, setOpen?: (open: boolean)
         })}
       </nav>
 
-      <div className="p-4 border-t border-border/50 mt-auto bg-muted/20">
+      <div className="p-4 border-t border-border/50 mt-auto bg-slate-50">
         <Button
           variant="ghost"
-          className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+          className="w-full justify-start gap-3 text-muted-foreground hover:text-red-600 transition-colors"
           onClick={handleLogout}
         >
           <LogOut className="w-4 h-4" />
@@ -113,7 +114,7 @@ function NavContent({ role, setOpen }: { role: string, setOpen?: (open: boolean)
 // 1. Desktop Sidebar
 export function Sidebar({ role }: SidebarProps) {
   return (
-    <aside className="w-72 border-r border-border/60 bg-card hidden md:flex flex-col h-full shadow-xl shadow-black/5 z-30">
+    <aside className="w-72 border-r border-border/60 bg-[#f8fafc] hidden md:flex flex-col h-full shadow-xl shadow-black/5 z-30">
       <NavContent role={role} />
     </aside>
   )
@@ -131,7 +132,8 @@ export function MobileSidebar({ role }: SidebarProps) {
           <span className="sr-only">Open menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="p-0 w-72 border-r-border/60">
+      {/* Explicitly using bg-[#f8fafc] and to remove transparency */}
+      <SheetContent side="left" className="p-0 w-72 border-r-border/60 bg-[#f8fafc] text-foreground">
         <div className="sr-only">
           <SheetTitle>Navigation Menu</SheetTitle>
           <SheetDescription>Main navigation for the application</SheetDescription>
