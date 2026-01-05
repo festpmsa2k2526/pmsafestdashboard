@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
+import * as XLSX from 'xlsx'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table"
@@ -14,7 +15,7 @@ import {
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { Loader2, FileText, Printer, FileDown, ChevronDown, Check, UserCheck, UserX, Clock } from "lucide-react"
+import { Loader2, FileText, Printer, FileDown, ChevronDown, Check, UserCheck, UserX, Clock, FileSpreadsheet } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface Event {
@@ -25,7 +26,7 @@ interface Event {
     max_participants_per_team: number
 }
 
-// Define the structure of data returned from Supabase for type safety
+// Updated interface to match the data structure we want to use in the UI
 interface ParticipationRecord {
     id: string
     event_id: string
@@ -52,6 +53,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
   const [selectedEventId, setSelectedEventId] = useState<string>("")
   const [loadingEvent, setLoadingEvent] = useState(false)
   const [generatingPdf, setGeneratingPdf] = useState(false)
+  const [generatingExcel, setGeneratingExcel] = useState(false)
   const [participants, setParticipants] = useState<ParticipationRecord[]>([])
 
   // Track which events have complete attendance marked
@@ -59,7 +61,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
 
   const supabase = createClient()
 
-  // 1. Check for completed events (Global check for dropdown styling)
+  // 1. Check for completed events
   useEffect(() => {
     async function checkCompletionStatus() {
         const { data } = await supabase
@@ -67,18 +69,12 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
             .select('event_id, attendance_status')
 
         if (data) {
-            // Cast data to known type to fix 'never' error
             const records = data as unknown as CompletionStatusRow[]
-            const statusMap: Record<string, boolean> = {} // eventId -> isComplete
+            const statusMap: Record<string, boolean> = {}
 
-            // Group by event
             records.forEach(p => {
-                if (statusMap[p.event_id] === false) return; // Already failed
-
-                // Initialize if undefined
+                if (statusMap[p.event_id] === false) return;
                 if (statusMap[p.event_id] === undefined) statusMap[p.event_id] = true;
-
-                // If any participant is pending, mark event as incomplete
                 if (!p.attendance_status || p.attendance_status === 'pending') {
                     statusMap[p.event_id] = false;
                 }
@@ -103,37 +99,39 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
 
     async function loadEventData() {
       setLoadingEvent(true)
+      // FIX: Fetch 'teams' directly from participations to ensure we get the team name
       const { data } = await supabase
         .from('participations')
         .select(`
           id, event_id, status, attendance_status,
-          students!inner ( name, chest_no, class_grade, section, team:teams(name, color_hex) )
+          teams ( name, color_hex ),
+          students!inner ( name, chest_no, class_grade, section )
         `)
         .eq('event_id', selectedEventId)
         .order('created_at', { ascending: true })
 
       if (data) {
-        // Cast the raw data to our interface
         const rawData = data as unknown as any[]
 
         const formatted: ParticipationRecord[] = rawData.map((p) => ({
           id: p.id,
-          event_id: p.event_id, // Now valid
+          event_id: p.event_id,
           status: p.status,
           attendance_status: p.attendance_status || 'pending',
           students: {
-            name: p.students.name,
-            chest_no: p.students.chest_no || 'N/A',
-            class_grade: p.students.class_grade || '-',
-            section: p.students.section,
+            name: p.students?.name || "Unknown",
+            chest_no: p.students?.chest_no || 'N/A',
+            class_grade: p.students?.class_grade || '-',
+            section: p.students?.section || '-',
+            // Map the direct team relation to the nested structure used by UI
             team: {
-                name: p.students.team.name,
-                color_hex: p.students.team.color_hex
+                name: p.teams?.name || "Unknown Team",
+                color_hex: p.teams?.color_hex || "#ccc"
             }
           }
         }))
 
-        // Sorting logic handled separately to satisfy TS
+        // Sort by chest number
         formatted.sort((a, b) => {
             const chestA = parseInt(a.students.chest_no || '999') || 999
             const chestB = parseInt(b.students.chest_no || '999') || 999
@@ -149,20 +147,17 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
 
   // 3. Handle Status Change
   const updateAttendance = async (participationId: string, newStatus: string) => {
-      // Optimistic Update
       setParticipants(prev => prev.map(p =>
           p.id === participationId ? { ...p, attendance_status: newStatus } : p
       ))
 
       try {
-          // Cast the query builder to 'any' to bypass strict type checking for the new column
           const { error } = await (supabase.from('participations') as any)
             .update({ attendance_status: newStatus })
             .eq('id', participationId)
 
           if (error) throw error
 
-          // Re-check completion for this event
           const allMarked = participants.every(p => {
               if (p.id === participationId) return newStatus !== 'pending';
               return p.attendance_status !== 'pending';
@@ -181,7 +176,88 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
       }
   }
 
-  // PDF Logic
+  // --- EXCEL GENERATION LOGIC ---
+  const generateExcel = async () => {
+    try {
+        setGeneratingExcel(true)
+
+        // FIX: Fetch 'teams' directly here as well
+        const { data: allData, error } = await supabase
+            .from('participations')
+            .select(`
+                event_id,
+                teams ( name ),
+                students ( name )
+            `)
+
+        if (error) throw error
+
+        const eventMap: Record<string, { name: string, team: string }[]> = {}
+        const rawData = allData as any[]
+
+        rawData.forEach(record => {
+            if (!eventMap[record.event_id]) eventMap[record.event_id] = []
+            eventMap[record.event_id].push({
+                name: record.students?.name || "Unknown",
+                team: record.teams?.name || "Unknown"
+            })
+        })
+
+        const createSheetData = (categoryEvents: Event[]) => {
+            let maxParticipants = 0
+            categoryEvents.forEach(e => {
+                const count = eventMap[e.id]?.length || 0
+                if (count > maxParticipants) maxParticipants = count
+            })
+
+            const headers = ["Event Code", "Event Name"]
+            for (let i = 1; i <= maxParticipants; i++) {
+                headers.push(`Participant ${i}`)
+                headers.push(`Team`)
+            }
+
+            const rows = categoryEvents.map(e => {
+                const row = [e.event_code || "-", e.name]
+                const parts = eventMap[e.id] || []
+
+                parts.forEach(p => {
+                    row.push(p.name)
+                    row.push(p.team)
+                })
+
+                return row
+            })
+
+            return [headers, ...rows]
+        }
+
+        const wb = XLSX.utils.book_new()
+
+        const onStageEvents = events.filter(e => e.category === 'ON STAGE')
+        if (onStageEvents.length > 0) {
+            const onStageData = createSheetData(onStageEvents)
+            const wsOn = XLSX.utils.aoa_to_sheet(onStageData)
+            XLSX.utils.book_append_sheet(wb, wsOn, "ON STAGE")
+        }
+
+        const offStageEvents = events.filter(e => e.category === 'OFF STAGE')
+        if (offStageEvents.length > 0) {
+            const offStageData = createSheetData(offStageEvents)
+            const wsOff = XLSX.utils.aoa_to_sheet(offStageData)
+            XLSX.utils.book_append_sheet(wb, wsOff, "OFF STAGE")
+        }
+
+        XLSX.writeFile(wb, `ArtsFest_MasterData_${new Date().toISOString().slice(0, 10)}.xlsx`)
+
+    } catch (error) {
+        console.error("Excel generation failed:", error)
+        alert("Failed to generate Excel file.")
+    } finally {
+        setGeneratingExcel(false)
+    }
+  }
+
+  // --- PDF GENERATION LOGIC ---
   const generatePDF = async (eventsToPrint: Event[]) => {
     setGeneratingPdf(true)
     const doc = new jsPDF()
@@ -191,19 +267,23 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
         if (!isFirstPage) doc.addPage()
         isFirstPage = false
 
+        // FIX: Fetch 'teams' directly for PDF too
         const { data } = await supabase
             .from('participations')
-            .select(`attendance_status, students!inner ( name, chest_no, class_grade, team:teams(name) )`)
+            .select(`
+                attendance_status,
+                teams ( name ),
+                students!inner ( name, chest_no, class_grade )
+            `)
             .eq('event_id', event.id)
 
-        // Cast data here as well
         const rawData = data as unknown as any[]
 
         const parts = (rawData || []).map((p) => ({
-            name: p.students.name,
-            chest_no: p.students.chest_no || "N/A",
-            class: p.students.class_grade || "-",
-            team: p.students.team.name,
+            name: p.students?.name,
+            chest_no: p.students?.chest_no || "N/A",
+            class: p.students?.class_grade || "-",
+            team: p.teams?.name || "Unknown",
             attendance: p.attendance_status === 'present' ? 'Present' : p.attendance_status === 'absent' ? 'Absent' : 'Pending'
         })).sort((a, b) => (parseInt(a.chest_no) || 999) - (parseInt(b.chest_no) || 999))
 
@@ -268,6 +348,17 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
             </div>
 
             <div className="flex gap-2">
+                {/* EXCEL BUTTON */}
+                <Button
+                    variant="outline"
+                    onClick={generateExcel}
+                    disabled={generatingExcel}
+                    className="gap-2 bg-green-50 text-green-700 border-green-200 hover:bg-green-100 hover:text-green-800"
+                >
+                    {generatingExcel ? <Loader2 className="w-4 h-4 animate-spin"/> : <FileSpreadsheet className="w-4 h-4" />}
+                    Export Excel
+                </Button>
+
                 <Button variant="outline" disabled={!selectedEventId || generatingPdf} onClick={() => { const e = events.find(ev => ev.id === selectedEventId); if(e) generatePDF([e]) }} className="gap-2 bg-white hover:bg-slate-50">
                     {generatingPdf ? <Loader2 className="w-4 h-4 animate-spin"/> : <FileDown className="w-4 h-4" />} PDF Report
                 </Button>
@@ -337,9 +428,9 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
                                                 )}
                                             >
                                                 <div className="flex items-center gap-2">
-                                                    {p.attendance_status === 'present'}
-                                                    {p.attendance_status === 'absent'}
-                                                    {(p.attendance_status === 'pending' || !p.attendance_status)}
+                                                    {p.attendance_status === 'present' && <UserCheck className="w-3.5 h-3.5"/>}
+                                                    {p.attendance_status === 'absent' && <UserX className="w-3.5 h-3.5"/>}
+                                                    {(p.attendance_status === 'pending' || !p.attendance_status) && <Clock className="w-3.5 h-3.5"/>}
                                                     <SelectValue />
                                                 </div>
                                             </SelectTrigger>
