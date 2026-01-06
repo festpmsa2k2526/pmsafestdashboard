@@ -55,13 +55,17 @@ export default function CaptainStatusPage() {
         setTeamName(profile.teams?.name || "Your Team")
 
         // 3. Fetch Students & Their Participations (For Compliance Tab)
+        // CRITICAL UPDATE: Added 'max_participants_per_team' to events selection
         const { data: studentData } = await supabase
             .from('students')
             .select(`
                 id, name, chest_no, section, class_grade,
                 participations (
                     attendance_status,
-                    events ( category )
+                    events (
+                        category,
+                        max_participants_per_team
+                    )
                 )
             `)
             .eq('team_id', currentTeamId)

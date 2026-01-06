@@ -21,6 +21,7 @@ interface Student {
     attendance_status: string
     events: {
       category: string
+      max_participants_per_team: number // Added to support the new logic
     }
   }[]
 }
@@ -34,14 +35,21 @@ export function ParticipantStatusTab({ students }: { students: Student[] }) {
 
     const rows = students.map(student => {
       // 1. Filter valid participations (Ignore 'absent' records)
-      // A student effectively "participated" only if they were present or pending (not yet marked absent)
       const validParts = student.participations.filter(p => p.attendance_status !== 'absent')
 
-      // 2. Check Categories
-      const hasOnStage = validParts.some(p => p.events?.category === 'ON STAGE')
-      const hasOffStage = validParts.some(p => p.events?.category === 'OFF STAGE')
+      // 2. Filter for "Counting" Events (New Logic)
+      // Exclude events where max_participants_per_team > 5 (Group items)
+      // These do not count towards the individual On-Stage/Off-Stage requirements
+      const countingParts = validParts.filter(p => {
+         const maxP = p.events?.max_participants_per_team ?? 1; // Default to 1 if undefined
+         return maxP <= 5;
+      })
 
-      // 3. Determine Compliance
+      // 3. Check Categories based on filtered Counting Parts
+      const hasOnStage = countingParts.some(p => p.events?.category === 'ON STAGE')
+      const hasOffStage = countingParts.some(p => p.events?.category === 'OFF STAGE')
+
+      // 4. Determine Compliance
       const isCompliant = hasOnStage && hasOffStage
       const penalty = isCompliant ? 0 : 10
       totalPenalty += penalty
@@ -50,7 +58,7 @@ export function ParticipantStatusTab({ students }: { students: Student[] }) {
       let statusColor = "bg-emerald-100 text-emerald-700 border-emerald-200"
 
       if (!hasOnStage && !hasOffStage) {
-          statusLabel = "No Events"
+          statusLabel = "No Valid Events"
           statusColor = "bg-red-100 text-red-700 border-red-200"
       } else if (!hasOnStage) {
           statusLabel = "Missing On-Stage"
@@ -225,6 +233,15 @@ export function ParticipantStatusTab({ students }: { students: Student[] }) {
             </TableBody>
           </Table>
         </div>
+      </div>
+
+      <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-xs text-yellow-800 flex gap-2 items-start">
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+          <p>
+              <strong>*Important Rule:</strong> To avoid the -10 point compliance penalty, a student must participate in at least one On-Stage and one Off-Stage event.
+              <br/>
+              <span className="opacity-80">Note: Large group events (Max Participants &gt; 5) are excluded from this specific requirement count.</span>
+          </p>
       </div>
     </div>
   )
