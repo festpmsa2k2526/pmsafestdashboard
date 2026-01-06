@@ -19,7 +19,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-// --- Types & Interfaces (The Fix) ---
+// --- Types & Interfaces ---
 
 interface Team {
   id: string;
@@ -41,13 +41,13 @@ interface Participation {
   attendance_status: string; // 'present' | 'absent' etc.
   events?: {
     category: string;
+    max_participants_per_team: number; // Added to check group size
   };
 }
 
 interface Student {
   id: string;
   name: string;
-  // Explicitly defining this property prevents the "never" error
   participations: Participation[];
 }
 
@@ -62,8 +62,6 @@ const SECTIONS = ['Senior', 'Junior', 'Sub-Junior', 'General', 'Foundation']
 export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | null, open: boolean, onOpenChange: (open: boolean) => void }) {
   const [loading, setLoading] = useState(true)
 
-  // --- The Fix Applied Here ---
-  // We explicitly type these states so TypeScript knows what they contain
   const [events, setEvents] = useState<Event[]>([])
   const [participations, setParticipations] = useState<Participation[]>([])
   const [students, setStudents] = useState<Student[]>([])
@@ -86,14 +84,14 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
 
         if (eventsError) throw eventsError;
 
-        // 2. Fetch Students with their Participations (for Penalty Calculation)
+        // 2. Fetch Students with their Participations (Updated to fetch max_participants_per_team)
         const { data: studentsData, error: studentsError } = await supabase
           .from('students')
           .select(`
             id, name,
             participations (
                 id, event_id, attendance_status,
-                events ( category )
+                events ( category, max_participants_per_team )
             )
           `)
           .eq('team_id', team!.id)
@@ -121,7 +119,7 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
     fetchData()
   }, [team, open])
 
-  // --- PENALTY CALCULATIONS ---
+  // --- PENALTY CALCULATIONS (UPDATED LOGIC) ---
   const penalties = useMemo(() => {
       let compliancePenalty = 0
       let attendancePenalty = 0
@@ -132,9 +130,16 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
           // Filter valid participations (not absent)
           const validParts = student.participations.filter(p => p.attendance_status !== 'absent')
 
-          // Compliance Check
-          const hasOnStage = validParts.some(p => p.events?.category === 'ON STAGE')
-          const hasOffStage = validParts.some(p => p.events?.category === 'OFF STAGE')
+          // --- NEW LOGIC: Filter for "Counting" Events ---
+          // Exclude events where max_participants_per_team > 5 (Group items)
+          const countingParts = validParts.filter(p => {
+             const maxP = p.events?.max_participants_per_team ?? 1; // Default to 1 if null
+             return maxP <= 5;
+          })
+
+          // Compliance Check (Must have 1 On Stage AND 1 Off Stage from the filtered list)
+          const hasOnStage = countingParts.some(p => p.events?.category === 'ON STAGE')
+          const hasOffStage = countingParts.some(p => p.events?.category === 'OFF STAGE')
 
           if (!hasOnStage || !hasOffStage) {
               compliancePenalty += 10
@@ -273,9 +278,9 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
                 <div className="p-6 space-y-8 pb-20">
 
                     {loading ? (
-                       <div className="h-40 flex items-center justify-center">
+                        <div className="h-40 flex items-center justify-center">
                           <Loader2 className="animate-spin text-slate-400 w-8 h-8" />
-                       </div>
+                        </div>
                     ) : (
                       <>
                         {/* ON STAGE SECTION */}
@@ -322,6 +327,14 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
                                 <p className="text-sm">No events found for {activeSection} section.</p>
                             </div>
                         )}
+
+                        <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-xs text-yellow-800 flex gap-2">
+                            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                            <p>
+                                <strong>Penalty Rule:</strong> Students must participate in at least 1 On-Stage AND 1 Off-Stage event to avoid the -10 point compliance penalty.
+                                <br/>Note: Group events (Max Participants &gt; 5) are <strong>excluded</strong> from this count.
+                            </p>
+                        </div>
                       </>
                     )}
                 </div>
