@@ -18,7 +18,6 @@ Some examples of what the dashboard can include:
 - 📱 Fully responsive mobile-first design
 
 ---
-
 ## 🧱 Tech Stack
 
 | Layer | Technology |
