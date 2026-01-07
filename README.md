@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎉 PMSA Fest Dashboard
 
-## Getting Started
+A modern **dashboard web app** built for the **PMSA Arts Fest** — a centralized interface to manage and view event data, participants, schedules, and insights for the college arts festival.
 
-First, run the development server:
+🔗 **Live Demo:** pmsafestdashboard.vercel.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Overview
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project is a **Next.js** and **TypeScript** powered dashboard created as the digital hub for the **PMSA Arts Fest 2025–26**. It provides a responsive UI, dynamic content routing, and easy-to-use components that help admins and attendees interact with festival information.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Some examples of what the dashboard can include:
 
-## Learn More
+- 🎭 Event schedule overview  
+- 📊 Participation stats & analytics  
+- 🧑‍💼 Admin panels for event organizers  
+- 📱 Fully responsive mobile-first design
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧱 Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Layer | Technology |
+|-------|------------|
+| Frontend | Next.js (App Router), TypeScript |
+| Styling | Tailwind CSS |
+| Deployment | Vercel |
+| Components | Custom reusable UI components |
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
