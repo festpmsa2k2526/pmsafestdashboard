@@ -18,7 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { Loader2, Trophy, Save, User, Users, CheckCircle2, ChevronsUpDown, Check } from "lucide-react"
+import { Loader2, Trophy, Save, User, Users, CheckCircle2, ChevronsUpDown, Check, Award } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 // --- TYPES ---
@@ -67,7 +67,7 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
   const [participants, setParticipants] = useState<Participant[]>([])
   const [pointsTable, setPointsTable] = useState<any>({})
 
-  // Winners State
+  // Winners State (Top 3)
   const [winners, setWinners] = useState<{
     FIRST: Map<string, string>,
     SECOND: Map<string, string>,
@@ -77,6 +77,9 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
     SECOND: new Map(),
     THIRD: new Map()
   })
+
+  // Grades for everyone else (Not in Top 3)
+  const [otherGrades, setOtherGrades] = useState<Map<string, string>>(new Map())
 
   const supabase = createClient()
 
@@ -94,7 +97,9 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
           const evts = evtRes.data as Event[]
           setEvents(evts)
 
-          // Fetch completed status (events with at least one result_position)
+          // Fetch completed status (events with at least one result_position OR grade)
+          // We consider an event "touched" if it has any entries in participations
+          // But strict completion usually means results. Let's stick to existing logic for now.
           const { data: doneData } = await supabase
             .from('participations')
             .select('event_id')
@@ -126,6 +131,7 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
     if (!selectedEventId) {
       setParticipants([])
       setWinners({ FIRST: new Map(), SECOND: new Map(), THIRD: new Map() })
+      setOtherGrades(new Map())
       return
     }
 
@@ -154,17 +160,24 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
         }))
         setParticipants(mapped)
 
-        // Populate existing winners
+        // Populate existing winners and other grades
         const newWinners = { FIRST: new Map(), SECOND: new Map(), THIRD: new Map() }
+        const newOtherGrades = new Map<string, string>()
+
         mapped.forEach((p: any) => {
+            const key = p.student_id ? p.id : p.team.id // Use participant ID for individual, Team ID for team events
+
             if (p.result_position) {
-                const key = p.student_id ? p.id : p.team.id
                 // @ts-ignore
                 newWinners[p.result_position].set(key, p.performance_grade || 'NONE')
+            } else if (p.performance_grade) {
+                // If they have a grade but no position, they go to 'otherGrades'
+                newOtherGrades.set(key, p.performance_grade)
             }
         })
         // @ts-ignore
         setWinners(newWinners)
+        setOtherGrades(newOtherGrades)
       }
       setLoading(false)
     }
@@ -182,26 +195,48 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
           const inThird = prev.THIRD.has(id) && pos !== 'THIRD'
 
           if (inFirst || inSecond || inThird) {
-              // alert("Participant already has a rank.") // Optional: Toast preferred
-              return prev
+              return prev // Prevent same person in multiple winner slots
           }
 
           if (currentMap.has(id)) {
               currentMap.delete(id)
+              // Optionally move back to 'otherGrades' if needed, but for now we just clear rank.
+              // The user can re-assign grade in the bottom section.
           } else {
               currentMap.set(id, 'NONE')
+              // If moving to winners, remove from otherGrades
+              setOtherGrades(prevOthers => {
+                  const nextOthers = new Map(prevOthers)
+                  nextOthers.delete(id)
+                  return nextOthers
+              })
           }
           next[pos] = currentMap
           return next
       })
   }
 
-  const updatePerfGrade = (pos: 'FIRST'|'SECOND'|'THIRD', id: string, grade: string) => {
+  const updateWinnerGrade = (pos: 'FIRST'|'SECOND'|'THIRD', id: string, grade: string) => {
       setWinners(prev => {
           const next = { ...prev }
           const currentMap = new Map(next[pos])
           if (currentMap.has(id)) currentMap.set(id, grade)
           next[pos] = currentMap
+          return next
+      })
+  }
+
+  const updateOtherGrade = (id: string, grade: string) => {
+      // Ensure this person isn't a winner first (safety check)
+      if (winners.FIRST.has(id) || winners.SECOND.has(id) || winners.THIRD.has(id)) return;
+
+      setOtherGrades(prev => {
+          const next = new Map(prev)
+          if (grade === 'NONE') {
+              next.delete(id)
+          } else {
+              next.set(id, grade)
+          }
           return next
       })
   }
@@ -246,6 +281,14 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
                   const key = (perf || 'NONE') as keyof typeof PERF_POINTS;
                   pts = basePoints.THIRD + PERF_POINTS[key];
               }
+              else if (otherGrades.has(p.id)) {
+                  // Not a winner, but has a grade
+                  pos = null;
+                  perf = otherGrades.get(p.id);
+                  const key = (perf || 'NONE') as keyof typeof PERF_POINTS;
+                  // No base points for non-winners, only grade points
+                  pts = 0 + PERF_POINTS[key];
+              }
 
               return {
                   id: p.id,
@@ -255,37 +298,50 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
                   result_position: pos,
                   performance_grade: perf === 'NONE' ? null : perf,
                   points_earned: pts,
-                  status: pos ? 'winner' : 'registered'
+                  status: pos ? 'winner' : (perf ? 'completed' : 'registered')
               }
           })
+
           if (updates.length > 0) {
               const { error } = await (supabase.from('participations') as any).upsert(updates)
               if (error) throw error
           }
        } else {
           // Team Logic
+          // Clear existing team results for this event
           await supabase.from('participations').delete().eq('event_id', selectedEventId).is('student_id', null)
+
           const newResults: any[] = []
-          const process = (posMap: Map<string, string>, posName: string, basePts: number) => {
-              posMap.forEach((perf, teamId) => {
-                  hasWinners = true
-                  const key = (perf || 'NONE') as keyof typeof PERF_POINTS;
-                  // @ts-ignore
-                  const total = basePts + PERF_POINTS[key]
-                  newResults.push({
-                      event_id: selectedEventId,
-                      team_id: teamId,
-                      student_id: null,
-                      result_position: posName,
-                      performance_grade: perf === 'NONE' ? null : perf,
-                      points_earned: total,
-                      status: 'winner'
-                  })
+
+          // Helper to add results
+          const addResult = (teamId: string, pos: string | null, grade: string | null, basePts: number) => {
+              if (pos) hasWinners = true
+              const key = (grade || 'NONE') as keyof typeof PERF_POINTS;
+              const total = basePts + PERF_POINTS[key]
+
+              newResults.push({
+                  event_id: selectedEventId,
+                  team_id: teamId,
+                  student_id: null,
+                  result_position: pos,
+                  performance_grade: grade === 'NONE' ? null : grade,
+                  points_earned: total,
+                  status: pos ? 'winner' : 'completed'
               })
           }
-          process(winners.FIRST, 'FIRST', basePoints.FIRST)
-          process(winners.SECOND, 'SECOND', basePoints.SECOND)
-          process(winners.THIRD, 'THIRD', basePoints.THIRD)
+
+          // Process Winners
+          winners.FIRST.forEach((perf, teamId) => addResult(teamId, 'FIRST', perf, basePoints.FIRST))
+          winners.SECOND.forEach((perf, teamId) => addResult(teamId, 'SECOND', perf, basePoints.SECOND))
+          winners.THIRD.forEach((perf, teamId) => addResult(teamId, 'THIRD', perf, basePoints.THIRD))
+
+          // Process Others (Teams not in winners)
+          teams.forEach(t => {
+             const isWinner = winners.FIRST.has(t.id) || winners.SECOND.has(t.id) || winners.THIRD.has(t.id)
+             if (!isWinner && otherGrades.has(t.id)) {
+                 addResult(t.id, null, otherGrades.get(t.id) || 'NONE', 0)
+             }
+          })
 
           if (newResults.length > 0) {
               const { error } = await (supabase.from('participations') as any).insert(newResults)
@@ -311,6 +367,16 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
   }
 
   const selectedEvent = events.find(e => e.id === selectedEventId)
+
+  // Filter lists
+  const winnerIds = new Set([
+      ...Array.from(winners.FIRST.keys()),
+      ...Array.from(winners.SECOND.keys()),
+      ...Array.from(winners.THIRD.keys())
+  ])
+
+  const itemList = mode === 'INDIVIDUAL' ? participants.filter(p => p.student) : teams.map(t => ({ ...t, id: t.id })) // Normalized
+  const otherParticipants = itemList.filter(item => !winnerIds.has(mode === 'INDIVIDUAL' ? item.id : item.id))
 
   return (
     <div className="flex flex-col h-full space-y-3">
@@ -382,8 +448,10 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
 
         {/* MAIN SCORING AREA */}
         {selectedEventId && (
-            <div className="flex-1 overflow-y-auto min-h-0 bg-slate-50/50 rounded-lg p-2 md:p-4">
-                <div className="grid lg:grid-cols-3 gap-3 md:gap-4 pb-20">
+            <div className="flex-1 overflow-y-auto min-h-0 bg-slate-50/50 rounded-lg p-2 md:p-4 space-y-4">
+
+                {/* 1. TOP 3 WINNERS */}
+                <div className="grid lg:grid-cols-3 gap-3 md:gap-4">
                     {['FIRST', 'SECOND', 'THIRD'].map(pos => {
                         // @ts-ignore
                         const basePts = pointsTable[selectedEvent?.grade_type || 'A']?.[pos] || 0
@@ -396,16 +464,14 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
                             THIRD: { border: 'border-orange-300', icon: 'text-orange-700', bg: 'bg-orange-50/30' }
                         }[pos as 'FIRST'|'SECOND'|'THIRD']
 
-                        const itemList = mode === 'INDIVIDUAL' ? participants.filter(p => p.student) : teams
-
                         return (
-                            <Card key={pos} className={cn("border-t-4 shadow-sm flex flex-col h-[60vh] md:h-[calc(100vh-280px)] min-h-[400px]", style.border, style.bg)}>
+                            <Card key={pos} className={cn("border-t-4 shadow-sm flex flex-col h-[400px]", style.border, style.bg)}>
                                 <CardHeader className="py-2 px-3 shrink-0 border-b border-border/10 bg-white/50">
                                     <div className="flex justify-between items-center">
                                         <CardTitle className={cn("flex items-center gap-2 text-sm font-heading", style.icon)}>
                                             <Trophy className="w-4 h-4" /> {pos} Place
                                         </CardTitle>
-                                        <Badge variant="secondary" className="font-mono text-[10px] h-5">Base: {basePts}</Badge>
+                                        <Badge variant="secondary" className="font-mono text-[10px] h-5">Base: {basePts} + Grade</Badge>
                                     </div>
                                 </CardHeader>
                                 <CardContent className="flex-1 overflow-y-auto p-2 bg-white/60 space-y-1.5">
@@ -413,6 +479,11 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
                                         const id = mode === 'INDIVIDUAL' ? item.id : item.id
                                         const isSelected = selectedMap.has(id)
                                         const grade = selectedMap.get(id) || 'NONE'
+                                        const isAlreadyWinner = winnerIds.has(id) && !isSelected
+
+                                        // If already a winner elsewhere, hide from this list to reduce clutter,
+                                        // or keep visuals consistent. Let's hide if chosen elsewhere for cleaner UI
+                                        if (isAlreadyWinner) return null;
 
                                         return (
                                             <div
@@ -444,7 +515,7 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
                                                             {['A', 'B', 'C', 'NONE'].map(g => (
                                                                 <button
                                                                     key={g}
-                                                                    onClick={(e) => { e.stopPropagation(); updatePerfGrade(pos as any, id, g) }}
+                                                                    onClick={(e) => { e.stopPropagation(); updateWinnerGrade(pos as any, id, g) }}
                                                                     className={cn(
                                                                         "text-[9px] w-5 h-5 rounded flex items-center justify-center font-bold border transition-colors",
                                                                         grade === g
@@ -466,6 +537,78 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
                         )
                     })}
                 </div>
+
+                {/* 2. OTHER PARTICIPANTS (GRADES) */}
+                <Card className="border-t-4 border-slate-200 shadow-sm bg-slate-50/50">
+                    <CardHeader className="py-3 px-4 bg-white border-b border-border/10">
+                        <div className="flex items-center gap-2">
+                           <Award className="w-4 h-4 text-slate-500" />
+                           <CardTitle className="text-sm text-slate-700">Participation Grades</CardTitle>
+                           <Badge variant="outline" className="ml-2 font-normal text-slate-500">{otherParticipants.length} Remaining</Badge>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="p-4">
+                        {otherParticipants.length === 0 ? (
+                            <div className="text-center py-8 text-slate-400 text-sm">All participants ranked!</div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                                {otherParticipants.map((item: any) => {
+                                    const id = mode === 'INDIVIDUAL' ? item.id : item.id
+                                    const grade = otherGrades.get(id) || 'NONE'
+                                    const hasGrade = otherGrades.has(id) && grade !== 'NONE'
+
+                                    return (
+                                        <div key={id} className={cn("bg-white p-3 rounded-md border shadow-sm flex flex-col gap-2 transition-all", hasGrade ? "border-slate-300 ring-1 ring-slate-200" : "border-slate-100")}>
+                                            <div className="flex justify-between items-start min-w-0">
+                                                <div className="min-w-0">
+                                                    <div className="font-medium text-sm truncate text-slate-800">
+                                                        {mode === 'INDIVIDUAL' ? item.student?.name : item.name}
+                                                    </div>
+                                                    <div className="text-[10px] text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                                                        {mode === 'INDIVIDUAL' && <span className="font-mono bg-slate-100 px-1 rounded text-slate-500">{item.student?.chest_no}</span>}
+                                                        <span className="truncate max-w-[100px]">{mode === 'INDIVIDUAL' ? item.team.name : 'Team'}</span>
+                                                    </div>
+                                                </div>
+                                                {hasGrade && <Badge variant="secondary" className="h-5 px-1.5 text-[10px] bg-slate-100 text-slate-700">+{PERF_POINTS[grade as keyof typeof PERF_POINTS]} pts</Badge>}
+                                            </div>
+
+                                            <div className="flex items-center justify-between gap-2 mt-auto pt-2 border-t border-slate-50">
+                                                <span className="text-[9px] text-slate-400 font-medium">GRADE</span>
+                                                <div className="flex gap-1">
+                                                     {['A', 'B', 'C'].map(g => (
+                                                        <button
+                                                            key={g}
+                                                            onClick={() => updateOtherGrade(id, g)}
+                                                            className={cn(
+                                                                "w-6 h-6 rounded text-[10px] font-bold border transition-all",
+                                                                grade === g
+                                                                    ? "bg-slate-800 text-white border-slate-800 shadow-sm"
+                                                                    : "bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                                                            )}
+                                                        >
+                                                            {g}
+                                                        </button>
+                                                     ))}
+                                                     <button
+                                                        onClick={() => updateOtherGrade(id, 'NONE')}
+                                                        className={cn(
+                                                            "w-6 h-6 rounded text-[10px] border transition-all",
+                                                            grade === 'NONE' ? "bg-slate-100 text-slate-400 border-transparent" : "text-red-400 hover:bg-red-50 border-transparent"
+                                                        )}
+                                                        title="Clear"
+                                                     >
+                                                        ✕
+                                                     </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+                <div className="h-16"></div> {/* Spacer for fixed save button */}
             </div>
         )}
 

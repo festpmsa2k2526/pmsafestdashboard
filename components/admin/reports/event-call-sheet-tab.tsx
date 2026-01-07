@@ -347,7 +347,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
                 </Select>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
                 {/* EXCEL BUTTON */}
                 <Button
                     variant="outline"
