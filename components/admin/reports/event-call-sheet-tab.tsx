@@ -23,6 +23,7 @@ interface Event {
     name: string;
     event_code: string;
     category: string;
+    grade_type?: 'A' | 'B' | 'C'; // Added grade_type to identify group items (C)
     max_participants_per_team: number
 }
 
@@ -99,7 +100,6 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
 
     async function loadEventData() {
       setLoadingEvent(true)
-      // FIX: Fetch 'teams' directly from participations to ensure we get the team name
       const { data } = await supabase
         .from('participations')
         .select(`
@@ -123,7 +123,6 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
             chest_no: p.students?.chest_no || 'N/A',
             class_grade: p.students?.class_grade || '-',
             section: p.students?.section || '-',
-            // Map the direct team relation to the nested structure used by UI
             team: {
                 name: p.teams?.name || "Unknown Team",
                 color_hex: p.teams?.color_hex || "#ccc"
@@ -181,7 +180,6 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
     try {
         setGeneratingExcel(true)
 
-        // FIX: Fetch 'teams' directly here as well
         const { data: allData, error } = await supabase
             .from('participations')
             .select(`
@@ -267,53 +265,101 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
         if (!isFirstPage) doc.addPage()
         isFirstPage = false
 
-        // FIX: Fetch 'teams' directly for PDF too
+        // Determine if it's a group item (Category C)
+        const isGroupItem = event.grade_type === 'C';
+
+        // Fetch Data: Get team names for everyone
         const { data } = await supabase
             .from('participations')
             .select(`
-                attendance_status,
-                teams ( name ),
-                students!inner ( name, chest_no, class_grade )
+                students ( chest_no ),
+                teams ( name )
             `)
             .eq('event_id', event.id)
 
-        const rawData = data as unknown as any[]
+        const rawData = data as unknown as any[] || []
 
-        const parts = (rawData || []).map((p) => ({
-            name: p.students?.name,
-            chest_no: p.students?.chest_no || "N/A",
-            class: p.students?.class_grade || "-",
-            team: p.teams?.name || "Unknown",
-            attendance: p.attendance_status === 'present' ? 'Present' : p.attendance_status === 'absent' ? 'Absent' : 'Pending'
-        })).sort((a, b) => (parseInt(a.chest_no) || 999) - (parseInt(b.chest_no) || 999))
+        let rows: any[] = [];
+        let col2Header = "Chest No";
+
+        if (isGroupItem) {
+            // Logic for Category C: Show unique Group Names
+            col2Header = "Team Name";
+            const uniqueTeams = new Set<string>();
+            const teamList: { name: string }[] = [];
+
+            rawData.forEach(p => {
+                const tName = p.teams?.name;
+                if (tName && !uniqueTeams.has(tName)) {
+                    uniqueTeams.add(tName);
+                    teamList.push({ name: tName });
+                }
+            });
+
+            // Sort alphabetical for teams
+            teamList.sort((a, b) => a.name.localeCompare(b.name));
+
+            rows = teamList.map((t, i) => [
+                i + 1,
+                t.name,
+                "", "", "" // Empty cols for remarks, grade, pos
+            ]);
+
+        } else {
+            // Logic for Individual: Show Chest Numbers
+            const studentList = rawData
+                .filter(p => p.students?.chest_no)
+                .map(p => ({ chest_no: p.students.chest_no }))
+                .sort((a, b) => (parseInt(a.chest_no) || 999) - (parseInt(b.chest_no) || 999));
+
+            rows = studentList.map((s, i) => [
+                i + 1,
+                s.chest_no,
+                "", "", ""
+            ]);
+        }
 
         doc.setFontSize(18)
         doc.setFont("helvetica", "bold")
-        doc.text("ARTS FEST 2025", 105, 20, { align: "center" })
+        doc.text("ARTS FEST 2025 - SCORE SHEET", 105, 20, { align: "center" })
         doc.setFontSize(12)
         doc.setFont("helvetica", "normal")
         doc.text(`Event: ${event.name} (${event.event_code})`, 105, 28, { align: "center" })
 
-        const body = parts.map((p, i) => [i + 1, p.chest_no, p.name, p.class, p.team, p.attendance])
+        // Add subtitle if group event
+        if (isGroupItem) {
+             doc.setFontSize(10);
+             doc.setTextColor(100);
+             doc.text("(Group Item - Team Evaluation)", 105, 33, { align: "center" });
+             doc.setTextColor(0);
+        }
 
         autoTable(doc, {
-            startY: 35,
-            head: [["#", "Chest No", "Name", "Class", "Team", "Attendance"]],
-            body: body,
+            startY: isGroupItem ? 38 : 35,
+            head: [["#", col2Header, "Remarks", "Grade", "Pos"]],
+            body: rows,
             theme: 'grid',
-            headStyles: { fillColor: [40, 40, 40] },
-            didParseCell: function(data) {
-                if (data.section === 'body' && data.column.index === 5) {
-                    if (data.cell.raw === 'Absent') {
-                        data.cell.styles.textColor = [220, 50, 50];
-                    } else if (data.cell.raw === 'Present') {
-                        data.cell.styles.textColor = [50, 150, 50];
-                    }
-                }
+            headStyles: {
+                fillColor: [40, 40, 40],
+                valign: 'middle',
+                halign: 'center',
+                minCellHeight: 10
+            },
+            bodyStyles: {
+                minCellHeight: 25, // Large height for remarks
+                valign: 'middle',
+                fontSize: 11
+            },
+            columnStyles: {
+                0: { cellWidth: 15, halign: 'center' }, // #
+                1: { cellWidth: isGroupItem ? 50 : 30, halign: 'center', fontStyle: 'bold' }, // Chest No or Team Name (Wider for Team)
+                2: { cellWidth: 'auto' }, // Remarks
+                3: { cellWidth: 25, halign: 'center' }, // Grade
+                4: { cellWidth: 20, halign: 'center' }  // Position
             }
         })
     }
-    doc.save("event_sheets.pdf")
+    doc.save("event_score_sheets.pdf")
     setGeneratingPdf(false)
   }
 
@@ -360,7 +406,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
                 </Button>
 
                 <Button variant="outline" disabled={!selectedEventId || generatingPdf} onClick={() => { const e = events.find(ev => ev.id === selectedEventId); if(e) generatePDF([e]) }} className="gap-2 bg-white hover:bg-slate-50">
-                    {generatingPdf ? <Loader2 className="w-4 h-4 animate-spin"/> : <FileDown className="w-4 h-4" />} PDF Report
+                    {generatingPdf ? <Loader2 className="w-4 h-4 animate-spin"/> : <FileDown className="w-4 h-4" />} PDF Score Sheet
                 </Button>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
