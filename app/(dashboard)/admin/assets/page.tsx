@@ -331,7 +331,7 @@ export default function AssetsManagePage() {
                             </div>
                         )}
                         {headerImageUrl ? (
-                            <div className="relative w-full h-full flex items-center justify-center bg-[url('/grid-pattern.svg')]">
+                            <div className="relative w-full h-full flex items-center justify-center">
                                 <img
                                     src={headerImageUrl}
                                     alt="Current Header"
