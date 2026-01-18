@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Loader2, FileText, Printer, FileDown, ChevronDown, Check, UserCheck, UserX, Clock, FileSpreadsheet, Download } from "lucide-react"
 import { cn } from "@/lib/utils"
+import jsPDF from "jspdf"
+import autoTable from "jspdf-autotable"
+import * as XLSX from 'xlsx'
 
 interface Event {
     id: string;
@@ -58,21 +61,22 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
 
   const supabase = createClient()
 
-  // 0. Load External Scripts
+  // 1. Inject Font Face for Canvas (Malayalam Rendering)
   useEffect(() => {
-    const loadScript = (src: string) => {
-        if (document.querySelector(`script[src="${src}"]`)) return;
-        const script = document.createElement('script');
-        script.src = src;
-        script.async = true;
-        document.body.appendChild(script);
-    };
-    loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
-    loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js");
-    loadScript("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js");
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @font-face {
+        font-family: 'AnekMalayalam';
+        src: url('/AnekMalayalam-Regular.ttf') format('truetype');
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+        document.head.removeChild(style);
+    }
   }, []);
 
-  // 1. Fetch Header Image & Completion Status
+  // 2. Fetch Header Image & Completion Status
   useEffect(() => {
     async function initData() {
         // Fetch Header Image
@@ -113,7 +117,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
     initData()
   }, [events])
 
-  // 2. Load Participants for Selected Event
+  // 3. Load Participants for Selected Event
   useEffect(() => {
     if (!selectedEventId) {
       setParticipants([])
@@ -164,7 +168,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
     loadEventData()
   }, [selectedEventId])
 
-  // 3. Handle Status Change
+  // 4. Handle Status Change
   const updateAttendance = async (participationId: string, newStatus: string) => {
       setParticipants(prev => prev.map(p =>
           p.id === participationId ? { ...p, attendance_status: newStatus } : p
@@ -209,14 +213,76 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
       }
   }
 
+  // --- HELPER: Render Text to Image using Canvas (Fixes Malayalam Rendering) ---
+  const textToImage = (text: string, widthMM: number, fontSizePt: number): { dataUrl: string; heightMM: number } | null => {
+    if (typeof document === 'undefined') return null;
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    // Conversion factors
+    const pxPerMM = 3.78; // approx at 96dpi
+    const scaleFactor = 3; // Super sampling for sharpness
+
+    const widthPx = widthMM * pxPerMM * scaleFactor;
+    // Guess height first, resize later
+    canvas.width = widthPx;
+    canvas.height = 1000 * scaleFactor;
+
+    // Configure Context
+    ctx.scale(scaleFactor, scaleFactor);
+    // Use AnekMalayalam if available, otherwise sans-serif handles Malayalam better than jsPDF
+    ctx.font = `${fontSizePt * 1.33}px 'AnekMalayalam', 'Arial', sans-serif`;
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = '#000000';
+
+    const maxWidth = widthMM * pxPerMM;
+    const lineHeight = fontSizePt * 1.33 * 1.4;
+
+    // Wrap Text Logic
+    const paragraphs = text.split('\n');
+    let y = 0;
+
+    paragraphs.forEach(para => {
+        const words = para.split(' ');
+        let line = '';
+
+        for (let n = 0; n < words.length; n++) {
+            const testLine = line + words[n] + ' ';
+            const metrics = ctx.measureText(testLine);
+            const testWidth = metrics.width;
+
+            if (testWidth > maxWidth && n > 0) {
+                ctx.fillText(line, 0, y);
+                line = words[n] + ' ';
+                y += lineHeight;
+            } else {
+                line = testLine;
+            }
+        }
+        ctx.fillText(line, 0, y);
+        y += lineHeight;
+    });
+
+    // Crop Canvas to content
+    const finalHeight = (y + lineHeight) * scaleFactor;
+
+    // Create final canvas
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = widthPx;
+    finalCanvas.height = finalHeight;
+    const finalCtx = finalCanvas.getContext('2d');
+    if (finalCtx) {
+        finalCtx.drawImage(canvas, 0, 0);
+        return { dataUrl: finalCanvas.toDataURL('image/png'), heightMM: (finalHeight / scaleFactor) / pxPerMM };
+    }
+    return null;
+  }
+
   // --- NEW: GENERATE SCORE SHEET (JUDGMENT SHEET) ---
   const generateScoreSheetPDF = async (eventsToPrint: Event[]) => {
-    // @ts-ignore
-    if (!window.jspdf) { alert("PDF library loading..."); return; }
-
     setGeneratingPdf(true)
-    // @ts-ignore
-    const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4'); // A4 size
     let isFirstPage = true
 
@@ -249,11 +315,11 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
         if (headerImgData) {
             try {
                 const imgProps = doc.getImageProperties(headerImgData);
-                // Calculate height to fit width within margins, max height 35mm
                 const desiredWidth = pageWidth - 2 * margin;
                 let imgHeight = (imgProps.height * desiredWidth) / imgProps.width;
-                if (imgHeight > 35) {
-                    imgHeight = 35;
+                // Limit Header Height
+                if (imgHeight > 30) {
+                    imgHeight = 30;
                     const adjustedWidth = (imgProps.width * imgHeight) / imgProps.height;
                     const xOffset = (pageWidth - adjustedWidth) / 2;
                     doc.addImage(headerImgData, 'PNG', xOffset, yPos, adjustedWidth, imgHeight);
@@ -263,7 +329,6 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
                 yPos += imgHeight + 5;
             } catch (e) { console.warn("Could not add header image", e) }
         } else {
-             // Fallback Text Header if no image
              doc.setFontSize(16);
              doc.setFont("helvetica", "bold");
              doc.text("PMSA ARTS FEST 2025-26", pageWidth / 2, yPos, { align: 'center' });
@@ -281,7 +346,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
         doc.text("GRADING SYSTEM: GRADE A-80% AND ABOVE, GRADE B-70% TO 79%, GRADE C-60% TO 69%", pageWidth / 2, yPos, { align: 'center' });
         yPos += 12;
 
-        // 3. Info Fields (ITEM, TOPIC, CRITERIA)
+        // 3. Info Fields
         doc.setFontSize(11);
         doc.setFont("helvetica", "bold");
 
@@ -294,20 +359,26 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
         // TOPIC
         doc.setFont("helvetica", "bold");
         doc.text("TOPIC:", margin, yPos);
-        // Draw underline for topic
         doc.setLineWidth(0.1);
         doc.line(margin + 18, yPos + 1, pageWidth - margin, yPos + 1);
         yPos += 8;
 
-        // CRITERIA
+        // CRITERIA (With Malayalam Fix)
         doc.setFont("helvetica", "bold");
         doc.text("CRITERIA:", margin, yPos);
+
         if (criteria) {
-             doc.setFont("helvetica", "normal");
-             doc.setFontSize(10);
-             const splitCriteria = doc.splitTextToSize(criteria, pageWidth - margin - 35);
-             doc.text(splitCriteria, margin + 25, yPos);
-             yPos += (splitCriteria.length * 5) + 5;
+             // Render criteria as Image to support Malayalam ligatures
+             const criteriaWidth = pageWidth - margin - 35; // Available width
+             const result = textToImage(criteria, criteriaWidth, 10); // 10pt font
+
+             if (result) {
+                 const { dataUrl, heightMM } = result;
+                 doc.addImage(dataUrl, 'PNG', margin + 25, yPos, criteriaWidth, heightMM);
+                 yPos += heightMM + 5;
+             } else {
+                 yPos += 8;
+             }
         } else {
              yPos += 8;
         }
@@ -318,25 +389,23 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
         const isCategoryC = event.grade_type === 'C';
         let effectiveCount = 0;
 
-        // Determine number of rows
         if (isCategoryC) {
             effectiveCount = 4; // Strictly A, B, C, D
         } else {
             const rowCount = parts.length;
-            effectiveCount = Math.max(rowCount, 5); // At least 5 rows
+            effectiveCount = Math.max(rowCount, 5);
         }
 
-        // Calculate available space for table to fill page
+        // Calculate dynamic height
         const footerHeight = 30;
         const bottomMargin = 15;
         const availableHeight = pageHeight - yPos - footerHeight - bottomMargin;
         const tableHeaderHeight = 10;
         const availableForRows = availableHeight - tableHeaderHeight;
 
-        // Calculate row height to fill page
         let dynamicRowHeight = availableForRows / effectiveCount;
 
-        // Clamp row height (e.g. max 35mm, min 10mm)
+        // Clamp height
         if (dynamicRowHeight > 35) dynamicRowHeight = 35;
         if (dynamicRowHeight < 10) dynamicRowHeight = 10;
 
@@ -346,14 +415,11 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
         for (let i = 0; i < effectiveCount; i++) {
             const code = letters[i % 26] + (Math.floor(i / 26) > 0 ? Math.floor(i / 26) : "");
             tableBody.push([
-                code, // CODE (A, B, C...)
-                "",   // REMARKS
-                "",   // PLACE
-                ""    // GRADE
+                code, "", "", ""
             ]);
         }
 
-        doc.autoTable({
+        autoTable(doc, {
             startY: yPos,
             head: [["CODE", "REMARKS", "PLACE", "GRADE"]],
             body: tableBody,
@@ -361,7 +427,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
             headStyles: {
                 fillColor: [255, 255, 255],
                 textColor: [0, 0, 0],
-                lineWidth: 0.3, // Distinct border
+                lineWidth: 0.3,
                 lineColor: [0, 0, 0],
                 halign: 'center',
                 valign: 'middle',
@@ -369,7 +435,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
                 minCellHeight: 10
             },
             bodyStyles: {
-                lineWidth: 0.3, // Distinct border
+                lineWidth: 0.3,
                 lineColor: [0, 0, 0],
                 minCellHeight: dynamicRowHeight, // Dynamic Height
                 valign: 'middle',
@@ -382,15 +448,12 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
                 3: { cellWidth: 25, halign: 'center' }  // GRADE
             },
             didParseCell: function(data: any) {
-                // Ensure text color is black
                 data.cell.styles.textColor = [0, 0, 0];
             }
         });
 
-        // 5. Footer (NAME & SIGN) - Fixed at bottom
+        // 5. Footer (NAME & SIGN)
         const footerY = pageHeight - 25;
-
-        // Ensure we are on the page where table ends (handled by adding to current page)
         doc.setFont("helvetica", "bold");
         doc.setFontSize(11);
         doc.text("NAME & SIGN OF THE JUDGE : _______________________________", margin, footerY);
@@ -402,8 +465,6 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
 
   // --- NEW: GENERATE PARTICIPANT LIST (BULK EXPORT) ---
   const generateParticipantListPDF = async (category: 'ON STAGE' | 'OFF STAGE') => {
-      // @ts-ignore
-      if (!window.jspdf) { alert("PDF library loading..."); return; }
       setGeneratingList(true);
 
       const filteredEvents = events.filter(e => e.category === category);
@@ -413,10 +474,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
           return;
       }
 
-      // @ts-ignore
-      const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-      let isFirst = true;
 
       // Title Page
       doc.setFontSize(22);
@@ -426,7 +484,6 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
       doc.addPage();
 
       for (const event of filteredEvents) {
-          // Fetch participants for this event
           const { data } = await supabase
             .from('participations')
             .select(`
@@ -443,7 +500,6 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
               team: p.teams?.name || "Unknown"
           })).sort((a, b) => (parseInt(a.chest) || 999) - (parseInt(b.chest) || 999));
 
-          // Draw Table
           if (parts.length > 0) {
               const body = parts.map((p, i) => [i + 1, p.chest, p.name, p.class, p.team]);
 
@@ -451,25 +507,15 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
               doc.setFont("helvetica", "bold");
               const finalY = (doc as any).lastAutoTable?.finalY || 20;
 
-              if (finalY > 250) {
+              let titleY = finalY === 20 ? 20 : finalY + 15;
+              if (titleY > 270) {
                   doc.addPage();
-                  doc.text(`${event.name} (${event.event_code})`, 14, 20);
-              } else {
-                  const y = finalY === 20 ? 20 : finalY + 15;
-                  if (y > 270) {
-                      doc.addPage();
-                      doc.text(`${event.name} (${event.event_code})`, 14, 20);
-                  } else {
-                      doc.text(`${event.name} (${event.event_code})`, 14, y);
-                  }
+                  titleY = 20;
               }
+              doc.text(`${event.name} (${event.event_code})`, 14, titleY);
 
-              const tableY = (doc as any).lastAutoTable?.finalY && (doc as any).lastAutoTable.finalY < 250
-                             ? (doc as any).lastAutoTable.finalY + 20
-                             : 25;
-
-              doc.autoTable({
-                  startY: tableY,
+              autoTable(doc, {
+                  startY: titleY + 5,
                   head: [["#", "Chest No", "Name", "Class", "Team"]],
                   body: body,
                   theme: 'striped',
@@ -486,25 +532,18 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
 
   // --- EXCEL GENERATION LOGIC ---
   const generateExcel = async () => {
-    // @ts-ignore
-    if (!window.XLSX) { alert("XLSX library loading..."); return; }
-
     try {
         setGeneratingExcel(true)
         const { data: allData } = await supabase.from('participations').select(`event_id, teams (name), students (name)`);
 
-        // @ts-ignore
-        const wb = window.XLSX.utils.book_new();
-        // @ts-ignore
-        const ws = window.XLSX.utils.json_to_sheet(allData?.map((p:any) => ({
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(allData?.map((p:any) => ({
             EventID: p.event_id,
             Student: p.students?.name,
             Team: p.teams?.name
         })) || []);
-        // @ts-ignore
-        window.XLSX.utils.book_append_sheet(wb, ws, "Participants");
-        // @ts-ignore
-        window.XLSX.writeFile(wb, "ArtsFest_Data.xlsx");
+        XLSX.utils.book_append_sheet(wb, ws, "Participants");
+        XLSX.writeFile(wb, "ArtsFest_Data.xlsx");
 
     } catch (error) {
         console.error("Excel generation failed:", error)
