@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Loader2, User, Medal, ChevronRight } from "lucide-react"
@@ -22,7 +21,9 @@ export function IndividualLeaderboard({ refreshTrigger }: { refreshTrigger: numb
   const [rankings, setRankings] = useState<Record<string, StudentScore[]>>({
     Senior: [],
     Junior: [],
-    "Sub-Junior": []
+    "Sub-Junior": [],
+    Foundation: [],
+    General: []
   })
   const [loading, setLoading] = useState(true)
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null)
@@ -48,8 +49,8 @@ export function IndividualLeaderboard({ refreshTrigger }: { refreshTrigger: numb
       const studentMap = new Map<string, StudentScore>()
 
       data.forEach((p: any) => {
-        // EXCLUDE GENERAL EVENTS & GRADE C (TEAM EVENTS)
-        if (p.events?.applicable_section?.includes('General')) return
+        // FILTER: Only exclude 'C' Grade (Group Items).
+        // We DO NOT exclude 'General' events anymore, as they count for individual scores.
         if (p.events?.grade_type === 'C') return
 
         const sid = p.student_id
@@ -69,13 +70,19 @@ export function IndividualLeaderboard({ refreshTrigger }: { refreshTrigger: numb
       })
 
       const allStudents = Array.from(studentMap.values())
-      const grouped = {
-        Senior: allStudents.filter(s => s.section === 'Senior').sort((a, b) => b.total - a.total).slice(0, 10),
-        Junior: allStudents.filter(s => s.section === 'Junior').sort((a, b) => b.total - a.total).slice(0, 10),
-        "Sub-Junior": allStudents.filter(s => s.section === 'Sub-Junior').sort((a, b) => b.total - a.total).slice(0, 10),
-      }
 
-      setRankings(grouped)
+      // Helper to sort and slice
+      const getTop = (sec: string) =>
+        allStudents.filter(s => s.section === sec).sort((a, b) => b.total - a.total).slice(0, 10)
+
+      setRankings({
+        Senior: getTop('Senior'),
+        Junior: getTop('Junior'),
+        "Sub-Junior": getTop('Sub-Junior'),
+        Foundation: getTop('Foundation'),
+        General: getTop('General')
+      })
+
       setLoading(false)
     }
 
@@ -87,13 +94,13 @@ export function IndividualLeaderboard({ refreshTrigger }: { refreshTrigger: numb
   return (
     <div className="space-y-4 pb-10">
       <Tabs defaultValue="Senior" className="w-full">
-        <TabsList className="w-full grid grid-cols-3 h-9 bg-slate-100 p-1 mb-4">
-          <TabsTrigger value="Senior" className="text-[10px] font-bold uppercase">Senior</TabsTrigger>
-          <TabsTrigger value="Junior" className="text-[10px] font-bold uppercase">Junior</TabsTrigger>
-          <TabsTrigger value="Sub-Junior" className="text-[10px] font-bold uppercase">Sub-Jr</TabsTrigger>
+        <TabsList className="w-full flex h-10 bg-slate-100 p-1 mb-4 overflow-x-auto">
+          {['Senior', 'Junior', 'Sub-Junior', 'Foundation'].map(sec => (
+             <TabsTrigger key={sec} value={sec} className="flex-1 text-[10px] sm:text-xs font-bold uppercase">{sec}</TabsTrigger>
+          ))}
         </TabsList>
 
-        {['Senior', 'Junior', 'Sub-Junior'].map(section => (
+        {['Senior', 'Junior', 'Sub-Junior', 'Foundation', 'General'].map(section => (
           <TabsContent key={section} value={section} className="m-0">
             <div className="space-y-2">
               {rankings[section]?.map((student, idx) => (

@@ -92,12 +92,8 @@ export function StudentDetailsModal({ studentId, open, onOpenChange }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {/* - [&>button]:text-white forces the default shadcn close button (which is a direct child) to be white
-         - [&>button]:top-4 [&>button]:right-4 adjusts position if needed
-      */}
       <DialogContent className="max-w-[700px] max-h-[85vh] flex flex-col bg-white p-0 overflow-hidden [&>button]:text-white [&>button]:hover:text-white/80 [&>button]:z-50">
 
-        {/* Accessible Title (Visually hidden if preferred, but here integrated) */}
         <DialogHeader className="sr-only">
              <DialogTitle>{data?.student?.name || "Student Details"}</DialogTitle>
              <DialogDescription>Performance history and points breakdown.</DialogDescription>
