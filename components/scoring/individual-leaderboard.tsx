@@ -95,7 +95,7 @@ export function IndividualLeaderboard({ refreshTrigger }: { refreshTrigger: numb
     <div className="space-y-4 pb-10">
       <Tabs defaultValue="Senior" className="w-full">
         <TabsList className="w-full flex h-10 bg-slate-100 p-1 mb-4 overflow-x-auto">
-          {['Senior', 'Junior', 'Sub-Junior', 'Foundation'].map(sec => (
+          {['Senior', 'Junior', 'Sub-Junior'].map(sec => (
              <TabsTrigger key={sec} value={sec} className="flex-1 text-[10px] sm:text-xs font-bold uppercase">{sec}</TabsTrigger>
           ))}
         </TabsList>

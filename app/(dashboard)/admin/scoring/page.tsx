@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase"
 import { EventScorer } from "@/components/scoring/event-scorer"
@@ -13,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Settings, BarChart3, Download, ChevronDown, Loader2 } from "lucide-react"
+import { Settings, BarChart3, Download, ChevronDown, Loader2, FileSpreadsheet } from "lucide-react"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 
@@ -43,7 +43,20 @@ export default function ScoringPage() {
   const [activeTab, setActiveTab] = useState(SECTIONS[0].id)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [downloadingPdf, setDownloadingPdf] = useState(false)
+  const [downloadingExcel, setDownloadingExcel] = useState(false)
   const supabase = createClient()
+
+  // Load XLSX Script for Excel Generation
+  useEffect(() => {
+    const loadScript = (src: string) => {
+        if (document.querySelector(`script[src="${src}"]`)) return;
+        const script = document.createElement('script');
+        script.src = src;
+        script.async = true;
+        document.body.appendChild(script);
+    };
+    loadScript("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js");
+  }, []);
 
   const handleScoreUpdate = () => {
     // Optional: Refresh logic if needed
@@ -69,7 +82,7 @@ export default function ScoringPage() {
 
           // 2. Fetch Results (First, Second, Third)
           const typedEvents = events as Array<{ id: string; name: string; event_code: string; grade_type: string }>;
-          const eventIds = typedEvents.map(e => e.id);
+          const eventIds = typedEvents.map((e) => e.id);
           const { data: results, error: resultsError } = await supabase
               .from('participations')
               .select(`
@@ -96,9 +109,9 @@ export default function ScoringPage() {
 
           const tableBody: any[] = [];
 
-          typedEvents.forEach((event) => {
+          typedEvents.forEach((event: { id: string; name: string; event_code: string; grade_type: string }) => {
               const eventResults = (results as Array<{ event_id: string; result_position: string; student: { name: string; chest_no: string }; team: { name: string } }>)?.filter(r => r.event_id === event.id) || [];
-              const isTeamEvent = event.grade_type === 'C'; // Category C = Group Item
+              const isTeamEvent = (event as { id: string; name: string; event_code: string; grade_type: string }).grade_type === 'C'; // Category C = Group Item
 
               const getWinners = (pos: string) => {
                   // Filter for ALL winners in this position (handles ties)
@@ -158,6 +171,96 @@ export default function ScoringPage() {
       }
   }
 
+  // --- GENERATE RESULTS EXCEL ---
+  const generateResultsExcel = async () => {
+      // @ts-ignore
+      if (!window.XLSX) { alert("Excel library loading... Please try again."); return; }
+
+      setDownloadingExcel(true);
+      try {
+          // @ts-ignore
+          const wb = window.XLSX.utils.book_new();
+
+          for (const category of EXPORT_CATEGORIES) {
+              // 1. Fetch Events
+              const { data: events } = await supabase
+                  .from('events')
+                  .select('id, name, grade_type')
+                  .contains('applicable_section', [category.value])
+                  .order('name');
+
+              if (!events || events.length === 0) continue;
+
+              const typedEventsExcel = events as Array<{ id: string; name: string; grade_type: string }>;
+              const eventIds = typedEventsExcel.map(e => e.id);
+
+              // 2. Fetch Results
+              const { data: results } = await supabase
+                  .from('participations')
+                  .select(`
+                      event_id,
+                      result_position,
+                      performance_grade,
+                      student:students ( name, chest_no ),
+                      team:teams ( name )
+                  `)
+                  .in('event_id', eventIds)
+                  .not('result_position', 'is', null)
+                  .order('event_id');
+
+              // 3. Format Data Rows
+              const sheetRows: any[] = [];
+
+              // Header Row
+              sheetRows.push(["Event Name", "Participant", "Position", "Grade"]);
+
+              typedEventsExcel.forEach(event => {
+                  const eventResults = (results as any[])?.filter(r => r.event_id === event.id) || [];
+                  const isTeamEvent = event.grade_type === 'C';
+
+                  // Sort results by position rank
+                  const positionRank: Record<string, number> = { 'FIRST': 1, 'SECOND': 2, 'THIRD': 3 };
+                  eventResults.sort((a, b) => (positionRank[a.result_position] || 9) - (positionRank[b.result_position] || 9));
+
+                  eventResults.forEach(r => {
+                      let participantName = "";
+                      if (isTeamEvent) {
+                          participantName = r.team?.name || "Unknown Team";
+                      } else {
+                          participantName = `${r.student?.name || "Unknown"} (${r.student?.chest_no || "N/A"})`;
+                      }
+
+                      sheetRows.push([
+                          event.name,
+                          participantName,
+                          r.result_position || "-",
+                          r.performance_grade || "-"
+                      ]);
+                  });
+
+                  // Add empty row between events for readability
+                  if(eventResults.length > 0) sheetRows.push(["", "", "", ""]);
+              });
+
+              if (sheetRows.length > 1) { // Only add if we have data
+                  // @ts-ignore
+                  const ws = window.XLSX.utils.aoa_to_sheet(sheetRows);
+                  // @ts-ignore
+                  window.XLSX.utils.book_append_sheet(wb, ws, category.label);
+              }
+          }
+
+          // @ts-ignore
+          window.XLSX.writeFile(wb, `ArtsFest_Full_Results_${new Date().toISOString().slice(0, 10)}.xlsx`);
+
+      } catch (err) {
+          console.error("Excel Generation Error:", err);
+          alert("Failed to generate Excel file.");
+      } finally {
+          setDownloadingExcel(false);
+      }
+  }
+
   return (
     <div className="flex flex-col h-[calc(100vh-6rem)] animate-in fade-in duration-500 overflow-hidden pb-2 space-y-3">
 
@@ -169,12 +272,25 @@ export default function ScoringPage() {
          </div>
 
          <div className="flex items-center gap-2">
-            {/* NEW: Export Results Dropdown */}
+
+            {/* EXCEL EXPORT BUTTON */}
+            <Button
+                variant="outline"
+                size="sm"
+                disabled={downloadingExcel}
+                onClick={generateResultsExcel}
+                className="gap-2 h-8 text-xs border-dashed border-green-300 text-green-700 bg-green-50 hover:bg-green-100"
+            >
+                {downloadingExcel ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileSpreadsheet className="w-3.5 h-3.5" />}
+                <span className="hidden sm:inline">Export Excel</span>
+            </Button>
+
+            {/* PDF EXPORT DROPDOWN */}
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" disabled={downloadingPdf} className="gap-2 h-8 text-xs border-dashed border-slate-300">
                         {downloadingPdf ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-                        <span className="hidden sm:inline">Export Results</span>
+                        <span className="hidden sm:inline">Export PDF</span>
                         <ChevronDown className="w-3 h-3 opacity-50" />
                     </Button>
                 </DropdownMenuTrigger>
