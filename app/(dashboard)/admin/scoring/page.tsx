@@ -2,11 +2,20 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase"
 import { EventScorer } from "@/components/scoring/event-scorer"
 import { GradeSettingsDialog } from "@/components/scoring/grade-settings-dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Settings, BarChart3 } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Settings, BarChart3, Download, ChevronDown, Loader2 } from "lucide-react"
+import jsPDF from "jspdf"
+import autoTable from "jspdf-autotable"
 
 const SECTIONS = [
   { id: 'SENIOR_ON', label: 'Senior On-Stage', section: 'Senior', cat: 'ON STAGE' },
@@ -21,13 +30,126 @@ const SECTIONS = [
   { id: 'FOUNDATION_OFF', label: 'Foundation Off-Stage', section: 'Foundation', cat: 'OFF STAGE' },
 ]
 
+const EXPORT_CATEGORIES = [
+  { label: 'Senior', value: 'Senior' },
+  { label: 'Junior', value: 'Junior' },
+  { label: 'Sub-Junior', value: 'Sub-Junior' },
+  { label: 'General', value: 'General' },
+  { label: 'Foundation', value: 'Foundation' },
+]
+
 export default function ScoringPage() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState(SECTIONS[0].id)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [downloadingPdf, setDownloadingPdf] = useState(false)
+  const supabase = createClient()
 
   const handleScoreUpdate = () => {
     // Optional: Refresh logic if needed
+  }
+
+  // --- GENERATE RESULTS PDF ---
+  const generateResultsPDF = async (sectionLabel: string, sectionValue: string) => {
+      setDownloadingPdf(true)
+      try {
+          // 1. Fetch Events for Section
+          const { data: events, error: eventsError } = await supabase
+              .from('events')
+              .select('id, name, event_code, grade_type')
+              .contains('applicable_section', [sectionValue])
+              .order('name') as { data: Array<{ id: string; name: string; event_code: string; grade_type: string }> | null; error: any };
+
+          if (eventsError) throw eventsError;
+          if (!events || events.length === 0) {
+              alert(`No events found for ${sectionLabel} section.`);
+              setDownloadingPdf(false);
+              return;
+          }
+
+          // 2. Fetch Results (First, Second, Third)
+          const eventIds = events.map(e => e.id);
+          const { data: results, error: resultsError } = await supabase
+              .from('participations')
+              .select(`
+                  event_id,
+                  result_position,
+                  student:students ( name, chest_no ),
+                  team:teams ( name )
+              `)
+              .in('event_id', eventIds)
+              .not('result_position', 'is', null) as { data: Array<{ event_id: string; result_position: string; student: { name: string; chest_no: string } | null; team: { name: string } | null }> | null; error: any };
+
+          if (resultsError) throw resultsError;
+
+          // 3. Generate PDF
+          const doc = new jsPDF();
+
+          // Title
+          doc.setFontSize(18);
+          doc.setFont("helvetica", "bold");
+          doc.text(`${sectionLabel.toUpperCase()} SECTION - FINAL RESULTS`, 105, 20, { align: "center" });
+          doc.setFontSize(12);
+          doc.setFont("helvetica", "normal");
+          doc.text("PMSA ARTS FEST 2025-26", 105, 28, { align: "center" });
+
+          const tableBody: any[] = [];
+
+          events.forEach((event) => {
+              const eventResults = results?.filter(r => r.event_id === event.id) || [];
+              const isTeamEvent = event.grade_type === 'C'; // Category C = Group Item
+
+              const getWinner = (pos: string) => {
+                  const winner = eventResults.find(r => r.result_position === pos);
+                  if (!winner) return "-";
+
+                  if (isTeamEvent) {
+                      // Show Team Name for Category C
+                      return winner.team?.name || "Unknown Team";
+                  } else {
+                      // Show Participant Name & Chest No for others
+                      return `${winner.student?.name || "Unknown"} (${winner.student?.chest_no || "N/A"})`;
+                  }
+              };
+
+              tableBody.push([
+                  event.name, // Event Name
+                  getWinner('FIRST'),
+                  getWinner('SECOND'),
+                  getWinner('THIRD')
+              ]);
+          });
+
+          autoTable(doc, {
+              startY: 35,
+              head: [["Event Name", "First", "Second", "Third"]],
+              body: tableBody,
+              theme: 'grid',
+              headStyles: {
+                  fillColor: [40, 40, 40],
+                  halign: 'center',
+                  valign: 'middle'
+              },
+              bodyStyles: {
+                  valign: 'middle'
+              },
+              styles: { fontSize: 10, cellPadding: 3 },
+              columnStyles: {
+                  0: { fontStyle: 'bold', cellWidth: 50 }, // Event Name column width
+                  1: { cellWidth: 'auto' },
+                  2: { cellWidth: 'auto' },
+                  3: { cellWidth: 'auto' }
+              }
+          });
+
+          doc.save(`${sectionLabel}_Results.pdf`);
+
+      } catch (err) {
+          console.error("PDF Generation Error:", err);
+          alert("Failed to generate PDF. Please try again.");
+      } finally {
+          setDownloadingPdf(false);
+      }
   }
 
   return (
@@ -41,6 +163,28 @@ export default function ScoringPage() {
          </div>
 
          <div className="flex items-center gap-2">
+            {/* NEW: Export Results Dropdown */}
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" disabled={downloadingPdf} className="gap-2 h-8 text-xs border-dashed border-slate-300">
+                        {downloadingPdf ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+                        <span className="hidden sm:inline">Export Results</span>
+                        <ChevronDown className="w-3 h-3 opacity-50" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-white">
+                    {EXPORT_CATEGORIES.map((cat) => (
+                        <DropdownMenuItem
+                            key={cat.value}
+                            onClick={() => generateResultsPDF(cat.label, cat.value)}
+                            className="cursor-pointer"
+                        >
+                            {cat.label} Section
+                        </DropdownMenuItem>
+                    ))}
+                </DropdownMenuContent>
+            </DropdownMenu>
+
             <Button variant="outline" size="sm" onClick={() => setIsSettingsOpen(true)} className="gap-2 h-8 text-xs">
                 <Settings className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Rules</span>
             </Button>
