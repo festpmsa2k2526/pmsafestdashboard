@@ -69,6 +69,14 @@ export default function ScoringPage() {
 
           // 2. Fetch Results (First, Second, Third)
           const eventIds = events.map(e => e.id);
+
+          type ParticipationResult = {
+            event_id: string;
+            result_position: string;
+            student: { name: string; chest_no: string } | null;
+            team: { name: string } | null;
+          };
+
           const { data: results, error: resultsError } = await supabase
               .from('participations')
               .select(`
@@ -78,7 +86,7 @@ export default function ScoringPage() {
                   team:teams ( name )
               `)
               .in('event_id', eventIds)
-              .not('result_position', 'is', null) as { data: Array<{ event_id: string; result_position: string; student: { name: string; chest_no: string } | null; team: { name: string } | null }> | null; error: any };
+              .not('result_position', 'is', null) as { data: ParticipationResult[] | null; error: any };
 
           if (resultsError) throw resultsError;
 
@@ -96,27 +104,32 @@ export default function ScoringPage() {
           const tableBody: any[] = [];
 
           events.forEach((event) => {
-              const eventResults = results?.filter(r => r.event_id === event.id) || [];
+              const eventResults: ParticipationResult[] = results?.filter(r => r.event_id === event.id) || [];
               const isTeamEvent = event.grade_type === 'C'; // Category C = Group Item
 
-              const getWinner = (pos: string) => {
-                  const winner = eventResults.find(r => r.result_position === pos);
-                  if (!winner) return "-";
+              const getWinners = (pos: string) => {
+                  // Filter for ALL winners in this position (handles ties)
+                  const winners = eventResults.filter((r: ParticipationResult) => r.result_position === pos);
 
-                  if (isTeamEvent) {
-                      // Show Team Name for Category C
-                      return winner.team?.name || "Unknown Team";
-                  } else {
-                      // Show Participant Name & Chest No for others
-                      return `${winner.student?.name || "Unknown"} (${winner.student?.chest_no || "N/A"})`;
-                  }
+                  if (winners.length === 0) return "-";
+
+                  // Map each winner to a string and join them with newlines
+                  return winners.map(w => {
+                      if (isTeamEvent) {
+                          // Show Team Name for Category C
+                          return w.team?.name || "Unknown Team";
+                      } else {
+                          // Show Participant Name & Chest No for others
+                          return `${w.student?.name || "Unknown"} (${w.student?.chest_no || "N/A"})`;
+                      }
+                  }).join("\n");
               };
 
               tableBody.push([
                   event.name, // Event Name
-                  getWinner('FIRST'),
-                  getWinner('SECOND'),
-                  getWinner('THIRD')
+                  getWinners('FIRST'),
+                  getWinners('SECOND'),
+                  getWinners('THIRD')
               ]);
           });
 
