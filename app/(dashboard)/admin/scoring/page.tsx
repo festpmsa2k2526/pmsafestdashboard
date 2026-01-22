@@ -13,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Settings, BarChart3, Download, ChevronDown, Loader2, FileSpreadsheet } from "lucide-react"
+import { Settings, BarChart3, Download, ChevronDown, Loader2, FileSpreadsheet, Trophy } from "lucide-react"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 
@@ -36,6 +36,12 @@ const EXPORT_CATEGORIES = [
   { label: 'Sub-Junior', value: 'Sub-Junior' },
   { label: 'General', value: 'General' },
   { label: 'Foundation', value: 'Foundation' },
+]
+
+const PERFORMANCE_CATEGORIES = [
+  { label: 'Senior', value: 'Senior' },
+  { label: 'Junior', value: 'Junior' },
+  { label: 'Sub-Junior', value: 'Sub-Junior' },
 ]
 
 export default function ScoringPage() {
@@ -109,9 +115,9 @@ export default function ScoringPage() {
 
           const tableBody: any[] = [];
 
-          typedEvents.forEach((event: { id: string; name: string; event_code: string; grade_type: string }) => {
+          typedEvents.forEach((event) => {
               const eventResults = (results as Array<{ event_id: string; result_position: string; student: { name: string; chest_no: string }; team: { name: string } }>)?.filter(r => r.event_id === event.id) || [];
-              const isTeamEvent = (event as { id: string; name: string; event_code: string; grade_type: string }).grade_type === 'C'; // Category C = Group Item
+              const isTeamEvent = (event as any).grade_type === 'C'; // Category C = Group Item
 
               const getWinners = (pos: string) => {
                   // Filter for ALL winners in this position (handles ties)
@@ -171,6 +177,87 @@ export default function ScoringPage() {
       }
   }
 
+  // --- GENERATE PERFORMANCE REPORT (FIRST PRIZES ONLY) ---
+  const generatePerformanceReport = async (category: string) => {
+      setDownloadingPdf(true)
+      try {
+          // 1. Fetch only FIRST positions for students in this section
+          const { data: participations, error } = await supabase
+              .from('participations')
+              .select(`
+                  result_position,
+                  performance_grade,
+                  events ( name ),
+                  students!inner ( name, chest_no, section )
+              `)
+              .eq('students.section', category)
+              .eq('result_position', 'FIRST'); // Strict Filter: Only First
+
+          if (error) throw error;
+          if (!participations || participations.length === 0) {
+              alert(`No First Prize winners found for ${category}.`);
+              setDownloadingPdf(false);
+              return;
+          }
+
+          // 2. Group by Student
+          const studentMap: Record<string, any[]> = {};
+          participations.forEach((p: any) => {
+              const key = `${p.students.name} (${p.students.chest_no})`;
+              if (!studentMap[key]) studentMap[key] = [];
+              studentMap[key].push(p);
+          });
+
+          // 3. Generate PDF
+          const doc = new jsPDF();
+          doc.setFontSize(18);
+          doc.setFont("helvetica", "bold");
+          doc.text(`${category.toUpperCase()} - FIRST PRIZE WINNERS`, 105, 20, { align: "center" });
+          doc.setFontSize(10);
+          doc.setFont("helvetica", "normal");
+          doc.text("PMSA ARTS FEST 2025-26", 105, 28, { align: "center" });
+
+          const tableRows: any[] = [];
+
+          // Sort students alphabetically
+          Object.keys(studentMap).sort().forEach((studentKey) => {
+              const results = studentMap[studentKey];
+
+              // Sort events alphabetically if needed, or by grade
+              results.forEach((r, index) => {
+                  tableRows.push([
+                      index === 0 ? studentKey : "", // Only show name on first row of the student's block
+                      r.events?.name || "Unknown Event",
+                      r.result_position,
+                      r.performance_grade || "-"
+                  ]);
+              });
+          });
+
+          autoTable(doc, {
+              startY: 35,
+              head: [["Participant", "Event", "Position", "Grade"]],
+              body: tableRows,
+              theme: 'grid',
+              headStyles: { fillColor: [70, 70, 70] }, // Dark header
+              columnStyles: {
+                  0: { fontStyle: 'bold', cellWidth: 70 }, // Name column
+                  1: { cellWidth: 'auto' },
+                  2: { cellWidth: 30 },
+                  3: { cellWidth: 20, halign: 'center' }
+              }
+          });
+
+          doc.save(`${category}_First_Prizes_Report.pdf`);
+
+      } catch (err) {
+          console.error("Report Generation Error:", err);
+          alert("Failed to generate report.");
+      } finally {
+          setDownloadingPdf(false);
+      }
+  }
+
   // --- GENERATE RESULTS EXCEL ---
   const generateResultsExcel = async () => {
       // @ts-ignore
@@ -180,6 +267,15 @@ export default function ScoringPage() {
       try {
           // @ts-ignore
           const wb = window.XLSX.utils.book_new();
+
+          type EventType = { id: string; name: string; grade_type: string };
+          type ResultType = {
+            event_id: string;
+            result_position: string;
+            performance_grade: string;
+            student: { name: string; chest_no: string } | null;
+            team: { name: string } | null;
+          };
 
           for (const category of EXPORT_CATEGORIES) {
               // 1. Fetch Events
@@ -191,8 +287,8 @@ export default function ScoringPage() {
 
               if (!events || events.length === 0) continue;
 
-              const typedEventsExcel = events as Array<{ id: string; name: string; grade_type: string }>;
-              const eventIds = typedEventsExcel.map(e => e.id);
+              const typedEvents = events as EventType[];
+              const eventIds = typedEvents.map(e => e.id);
 
               // 2. Fetch Results
               const { data: results } = await supabase
@@ -208,14 +304,16 @@ export default function ScoringPage() {
                   .not('result_position', 'is', null)
                   .order('event_id');
 
+              const typedResults = (results || []) as ResultType[];
+
               // 3. Format Data Rows
               const sheetRows: any[] = [];
 
               // Header Row
               sheetRows.push(["Event Name", "Participant", "Position", "Grade"]);
 
-              typedEventsExcel.forEach(event => {
-                  const eventResults = (results as any[])?.filter(r => r.event_id === event.id) || [];
+              typedEvents.forEach(event => {
+                  const eventResults = typedResults.filter(r => r.event_id === event.id) || [];
                   const isTeamEvent = event.grade_type === 'C';
 
                   // Sort results by position rank
@@ -272,6 +370,28 @@ export default function ScoringPage() {
          </div>
 
          <div className="flex items-center gap-2">
+
+            {/* NEW: WINNERS REPORT DROPDOWN */}
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" disabled={downloadingPdf} className="gap-2 h-8 text-xs border-dashed border-yellow-400 text-yellow-700 bg-yellow-50 hover:bg-yellow-100">
+                        <Trophy className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">First Winners</span>
+                        <ChevronDown className="w-3 h-3 opacity-50" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-white">
+                    {PERFORMANCE_CATEGORIES.map((cat) => (
+                        <DropdownMenuItem
+                            key={cat.value}
+                            onClick={() => generatePerformanceReport(cat.value)}
+                            className="cursor-pointer"
+                        >
+                            {cat.label} Section
+                        </DropdownMenuItem>
+                    ))}
+                </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* EXCEL EXPORT BUTTON */}
             <Button
