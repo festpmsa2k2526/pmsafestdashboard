@@ -245,9 +245,9 @@ export default function AdminEvents() {
               <TableRow className="bg-slate-50/80 hover:bg-slate-50">
                 <TableHead className="w-20 font-bold text-xs uppercase tracking-wider pl-4">Code</TableHead>
                 <TableHead className="font-bold text-xs uppercase tracking-wider">Event Name</TableHead>
-                <TableHead className="font-bold text-xs uppercase tracking-wider">Category</TableHead>
+                <TableHead className="font-bold text-xs uppercase tracking-wider">Mode</TableHead>
                 <TableHead className="font-bold text-xs uppercase tracking-wider">Section</TableHead>
-                <TableHead className="text-center font-bold text-xs uppercase tracking-wider">Grade</TableHead>
+                <TableHead className="text-center font-bold text-xs uppercase tracking-wider">Category</TableHead>
                 <TableHead className="text-center font-bold text-xs uppercase tracking-wider">Max</TableHead>
                 <TableHead className="text-right font-bold text-xs uppercase tracking-wider pr-4">Actions</TableHead>
               </TableRow>
