@@ -116,6 +116,8 @@ export default function AdminStudents() {
   }, [students])
 
   const filteredStudents = useMemo(() => {
+    // Temporarily exclude Junior section
+    if (s.section === 'Junior') return false;
     return students.filter(s => {
       const matchesSearch = s.name.toLowerCase().includes(search.toLowerCase()) ||
                             (s.chest_no && s.chest_no.toLowerCase().includes(search.toLowerCase()))
@@ -182,7 +184,7 @@ export default function AdminStudents() {
               <SelectContent className="bg-white">
                 <SelectItem value="all">All Sections</SelectItem>
                 <SelectItem value="Senior">Senior</SelectItem>
-                <SelectItem value="Junior">Junior</SelectItem>
+                {/* <SelectItem value="Junior">Junior</SelectItem> */}
                 <SelectItem value="Sub-Junior">Sub-Junior</SelectItem>
               </SelectContent>
             </Select>
