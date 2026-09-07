@@ -116,9 +116,9 @@ export default function AdminStudents() {
   }, [students])
 
   const filteredStudents = useMemo(() => {
-    // Temporarily exclude Junior section
-    if (s.section === 'Junior') return false;
     return students.filter(s => {
+      // Temporarily exclude Junior section
+      if (s.section === 'Junior') return false;
       const matchesSearch = s.name.toLowerCase().includes(search.toLowerCase()) ||
                             (s.chest_no && s.chest_no.toLowerCase().includes(search.toLowerCase()))
       const matchesTeam = filterTeam === "all" || s.team_id === filterTeam
