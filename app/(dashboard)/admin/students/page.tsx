@@ -27,7 +27,7 @@ interface Student {
   name: string
   chest_no: string | null
   class_grade: string | null
-  section: 'Senior' | 'Junior' | 'Sub-Junior'
+  section: 'Aliya' | 'Foundation'
   team_id: string
   teams?: { name: string; color_hex: string }
 }
@@ -91,21 +91,23 @@ export default function AdminStudents() {
       const { error } = await supabase.from('students').delete().eq('id', deleteId)
       if (error) throw error
       setStudents(prev => prev.filter(s => s.id !== deleteId))
-    } catch (err) {
-      alert("Failed to delete")
-    } finally {
       setDeleteId(null)
+    } catch (err: any) {
+      alert("Failed to delete student: " + err.message)
     }
   }
 
   const handleBulkDelete = async () => {
     try {
-      const { error } = await supabase.from('students').delete().neq('id', '00000000-0000-0000-0000-000000000000') // Delete all
+      setLoading(true)
+      const { error } = await supabase.from('students').delete().neq('id', '00000000-0000-0000-0000-000000000000')
       if (error) throw error
       setStudents([])
       setIsBulkDeleteOpen(false)
-    } catch (err) {
-      alert("Bulk delete failed")
+    } catch (err: any) {
+      alert("Failed to delete all students: " + err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -117,10 +119,8 @@ export default function AdminStudents() {
 
   const filteredStudents = useMemo(() => {
     return students.filter(s => {
-      // Temporarily exclude Junior section
-      if (s.section === 'Junior') return false;
       const matchesSearch = s.name.toLowerCase().includes(search.toLowerCase()) ||
-                            (s.chest_no && s.chest_no.toLowerCase().includes(search.toLowerCase()))
+        (s.chest_no && s.chest_no.toLowerCase().includes(search.toLowerCase()))
       const matchesTeam = filterTeam === "all" || s.team_id === filterTeam
       const matchesSection = filterSection === "all" || s.section === filterSection
       const matchesClass = filterClass === "all" || s.class_grade === filterClass
@@ -183,9 +183,8 @@ export default function AdminStudents() {
               <SelectTrigger className="w-full xl:w-[180px] bg-white"><SelectValue placeholder="All Sections" /></SelectTrigger>
               <SelectContent className="bg-white">
                 <SelectItem value="all">All Sections</SelectItem>
-                <SelectItem value="Senior">Senior</SelectItem>
-                {/* <SelectItem value="Junior">Junior</SelectItem> */}
-                <SelectItem value="Sub-Junior">Sub-Junior</SelectItem>
+                <SelectItem value="Aliya">Aliya</SelectItem>
+                <SelectItem value="Foundation">Foundation</SelectItem>
               </SelectContent>
             </Select>
 
@@ -225,17 +224,17 @@ export default function AdminStudents() {
                     <TableCell>{student.class_grade || '-'}</TableCell>
                     <TableCell><Badge variant="secondary" className="font-normal bg-slate-100 text-slate-600">{student.section}</Badge></TableCell>
                     <TableCell>
-                        <Badge variant="outline" style={{ borderColor: student.teams?.color_hex, color: student.teams?.color_hex, backgroundColor: student.teams?.color_hex + '10' }}>
-                            {student.teams?.name || "Unknown"}
-                        </Badge>
+                      <Badge variant="outline" style={{ borderColor: student.teams?.color_hex, color: student.teams?.color_hex, backgroundColor: student.teams?.color_hex + '10' }}>
+                        {student.teams?.name || "Unknown"}
+                      </Badge>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => handleEdit(student)}>
-                            <Edit2 className="w-4 h-4" />
+                          <Edit2 className="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => setDeleteId(student.id)}>
-                            <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
                     </TableCell>
@@ -271,31 +270,31 @@ export default function AdminStudents() {
       {/* DELETE CONFIRMATION */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
-            <AlertDialogHeader>
-                <AlertDialogTitle>Delete Student?</AlertDialogTitle>
-                <AlertDialogDescription>This action cannot be undone. This will permanently remove the student and their event participations.</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
-            </AlertDialogFooter>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Student?</AlertDialogTitle>
+            <AlertDialogDescription>This action cannot be undone. This will permanently remove the student and their event participations.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
+          </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
       {/* BULK DELETE CONFIRMATION */}
       <AlertDialog open={isBulkDeleteOpen} onOpenChange={setIsBulkDeleteOpen}>
         <AlertDialogContent className="bg-white">
-            <AlertDialogHeader>
-                <AlertDialogTitle className="flex items-center gap-2 text-destructive"><AlertTriangle className="w-5 h-5" /> Danger Zone: Delete All?</AlertDialogTitle>
-                <AlertDialogDescription>
-                    Are you absolutely sure? This will delete <strong>ALL {students.length} students</strong> from the database.
-                    This action is irreversible and will wipe the slate clean.
-                </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleBulkDelete} className="bg-red-600 hover:bg-red-800">Yes, Delete Everything</AlertDialogAction>
-            </AlertDialogFooter>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-destructive"><AlertTriangle className="w-5 h-5" /> Danger Zone: Delete All?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you absolutely sure? This will delete <strong>ALL {students.length} students</strong> from the database.
+              This action is irreversible and will wipe the slate clean.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleBulkDelete} className="bg-red-600 hover:bg-red-800">Yes, Delete Everything</AlertDialogAction>
+          </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 

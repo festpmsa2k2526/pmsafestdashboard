@@ -12,7 +12,7 @@ interface ClassStats {
 }
 
 export function SectionAnalysis({ data }: { data: ClassStats[] }) {
-  const [filter, setFilter] = useState("Senior")
+  const [filter, setFilter] = useState("Aliya")
 
   const filteredData = data
     .filter(d => d.section === filter)
@@ -30,9 +30,8 @@ export function SectionAnalysis({ data }: { data: ClassStats[] }) {
             <SelectValue placeholder="Section" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Senior">Senior</SelectItem>
-            <SelectItem value="Junior">Junior</SelectItem>
-            <SelectItem value="Sub-Junior">Sub-Junior</SelectItem>
+            <SelectItem value="Aliya">Aliya</SelectItem>
+            <SelectItem value="Foundation">Foundation</SelectItem>
           </SelectContent>
         </Select>
       </CardHeader>

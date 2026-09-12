@@ -46,17 +46,15 @@ export function LiveLeaderboard({ refreshTrigger }: { refreshTrigger: number }) 
         const appSection = p.events?.applicable_section
         return Array.isArray(appSection) && appSection.includes(section)
       }
-      const isGen = (p: any) => checkSection(p, 'General')
+      const isAliya = (p: any) => checkSection(p, 'Aliya')
       const isFnd = (p: any) => checkSection(p, 'Foundation')
-      const isSen = (p: any) => checkSection(p, 'Senior')
-      const isJun = (p: any) => checkSection(p, 'Junior')
-      const isSub = (p: any) => checkSection(p, 'Sub-Junior')
+      const isGen = (p: any) => checkSection(p, 'General')
+      const isFndGen = (p: any) => checkSection(p, 'Foundation General')
 
-      const general = teamParts.filter(isGen).reduce((s: number, p: any) => s + (p.points_earned || 0), 0)
+      const aliya = teamParts.filter(isAliya).reduce((s: number, p: any) => s + (p.points_earned || 0), 0)
       const foundation = teamParts.filter(isFnd).reduce((s: number, p: any) => s + (p.points_earned || 0), 0)
-      const senior = teamParts.filter((p: any) => isSen(p) && !isGen(p)).reduce((s: number, p: any) => s + (p.points_earned || 0), 0)
-      const junior = teamParts.filter((p: any) => isJun(p) && !isGen(p)).reduce((s: number, p: any) => s + (p.points_earned || 0), 0)
-      const subJunior = teamParts.filter((p: any) => isSub(p) && !isGen(p) && !isFnd(p)).reduce((s: number, p: any) => s + (p.points_earned || 0), 0)
+      const general = teamParts.filter(isGen).reduce((s: number, p: any) => s + (p.points_earned || 0), 0)
+      const fdnGen = teamParts.filter(isFndGen).reduce((s: number, p: any) => s + (p.points_earned || 0), 0)
 
       return {
         id: team.id,
@@ -65,11 +63,10 @@ export function LiveLeaderboard({ refreshTrigger }: { refreshTrigger: number }) 
         total,
         rawTotal: earnedTotal,
         penalty,
-        senior,
-        junior,
-        subJunior,
+        aliya,
+        foundation,
         general,
-        foundation
+        fdnGen
       }
     })
 
@@ -93,24 +90,24 @@ export function LiveLeaderboard({ refreshTrigger }: { refreshTrigger: number }) 
             <Trophy className="w-4 h-4 text-primary" /> Team Standings
           </h3>
           <div className="flex items-center gap-2">
-             <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setIsPenaltyOpen(true)}
-                            className="h-7 w-7 p-0 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full"
-                        >
-                            <Gavel className="w-4 h-4" />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>Manage Penalties (Minus Marks)</p>
-                    </TooltipContent>
-                </Tooltip>
-             </TooltipProvider>
-             <span className="text-[10px] font-mono text-muted-foreground bg-slate-100 px-2 py-0.5 rounded-full">{scores.length} Teams</span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsPenaltyOpen(true)}
+                    className="h-7 w-7 p-0 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full"
+                  >
+                    <Gavel className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Manage Penalties (Minus Marks)</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <span className="text-[10px] font-mono text-muted-foreground bg-slate-100 px-2 py-0.5 rounded-full">{scores.length} Teams</span>
           </div>
         </div>
 
@@ -124,11 +121,10 @@ export function LiveLeaderboard({ refreshTrigger }: { refreshTrigger: number }) 
                     <TableHead className="w-[50px] pl-4 text-[10px] font-bold uppercase tracking-wider h-8">Rank</TableHead>
                     <TableHead className="min-w-[140px] sticky left-0 z-10 bg-slate-50 text-[10px] font-bold uppercase tracking-wider h-8 border-r border-border/50">Team Name</TableHead>
                     <TableHead className="text-center w-20 bg-primary/5 text-primary font-black text-[10px] uppercase tracking-wider h-8 border-x border-primary/10">Total</TableHead>
-                    <TableHead className="text-center w-[60px] text-[10px] text-muted-foreground h-8">Senior</TableHead>
-                    <TableHead className="text-center w-[60px] text-[10px] text-muted-foreground h-8">Junior</TableHead>
-                    <TableHead className="text-center w-[60px] text-[10px] text-muted-foreground h-8">Sub-Jr</TableHead>
+                    <TableHead className="text-center w-[60px] text-[10px] text-muted-foreground h-8">Aliya</TableHead>
+                    <TableHead className="text-center w-[60px] text-[10px] text-muted-foreground h-8">Found.</TableHead>
                     <TableHead className="text-center w-[60px] text-[10px] text-muted-foreground h-8">General</TableHead>
-                    <TableHead className="text-center w-[60px] text-[10px] text-muted-foreground h-8 pr-4">Found.</TableHead>
+                    <TableHead className="text-center w-[60px] text-[10px] text-muted-foreground h-8 pr-4">Fdn Gen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -146,26 +142,25 @@ export function LiveLeaderboard({ refreshTrigger }: { refreshTrigger: number }) 
                       </TableCell>
                       <TableCell className="sticky left-0 z-10 bg-white group-hover:bg-blue-50/50 border-r border-border/50 py-1">
                         <div className="flex flex-col justify-center h-full">
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-6 rounded-r-md" style={{ backgroundColor: team.color }}></div>
-                                <span className="font-semibold text-sm text-slate-700 truncate">{team.name}</span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-6 rounded-r-md" style={{ backgroundColor: team.color }}></div>
+                            <span className="font-semibold text-sm text-slate-700 truncate">{team.name}</span>
+                          </div>
+                          {team.penalty > 0 && (
+                            <div className="pl-4 flex items-center gap-1 text-[9px] text-red-500 font-medium">
+                              <AlertCircle className="w-2.5 h-2.5" />
+                              <span>-{team.penalty} penalty</span>
                             </div>
-                            {team.penalty > 0 && (
-                                <div className="pl-4 flex items-center gap-1 text-[9px] text-red-500 font-medium">
-                                    <AlertCircle className="w-2.5 h-2.5" />
-                                    <span>-{team.penalty} penalty</span>
-                                </div>
-                            )}
+                          )}
                         </div>
                       </TableCell>
                       <TableCell className="text-center bg-primary/5 font-black text-lg text-primary border-x border-primary/10 py-1 shadow-inner relative">
                         {team.total}
                       </TableCell>
-                      <TableCell className="text-center text-xs text-slate-500 py-1">{team.senior}</TableCell>
-                      <TableCell className="text-center text-xs text-slate-500 py-1">{team.junior}</TableCell>
-                      <TableCell className="text-center text-xs text-slate-500 py-1">{team.subJunior}</TableCell>
+                      <TableCell className="text-center text-xs text-slate-500 py-1">{team.aliya}</TableCell>
+                      <TableCell className="text-center text-xs text-slate-500 py-1">{team.foundation}</TableCell>
                       <TableCell className="text-center text-xs text-slate-500 py-1">{team.general}</TableCell>
-                      <TableCell className="text-center text-xs text-slate-500 py-1 pr-4">{team.foundation}</TableCell>
+                      <TableCell className="text-center text-xs text-slate-500 py-1 pr-4">{team.fdnGen}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

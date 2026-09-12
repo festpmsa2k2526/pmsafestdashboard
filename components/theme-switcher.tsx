@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Palette, Check, Sun, Moon, Zap, Flame, Mountain } from "lucide-react"
+import { Palette, Check, Sun, Moon, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -12,6 +12,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+function applyTheme(newTheme: string) {
+  if (typeof document === "undefined") return
+  // Reset base classes
+  document.body.className = "min-h-screen bg-background font-sans antialiased"
+
+  // Apply theme specific class
+  if (newTheme === "dark") {
+    document.body.classList.add("dark")
+  } else if (newTheme !== "light") {
+    document.body.classList.add(`theme-${newTheme}`)
+  }
+}
+
 export function ThemeSwitcher() {
   const [theme, setTheme] = React.useState<string>("light")
 
@@ -20,18 +33,6 @@ export function ThemeSwitcher() {
     setTheme(savedTheme)
     applyTheme(savedTheme)
   }, [])
-
-  const applyTheme = (newTheme: string) => {
-    // Reset base classes
-    document.body.className = "min-h-screen bg-background font-sans antialiased"
-
-    // Apply theme specific class
-    if (newTheme === "dark") {
-      document.body.classList.add("dark")
-    } else if (newTheme !== "light") {
-      document.body.classList.add(`theme-${newTheme}`)
-    }
-  }
 
   const changeTheme = (newTheme: string) => {
     setTheme(newTheme)

@@ -71,7 +71,7 @@ export function LimitSettingsDialog({ open, onOpenChange }: Props) {
   }, {} as Record<string, SectionLimit[]>)
 
   // Custom sort order
-  const order = ['Senior', 'Junior', 'Sub-Junior', 'General', 'Foundation']
+  const order = ['Aliya', 'Foundation', 'General', 'Foundation General']
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -88,35 +88,35 @@ export function LimitSettingsDialog({ open, onOpenChange }: Props) {
         ) : (
           <div className="py-4 space-y-6 max-h-[60vh] overflow-y-auto pr-2">
             {order.map(section => {
-               const items = grouped[section]
-               if (!items) return null
-               return (
-                 <div key={section} className="space-y-3">
-                    <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider border-b pb-1">{section}</h4>
-                    <div className="grid grid-cols-2 gap-4">
-                        {items.sort((a,b) => b.category.localeCompare(a.category)).map(limit => (
-                            <div key={limit.id} className="space-y-1.5">
-                                <Label className="text-xs text-slate-500 font-medium">{limit.category}</Label>
-                                <Select
-                                    value={limit.limit_count.toString()}
-                                    onValueChange={(v) => updateLimit(limit.id, v)}
-                                >
-                                    <SelectTrigger className="h-9">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-white">
-                                        {LIMIT_OPTIONS.map(opt => (
-                                            <SelectItem key={opt} value={opt}>
-                                                {opt === '100' ? 'Unlimited' : opt}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        ))}
-                    </div>
-                 </div>
-               )
+              const items = grouped[section]
+              if (!items) return null
+              return (
+                <div key={section} className="space-y-3">
+                  <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider border-b pb-1">{section}</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    {items.sort((a, b) => b.category.localeCompare(a.category)).map(limit => (
+                      <div key={limit.id} className="space-y-1.5">
+                        <Label className="text-xs text-slate-500 font-medium">{limit.category}</Label>
+                        <Select
+                          value={limit.limit_count.toString()}
+                          onValueChange={(v) => updateLimit(limit.id, v)}
+                        >
+                          <SelectTrigger className="h-9">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white">
+                            {LIMIT_OPTIONS.map(opt => (
+                              <SelectItem key={opt} value={opt}>
+                                {opt === '100' ? 'Unlimited' : opt}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
             })}
           </div>
         )}

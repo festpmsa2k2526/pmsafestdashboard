@@ -81,7 +81,7 @@ export default function CaptainOverview() {
         const handbookUrl = (assetRes.data as { value: string } | null)?.value || null
 
         // 4. Process Section Data (Bar Chart)
-        const sections = { 'Senior': 0, 'Junior': 0, 'Sub-Junior': 0 }
+        const sections = { 'Aliya': 0, 'Foundation': 0 }
         students.forEach((s: any) => {
           if (sections[s.section as keyof typeof sections] !== undefined) {
             sections[s.section as keyof typeof sections]++

@@ -19,11 +19,8 @@ interface StudentScore {
 
 export function IndividualLeaderboard({ refreshTrigger }: { refreshTrigger: number }) {
   const [rankings, setRankings] = useState<Record<string, StudentScore[]>>({
-    Senior: [],
-    Junior: [],
-    "Sub-Junior": [],
-    Foundation: [],
-    General: []
+    Aliya: [],
+    Foundation: []
   })
   const [loading, setLoading] = useState(true)
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null)
@@ -76,11 +73,8 @@ export function IndividualLeaderboard({ refreshTrigger }: { refreshTrigger: numb
         allStudents.filter(s => s.section === sec).sort((a, b) => b.total - a.total).slice(0, 10)
 
       setRankings({
-        Senior: getTop('Senior'),
-        Junior: getTop('Junior'),
-        "Sub-Junior": getTop('Sub-Junior'),
-        Foundation: getTop('Foundation'),
-        General: getTop('General')
+        Aliya: getTop('Aliya'),
+        Foundation: getTop('Foundation')
       })
 
       setLoading(false)
@@ -93,14 +87,14 @@ export function IndividualLeaderboard({ refreshTrigger }: { refreshTrigger: numb
 
   return (
     <div className="space-y-4 pb-10">
-      <Tabs defaultValue="Senior" className="w-full">
+      <Tabs defaultValue="Aliya" className="w-full">
         <TabsList className="w-full flex h-10 bg-slate-100 p-1 mb-4 overflow-x-auto">
-          {['Senior', 'Junior', 'Sub-Junior'].map(sec => (
+          {['Aliya', 'Foundation'].map(sec => (
              <TabsTrigger key={sec} value={sec} className="flex-1 text-[10px] sm:text-xs font-bold uppercase">{sec}</TabsTrigger>
           ))}
         </TabsList>
 
-        {['Senior', 'Junior', 'Sub-Junior', 'Foundation', 'General'].map(section => (
+        {['Aliya', 'Foundation'].map(section => (
           <TabsContent key={section} value={section} className="m-0">
             <div className="space-y-2">
               {rankings[section]?.map((student, idx) => (
@@ -111,7 +105,7 @@ export function IndividualLeaderboard({ refreshTrigger }: { refreshTrigger: numb
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-7 h-7 flex items-center justify-center rounded-full bg-slate-50 font-bold text-xs text-slate-400 group-hover:text-primary transition-colors">
-                      {idx < 3 ? <Medal className={`w-4 h-4 ${idx===0?'text-yellow-500':idx===1?'text-slate-400':'text-orange-600'}`} /> : idx + 1}
+                      {idx < 3 ? <Medal className={`w-4 h-4 ${idx === 0 ? 'text-yellow-500' : idx === 1 ? 'text-slate-400' : 'text-orange-600'}`} /> : idx + 1}
                     </div>
                     <div>
                       <div className="font-bold text-sm text-slate-700">{student.name}</div>

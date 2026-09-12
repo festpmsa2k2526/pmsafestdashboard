@@ -77,7 +77,7 @@ export interface Database {
           name: string
           chest_no: string | null
           class_grade: string | null
-          section: 'Senior' | 'Junior' | 'Sub-Junior'
+          section: 'Aliya' | 'Foundation'
           team_id: string
           created_at: string
         }
@@ -86,13 +86,13 @@ export interface Database {
           name: string
           chest_no?: string | null
           class_grade?: string | null
-          section: 'Senior' | 'Junior' | 'Sub-Junior'
+          section: 'Aliya' | 'Foundation'
           team_id: string
           created_at?: string
         }
         Update: {
-           id?: string
-           chest_no?: string | null
+          id?: string
+          chest_no?: string | null
         }
       }
       events: {
@@ -119,7 +119,7 @@ export interface Database {
           created_at?: string
         }
         Update: {
-            id?: string
+          id?: string
         }
       }
       participations: {
@@ -146,15 +146,15 @@ export interface Database {
           performance_grade?: 'A' | 'B' | 'C' | 'NONE' | null
         }
         Update: {
-            id?: string
-            student_id?: string | null
-            event_id?: string
-            team_id?: string
-            status?: 'registered' | 'completed' | 'disqualified' | 'winner'
-            created_at?: string
-            result_position?: 'FIRST' | 'SECOND' | 'THIRD' | null
-            points_earned?: number
-            performance_grade?: 'A' | 'B' | 'C' | 'NONE' | null
+          id?: string
+          student_id?: string | null
+          event_id?: string
+          team_id?: string
+          status?: 'registered' | 'completed' | 'disqualified' | 'winner'
+          created_at?: string
+          result_position?: 'FIRST' | 'SECOND' | 'THIRD' | null
+          points_earned?: number
+          performance_grade?: 'A' | 'B' | 'C' | 'NONE' | null
         }
       }
     }

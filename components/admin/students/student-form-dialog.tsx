@@ -30,7 +30,7 @@ interface StudentFormDialogProps {
 }
 
 const CLASSES = ['FOUNDATION', 'TH-1', 'TH-2', 'AL-1', 'AL-2', 'AL-3', 'AL-4']
-const SECTIONS = ['Senior', 'Junior', 'Sub-Junior']
+const SECTIONS = ['Aliya', 'Foundation']
 
 export function StudentFormDialog({ open, onOpenChange, student, teams, onSuccess }: StudentFormDialogProps) {
   const [loading, setLoading] = useState(false)
@@ -41,7 +41,7 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
     name: "",
     chest_no: "",
     class_grade: "FOUNDATION",
-    section: "Senior",
+    section: "Aliya",
     team_id: ""
   })
 
@@ -61,7 +61,7 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
         name: "",
         chest_no: "",
         class_grade: "FOUNDATION",
-        section: "Senior",
+        section: "Aliya",
         team_id: ""
       })
     }
@@ -147,7 +147,7 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
             <Label className="text-right">Name <span className="text-red-500">*</span></Label>
             <Input
               value={formData.name}
-              onChange={e => setFormData({...formData, name: e.target.value})}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
               className="col-span-3"
             />
           </div>
@@ -156,7 +156,7 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
             <Label className="text-right">Chest No <span className="text-red-500">*</span></Label>
             <Input
               value={formData.chest_no}
-              onChange={e => setFormData({...formData, chest_no: e.target.value})}
+              onChange={e => setFormData({ ...formData, chest_no: e.target.value })}
               className="col-span-3"
               placeholder="Ex: 101"
             />
@@ -167,7 +167,7 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
             <div className="col-span-3">
               <Select
                 value={formData.section}
-                onValueChange={v => setFormData({...formData, section: v})}
+                onValueChange={v => setFormData({ ...formData, section: v })}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -184,7 +184,7 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
             <div className="col-span-3">
               <Select
                 value={formData.class_grade}
-                onValueChange={v => setFormData({...formData, class_grade: v})}
+                onValueChange={v => setFormData({ ...formData, class_grade: v })}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -201,12 +201,12 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
             <div className="col-span-3">
               <Select
                 value={formData.team_id}
-                onValueChange={v => setFormData({...formData, team_id: v})}
+                onValueChange={v => setFormData({ ...formData, team_id: v })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Team" />
                 </SelectTrigger>
-                <SelectContent  className="bg-white">
+                <SelectContent className="bg-white">
                   {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
                 </SelectContent>
               </Select>
