@@ -75,11 +75,11 @@ export default async function DashboardLayout({
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 relative w-full">
+        <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 relative w-full">
           {/* Subtle background gradient blob for aesthetics */}
           <div className="absolute top-0 left-0 w-full h-96 bg-primary/5 -z-10 blur-3xl rounded-b-full pointer-events-none" />
 
-          <div className="mx-auto max-w-6xl animate-fade-in-up w-full">
+          <div className="mx-auto max-w-full 2xl:max-w-[1800px] animate-fade-in-up w-full">
             {children}
           </div>
         </main>
