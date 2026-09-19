@@ -21,7 +21,7 @@ export default function LandingPage() {
           <div className="w-8 h-8 bg-linear-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
             <Trophy className="w-4 h-4" />
           </div>
-          <span>ArtsFest <span className="text-primary">2025</span></span>
+          <span>ArtsFest <span className="text-primary">2026-27</span></span>
         </div>
 
         <div className="flex items-center gap-4">
@@ -52,7 +52,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="mx-auto max-w-[600px] text-muted-foreground text-lg md:text-xl font-light animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-            Welcome to the official portal for Arts Fest 2025.
+            Welcome to the official portal for Arts Fest 2026-27.
             Register participants, track live scores, and lead your house to victory.
           </p>
 
@@ -86,7 +86,7 @@ export default function LandingPage() {
             Shuhaib
           </a>
         </p>
-        <p className="text-[10px] text-muted-foreground/60 mt-1">© 2025 Arts Fest Committee</p>
+        <p className="text-[10px] text-muted-foreground/60 mt-1">© 2026-27 Arts Fest Committee</p>
       </footer>
     </div>
   )

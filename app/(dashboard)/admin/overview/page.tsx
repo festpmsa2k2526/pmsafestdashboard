@@ -173,7 +173,7 @@ export default function OverviewPage() {
 
     // Title
     doc.setFontSize(22);
-    doc.text("ARTS FEST 2025 - OVERVIEW REPORT", 105, 20, { align: "center" });
+    doc.text("PMSA ARTS FEST 2026-27 - OVERVIEW REPORT", 105, 20, { align: "center" });
     doc.setFontSize(10);
     doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, 28, { align: "center" });
 

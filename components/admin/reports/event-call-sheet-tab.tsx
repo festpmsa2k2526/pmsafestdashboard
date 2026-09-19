@@ -54,6 +54,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
   const [loadingEvent, setLoadingEvent] = useState(false)
   const [generatingPdf, setGeneratingPdf] = useState(false)
   const [generatingList, setGeneratingList] = useState(false)
+  const [generatingAttendance, setGeneratingAttendance] = useState(false)
   const [generatingExcel, setGeneratingExcel] = useState(false)
   const [participants, setParticipants] = useState<ParticipationRecord[]>([])
   const [completedEventIds, setCompletedEventIds] = useState<Set<string>>(new Set())
@@ -79,7 +80,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
   // 2. Fetch Header Image & Completion Status
   useEffect(() => {
     async function initData() {
-        // Fetch Header Image
+        // Fetch Header Image (Score/Judgment Sheet Header)
         const { data: assetData } = await supabase
             .from('site_assets')
             .select('value')
@@ -87,7 +88,12 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
             .single()
 
         if (assetData && typeof assetData === 'object' && 'value' in assetData) {
-            setHeaderImage((assetData as { value: string }).value)
+            const rawVal = (assetData as { value: string }).value || ""
+            if (rawVal.startsWith('DISABLED:') || rawVal.startsWith('INACTIVE:')) {
+                setHeaderImage(null)
+            } else {
+                setHeaderImage(rawVal || null)
+            }
         }
 
         // Fetch Completion Status
@@ -331,7 +337,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
         } else {
              doc.setFontSize(16);
              doc.setFont("helvetica", "bold");
-             doc.text("PMSA ARTS FEST 2025-26", pageWidth / 2, yPos, { align: 'center' });
+             doc.text("PMSA ARTS FEST 2026-27", pageWidth / 2, yPos, { align: 'center' });
              yPos += 10;
         }
 
@@ -463,87 +469,387 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
     setGeneratingPdf(false)
   }
 
-  // --- NEW: GENERATE PARTICIPANT LIST (BULK EXPORT) ---
-  const generateParticipantListPDF = async (category: 'ON STAGE' | 'OFF STAGE') => {
-      setGeneratingList(true);
+  // --- GENERATE PARTICIPANT LIST (SINGLE EVENT OR BULK) ---
+  const generateParticipantListPDF = async (categoryOrEvents: 'ON STAGE' | 'OFF STAGE' | Event[]) => {
+      let eventsToPrint: Event[] = []
+      let titleCategory = ""
+      const isSingle = Array.isArray(categoryOrEvents) && categoryOrEvents.length === 1
 
-      const filteredEvents = events.filter(e => e.category === category);
-      if (filteredEvents.length === 0) {
-          alert(`No events found for ${category}`);
-          setGeneratingList(false);
+      if (Array.isArray(categoryOrEvents)) {
+          eventsToPrint = categoryOrEvents
+          titleCategory = isSingle ? (eventsToPrint[0].event_code || eventsToPrint[0].name) : "Selected_Events"
+      } else {
+          eventsToPrint = events.filter(e => e.category === categoryOrEvents)
+          titleCategory = categoryOrEvents
+      }
+
+      if (eventsToPrint.length === 0) {
+          alert(`No events found to generate participant list.`);
           return;
       }
 
-      const doc = new jsPDF();
+      setGeneratingList(true);
 
-      // Title Page
-      doc.setFontSize(22);
-      doc.text(`PARTICIPANT LIST - ${category}`, 105, 100, { align: 'center' });
-      doc.setFontSize(14);
-      doc.text("PMSA ARTS FEST 2025-26", 105, 115, { align: 'center' });
-      doc.addPage();
+      try {
+          const doc = new jsPDF();
+          let isFirstPage = true;
 
-      for (const event of filteredEvents) {
-          const { data } = await supabase
-            .from('participations')
-            .select(`
-               students ( name, chest_no, class_grade, section ),
-               teams ( name )
-            `)
-            .eq('event_id', event.id);
-
-          const rawParts = data as any[] || [];
-          const parts = rawParts.map(p => ({
-              chest: p.students?.chest_no || "N/A",
-              name: p.students?.name || "Unknown",
-              class: p.students?.class_grade || "",
-              team: p.teams?.name || "Unknown"
-          })).sort((a, b) => (parseInt(a.chest) || 999) - (parseInt(b.chest) || 999));
-
-          if (parts.length > 0) {
-              const body = parts.map((p, i) => [i + 1, p.chest, p.name, p.class, p.team]);
-
+          // If bulk export (>1 event), add Title Page
+          if (eventsToPrint.length > 1) {
+              doc.setFontSize(22);
+              doc.text(`PARTICIPANT LIST - ${titleCategory}`, 105, 100, { align: 'center' });
               doc.setFontSize(14);
-              doc.setFont("helvetica", "bold");
-              const finalY = (doc as any).lastAutoTable?.finalY || 20;
-
-              let titleY = finalY === 20 ? 20 : finalY + 15;
-              if (titleY > 270) {
-                  doc.addPage();
-                  titleY = 20;
-              }
-              doc.text(`${event.name} (${event.event_code})`, 14, titleY);
-
-              autoTable(doc, {
-                  startY: titleY + 5,
-                  head: [["#", "Chest No", "Name", "Class", "Team"]],
-                  body: body,
-                  theme: 'striped',
-                  headStyles: { fillColor: [50, 50, 50] },
-                  margin: { top: 20 },
-                  pageBreak: 'avoid'
-              });
+              doc.text("PMSA ARTS FEST 2026-27", 105, 115, { align: 'center' });
+              doc.addPage();
           }
+
+          for (const event of eventsToPrint) {
+              const { data } = await supabase
+                .from('participations')
+                .select(`
+                   students ( name, chest_no, class_grade, section ),
+                   teams ( name )
+                `)
+                .eq('event_id', event.id);
+
+              const rawParts = data as any[] || [];
+              const parts = rawParts.map(p => ({
+                  chest: p.students?.chest_no || "N/A",
+                  name: p.students?.name || "Unknown",
+                  class: p.students?.class_grade || "",
+                  team: p.teams?.name || "Unknown"
+              })).sort((a, b) => (parseInt(a.chest) || 999) - (parseInt(b.chest) || 999));
+
+              if (isSingle) {
+                  // Single event layout
+                  doc.setFontSize(16);
+                  doc.setFont("helvetica", "bold");
+                  doc.text("PMSA ARTS FEST 2026-27", 105, 18, { align: 'center' });
+                  doc.setFontSize(13);
+                  doc.text(`PARTICIPANT LIST - ${event.name} (${event.event_code || '---'})`, 105, 26, { align: 'center' });
+                  doc.setFontSize(10);
+                  doc.setFont("helvetica", "normal");
+                  doc.text(`Category: ${event.category} | Total: ${parts.length}`, 105, 32, { align: 'center' });
+
+                  const body = parts.length > 0 
+                    ? parts.map((p, i) => [i + 1, p.chest, p.name, p.class, p.team])
+                    : [["-", "-", "No participants registered", "-", "-"]];
+
+                  autoTable(doc, {
+                      startY: 38,
+                      head: [["#", "Chest No", "Name", "Class", "Team"]],
+                      body: body,
+                      theme: 'striped',
+                      headStyles: { fillColor: [50, 50, 50], halign: 'center' },
+                      columnStyles: {
+                          0: { cellWidth: 15, halign: 'center' },
+                          1: { cellWidth: 28, halign: 'center', fontStyle: 'bold' },
+                          2: { cellWidth: 'auto', halign: 'left' },
+                          3: { cellWidth: 25, halign: 'center' },
+                          4: { cellWidth: 45, halign: 'left' },
+                      }
+                  });
+              } else if (parts.length > 0) {
+                  // Bulk layout
+                  const body = parts.map((p, i) => [i + 1, p.chest, p.name, p.class, p.team]);
+
+                  doc.setFontSize(14);
+                  doc.setFont("helvetica", "bold");
+                  const finalY = (doc as any).lastAutoTable?.finalY || 20;
+
+                  let titleY = finalY === 20 ? 20 : finalY + 15;
+                  if (titleY > 270) {
+                      doc.addPage();
+                      titleY = 20;
+                  }
+                  doc.text(`${event.name} (${event.event_code})`, 14, titleY);
+
+                  autoTable(doc, {
+                      startY: titleY + 5,
+                      head: [["#", "Chest No", "Name", "Class", "Team"]],
+                      body: body,
+                      theme: 'striped',
+                      headStyles: { fillColor: [50, 50, 50] },
+                      margin: { top: 20 },
+                      pageBreak: 'avoid'
+                  });
+              }
+          }
+
+          doc.save(`${titleCategory}_Participant_List.pdf`);
+      } catch (e) {
+          console.error("Participant List generation failed", e)
+          alert("Failed to generate Participant List.")
+      } finally {
+          setGeneratingList(false);
+      }
+  }
+
+  // --- ATTENDANCE SHEET GENERATION LOGIC ---
+  const generateAttendanceSheetPDF = async (categoryOrEvents: 'ON STAGE' | 'OFF STAGE' | Event[]) => {
+      let eventsToPrint: Event[] = []
+      let titleCategory = ""
+
+      if (Array.isArray(categoryOrEvents)) {
+          eventsToPrint = categoryOrEvents
+          titleCategory = eventsToPrint.length === 1 ? (eventsToPrint[0].event_code || eventsToPrint[0].name) : "SELECTED"
+      } else {
+          eventsToPrint = events.filter(e => e.category === categoryOrEvents)
+          titleCategory = categoryOrEvents
       }
 
-      doc.save(`${category}_Participant_List.pdf`);
-      setGeneratingList(false);
+      if (eventsToPrint.length === 0) {
+          alert("No events found to print attendance sheet.")
+          return
+      }
+
+      setGeneratingAttendance(true)
+
+      try {
+          const doc = new jsPDF('p', 'mm', 'a4')
+          let isFirstPage = true
+
+          let headerImgData = ""
+          if (headerImage) {
+              headerImgData = await getImageDataUrl(headerImage)
+          }
+
+          for (const event of eventsToPrint) {
+              const { data } = await supabase
+                .from('participations')
+                .select(`
+                   students ( name, chest_no, class_grade, section ),
+                   teams ( name )
+                `)
+                .eq('event_id', event.id)
+
+              const rawParts = (data as any[]) || []
+              const parts = rawParts.map(p => ({
+                  chest: p.students?.chest_no || "N/A",
+                  name: p.students?.name || "Unknown",
+                  class: p.students?.class_grade || "-",
+                  team: p.teams?.name || "Unknown"
+              })).sort((a, b) => (parseInt(a.chest) || 999) - (parseInt(b.chest) || 999))
+
+              // Every program in separate A4 page
+              if (!isFirstPage) {
+                  doc.addPage()
+              }
+              isFirstPage = false
+
+              const pageWidth = doc.internal.pageSize.getWidth()
+              const pageHeight = doc.internal.pageSize.getHeight()
+              const margin = 14
+              let yPos = 14
+
+              // 1. Header Banner Image or Clean Text Header
+              if (headerImgData) {
+                  try {
+                      const imgProps = doc.getImageProperties(headerImgData)
+                      const desiredWidth = pageWidth - 2 * margin
+                      let imgHeight = (imgProps.height * desiredWidth) / imgProps.width
+                      if (imgHeight > 26) {
+                          imgHeight = 26
+                          const adjustedWidth = (imgProps.width * imgHeight) / imgProps.height
+                          const xOffset = (pageWidth - adjustedWidth) / 2
+                          doc.addImage(headerImgData, 'PNG', xOffset, yPos, adjustedWidth, imgHeight)
+                      } else {
+                          doc.addImage(headerImgData, 'PNG', margin, yPos, desiredWidth, imgHeight)
+                      }
+                      yPos += imgHeight + 4
+                  } catch (e) {
+                      doc.setFontSize(16)
+                      doc.setFont("helvetica", "bold")
+                      doc.text("PMSA ARTS FEST 2026-27", pageWidth / 2, yPos + 6, { align: 'center' })
+                      yPos += 12
+                  }
+              } else {
+                  doc.setFontSize(18)
+                  doc.setFont("helvetica", "bold")
+                  doc.setTextColor(0, 0, 0)
+                  doc.text("PMSA ARTS FEST 2026-27", pageWidth / 2, yPos + 4, { align: 'center' })
+                  yPos += 11
+              }
+
+              // 2. Attendance Sheet Title
+              doc.setFontSize(14)
+              doc.setFont("helvetica", "bold")
+              doc.setTextColor(0, 0, 0)
+              doc.text("PARTICIPANT ATTENDANCE SHEET", pageWidth / 2, yPos, { align: 'center' })
+              yPos += 7
+
+              // 3. Programme Details Info Box
+              doc.setDrawColor(180, 180, 180)
+              doc.setLineWidth(0.3)
+              doc.setFillColor(248, 250, 252)
+              doc.rect(margin, yPos, pageWidth - (2 * margin), 16, "FD")
+
+              doc.setTextColor(0, 0, 0)
+              doc.setFontSize(10)
+              doc.setFont("helvetica", "bold")
+              doc.text(`Programme: ${event.name} (${event.event_code || '---'})`, margin + 4, yPos + 6)
+              doc.text(`Category: ${event.category}`, pageWidth - margin - 4, yPos + 6, { align: 'right' })
+
+              doc.setFont("helvetica", "normal")
+              doc.setFontSize(9)
+              doc.text(`Total Registered: ${parts.length}`, margin + 4, yPos + 12)
+              doc.text(`Venue / Stage: ____________________`, pageWidth - margin - 4, yPos + 12, { align: 'right' })
+
+              yPos += 21
+
+              // 4. Table with Participant Info, Code Letter & Signature Column
+              const body = parts.length > 0 
+                ? parts.map((p, i) => [i + 1, p.chest, p.name, p.class, p.team, "", ""]) 
+                : [["-", "-", "No participants registered", "-", "-", "", ""]]
+
+              // @ts-ignore
+              autoTable(doc, {
+                  startY: yPos,
+                  head: [["#", "Chest No", "Name", "Class", "Team", "Code Letter", "Signature"]],
+                  body: body,
+                  theme: 'grid',
+                  headStyles: {
+                      fillColor: [30, 41, 59], // Slate-800
+                      textColor: [255, 255, 255],
+                      fontSize: 10,
+                      fontStyle: 'bold',
+                      halign: 'center',
+                      cellPadding: 3.5
+                  },
+                  bodyStyles: {
+                      fontSize: 9.5,
+                      textColor: [0, 0, 0],
+                      cellPadding: 4,
+                      minCellHeight: 8.5, // Generous height for physical code letter & signature
+                      lineColor: [190, 190, 190],
+                      lineWidth: 0.25
+                  },
+                  columnStyles: {
+                      0: { cellWidth: 10, halign: 'center' },
+                      1: { cellWidth: 20, halign: 'center', fontStyle: 'bold' },
+                      2: { cellWidth: 50, halign: 'left' },
+                      3: { cellWidth: 18, halign: 'center' },
+                      4: { cellWidth: 32, halign: 'left' },
+                      5: { cellWidth: 24, halign: 'center' }, // Code Letter column
+                      6: { cellWidth: 28, halign: 'center' }  // Signature column
+                  },
+                  margin: { left: margin, right: margin },
+                  alternateRowStyles: {
+                      fillColor: [252, 252, 252]
+                  }
+              })
+
+              // 5. Bottom Verification & Signatures
+              // @ts-ignore
+              const finalY = doc.lastAutoTable?.finalY || yPos + 30
+              const sigY = Math.min(finalY + 16, pageHeight - 14)
+
+              doc.setFontSize(9.5)
+              doc.setFont("helvetica", "bold")
+              doc.setTextColor(0, 0, 0)
+              doc.text("Total Present: _____     Total Absent: _____", margin + 2, sigY)
+              doc.text("Invigilator Sign: ___________________", pageWidth - margin - 2, sigY, { align: 'right' })
+
+              // 6. Minimal Footer
+              doc.setFontSize(8)
+              doc.setFont("helvetica", "normal")
+              doc.setTextColor(120, 120, 120)
+              doc.text(`PMSA Arts Fest 2026-27 • Attendance Sheet • ${event.name}`, pageWidth / 2, pageHeight - 5, { align: 'center' })
+          }
+
+          doc.save(`${titleCategory}_Attendance_Sheets.pdf`)
+      } catch (err) {
+          console.error("Attendance Sheet generation failed:", err)
+          alert("Failed to generate Attendance Sheet PDF.")
+      } finally {
+          setGeneratingAttendance(false)
+      }
   }
 
   // --- EXCEL GENERATION LOGIC ---
-  const generateExcel = async () => {
+  const generateExcel = async (categoryFilter: 'ALL' | 'ON STAGE' | 'OFF STAGE' | 'SELECTED' = 'ALL') => {
     try {
         setGeneratingExcel(true)
-        const { data: allData } = await supabase.from('participations').select(`event_id, teams (name), students (name)`);
+        const { data: allData, error } = await supabase
+          .from('participations')
+          .select(`
+            id,
+            status,
+            attendance_status,
+            events ( id, name, event_code, category ),
+            teams ( name ),
+            students ( name, chest_no, class_grade, section )
+          `)
+          .order('created_at', { ascending: true });
+
+        if (error) throw error
+
+        let filteredData = (allData as any[]) || []
+
+        if (categoryFilter === 'ON STAGE') {
+          filteredData = filteredData.filter(p => p.events?.category === 'ON STAGE')
+        } else if (categoryFilter === 'OFF STAGE') {
+          filteredData = filteredData.filter(p => p.events?.category === 'OFF STAGE')
+        } else if (categoryFilter === 'SELECTED' && selectedEventId) {
+          filteredData = filteredData.filter(p => p.events?.id === selectedEventId)
+        }
+
+        if (filteredData.length === 0) {
+          alert(`No participation records found for ${categoryFilter === 'ALL' ? 'the selected filter' : categoryFilter}.`)
+          return
+        }
+
+        // Sort by Event Name, then Chest No
+        filteredData.sort((a, b) => {
+          const eventA = a.events?.name || ''
+          const eventB = b.events?.name || ''
+          if (eventA !== eventB) return eventA.localeCompare(eventB)
+          const chestA = parseInt(a.students?.chest_no || '999') || 999
+          const chestB = parseInt(b.students?.chest_no || '999') || 999
+          return chestA - chestB
+        })
+
+        const excelRows = filteredData.map((p: any, idx: number) => ({
+            "SL No": idx + 1,
+            "Event Name": p.events?.name || "-",
+            "Event Code": p.events?.event_code || "-",
+            "Category": p.events?.category || "-",
+            "Chest No": p.students?.chest_no || "-",
+            "Student Name": p.students?.name || "-",
+            "Class": p.students?.class_grade || "-",
+            "Section": p.students?.section || "-",
+            "Team": p.teams?.name || "-"
+        }))
 
         const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(allData?.map((p:any) => ({
-            EventID: p.event_id,
-            Student: p.students?.name,
-            Team: p.teams?.name
-        })) || []);
-        XLSX.utils.book_append_sheet(wb, ws, "Participants");
-        XLSX.writeFile(wb, "ArtsFest_Data.xlsx");
+        const ws = XLSX.utils.json_to_sheet(excelRows);
+
+        // Auto-fit column widths
+        ws['!cols'] = [
+          { wch: 8 },  // SL No
+          { wch: 30 }, // Event Name
+          { wch: 14 }, // Event Code
+          { wch: 14 }, // Category
+          { wch: 12 }, // Chest No
+          { wch: 28 }, // Student Name
+          { wch: 10 }, // Class
+          { wch: 14 }, // Section
+          { wch: 20 }, // Team
+        ]
+
+        const sheetTitle = categoryFilter === 'ALL'
+          ? "All Participations"
+          : (categoryFilter === 'SELECTED' && selectedEvent ? selectedEvent.name.slice(0, 30) : categoryFilter)
+
+        XLSX.utils.book_append_sheet(wb, ws, sheetTitle);
+
+        const fileName = categoryFilter === 'ALL'
+          ? "ArtsFest_Participations_All.xlsx"
+          : (categoryFilter === 'SELECTED' && selectedEvent
+              ? `${selectedEvent.name.replace(/[^a-zA-Z0-9_-]/g, '_')}_Participants.xlsx`
+              : `ArtsFest_Participations_${categoryFilter.replace(/\s+/g, '_')}.xlsx`)
+
+        XLSX.writeFile(wb, fileName);
 
     } catch (error) {
         console.error("Excel generation failed:", error)
@@ -553,14 +859,17 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
     }
   }
 
+  const selectedEvent = events.find(e => e.id === selectedEventId)
+
   return (
     <div className="flex flex-col h-full bg-white border rounded-lg shadow-sm">
         {/* Toolbar */}
-        <div className="shrink-0 p-4 border-b bg-slate-50/50 flex flex-col sm:flex-row gap-4 justify-between items-end">
-            <div className="w-full sm:w-[400px] space-y-1.5">
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Select Event Sheet</label>
+        <div className="shrink-0 p-3.5 border-b bg-slate-50/70 flex flex-col xl:flex-row gap-3 justify-between items-start xl:items-center">
+            {/* Left: Event Selector */}
+            <div className="w-full sm:w-[380px] space-y-1">
+                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Select Event Sheet</label>
                 <Select value={selectedEventId} onValueChange={setSelectedEventId}>
-                    <SelectTrigger className="w-full bg-white h-10 shadow-sm border-slate-200">
+                    <SelectTrigger className="w-full bg-white h-10 shadow-xs border-slate-200">
                         <SelectValue placeholder="Choose an event to mark..." />
                     </SelectTrigger>
                     <SelectContent className="max-h-[300px] bg-white">
@@ -583,60 +892,125 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
                 </Select>
             </div>
 
-            <div className="flex gap-2 flex-wrap items-center">
-                {/* EXCEL BUTTON */}
-                <Button
-                    variant="outline"
-                    onClick={generateExcel}
-                    disabled={generatingExcel}
-                    className="gap-2 bg-green-50 text-green-700 border-green-200 hover:bg-green-100 hover:text-green-800"
-                >
-                    {generatingExcel ? <Loader2 className="w-4 h-4 animate-spin"/> : <FileSpreadsheet className="w-4 h-4" />}
-                    Export Excel
-                </Button>
+            {/* Right: Actions */}
+            <div className="flex flex-wrap items-center gap-2.5 w-full xl:w-auto">
+                {/* When an event IS selected: Show Event-Specific Downloads */}
+                {selectedEvent && (
+                    <div className="flex items-center gap-1.5 p-1 bg-white border border-slate-200 rounded-lg shadow-xs">
+                        <span className="text-[11px] font-bold text-slate-500 px-2 uppercase tracking-wider hidden sm:inline-block border-r border-slate-100">
+                            {selectedEvent.event_code || 'EVENT'}:
+                        </span>
+                        {/* 1. Score Sheet (Single Event) */}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            disabled={generatingPdf}
+                            onClick={() => generateScoreSheetPDF([selectedEvent])}
+                            className="h-8 px-2.5 text-xs font-semibold text-slate-700 hover:text-orange-700 hover:bg-orange-50 gap-1.5"
+                            title="Download Score Sheet for this event"
+                        >
+                            {generatingPdf ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5 text-orange-600" />}
+                            Score Sheet
+                        </Button>
 
-                {/* PDF SCORE SHEET (Single) */}
-                <Button
-                    variant="outline"
-                    disabled={!selectedEventId || generatingPdf}
-                    onClick={() => { const e = events.find(ev => ev.id === selectedEventId); if(e) generateScoreSheetPDF([e]) }}
-                    className="gap-2 bg-white hover:bg-slate-50"
-                >
-                    {generatingPdf ? <Loader2 className="w-4 h-4 animate-spin"/> : <FileDown className="w-4 h-4" />}
-                    Score Sheet
-                </Button>
+                        {/* 2. Attendance Sheet (Single Event) */}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            disabled={generatingAttendance}
+                            onClick={() => generateAttendanceSheetPDF([selectedEvent])}
+                            className="h-8 px-2.5 text-xs font-semibold text-slate-700 hover:text-blue-700 hover:bg-blue-50 gap-1.5"
+                            title="Download Attendance Sheet for this event"
+                        >
+                            {generatingAttendance ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <UserCheck className="w-3.5 h-3.5 text-blue-600" />}
+                            Attendance
+                        </Button>
 
-                {/* BULK SCORE SHEET EXPORT */}
+                        {/* 3. Participant List (Single Event) */}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            disabled={generatingList}
+                            onClick={() => generateParticipantListPDF([selectedEvent])}
+                            className="h-8 px-2.5 text-xs font-semibold text-slate-700 hover:text-emerald-700 hover:bg-emerald-50 gap-1.5"
+                            title="Download Participant List for this event"
+                        >
+                            {generatingList ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5 text-emerald-600" />}
+                            Participants
+                        </Button>
+                    </div>
+                )}
+
+                {/* Bulk Exports Dropdown */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button className="gap-2 bg-slate-900 text-white hover:bg-slate-800">
-                            <Printer className="w-4 h-4" /> Bulk Score Sheets <ChevronDown className="w-3 h-3 opacity-50"/>
+                        <Button variant="outline" size="sm" className="h-9 gap-1.5 border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-medium shadow-xs">
+                            <Printer className="w-4 h-4 text-slate-600" />
+                            <span>Bulk Exports</span>
+                            <ChevronDown className="w-3 h-3 opacity-50 ml-0.5" />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="bg-white">
+                    <DropdownMenuContent align="end" className="bg-white min-w-[220px]">
+                        <div className="px-2 py-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                            Judgment Score Sheets
+                        </div>
                         <DropdownMenuItem onClick={() => generateScoreSheetPDF(events.filter(e => e.category === 'ON STAGE'))}>
-                            All ON STAGE
+                            On Stage Score Sheets (All)
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => generateScoreSheetPDF(events.filter(e => e.category === 'OFF STAGE'))}>
-                            All OFF STAGE
+                            Off Stage Score Sheets (All)
+                        </DropdownMenuItem>
+
+                        <div className="px-2 py-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1 border-t">
+                            Attendance Sheets (1 A4 / Event)
+                        </div>
+                        <DropdownMenuItem onClick={() => generateAttendanceSheetPDF('ON STAGE')}>
+                            On Stage Attendance (All)
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => generateAttendanceSheetPDF('OFF STAGE')}>
+                            Off Stage Attendance (All)
+                        </DropdownMenuItem>
+
+                        <div className="px-2 py-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1 border-t">
+                            Participants List
+                        </div>
+                        <DropdownMenuItem onClick={() => generateParticipantListPDF('ON STAGE')}>
+                            On Stage List (All)
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => generateParticipantListPDF('OFF STAGE')}>
+                            Off Stage List (All)
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
 
-                 {/* NEW: BULK PARTICIPANT LIST EXPORT */}
-                 <DropdownMenu>
+                {/* Export Excel Dropdown */}
+                <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="gap-2 border-slate-300">
-                            {generatingList ? <Loader2 className="w-4 h-4 animate-spin"/> : <Download className="w-4 h-4" />}
-                            Participants List <ChevronDown className="w-3 h-3 opacity-50"/>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={generatingExcel}
+                            className="h-9 gap-1.5 bg-green-50 text-green-700 border-green-200 hover:bg-green-100 hover:text-green-800 font-medium shadow-xs"
+                        >
+                            {generatingExcel ? <Loader2 className="w-4 h-4 animate-spin"/> : <FileSpreadsheet className="w-4 h-4" />}
+                            <span>Excel</span>
+                            <ChevronDown className="w-3 h-3 opacity-50 ml-0.5" />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="bg-white">
-                        <DropdownMenuItem onClick={() => generateParticipantListPDF('ON STAGE')}>
-                            ON STAGE List
+                    <DropdownMenuContent align="end" className="bg-white min-w-[200px]">
+                        {selectedEventId && (
+                            <DropdownMenuItem onClick={() => generateExcel('SELECTED')}>
+                                Selected Event Excel
+                            </DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem onClick={() => generateExcel('ALL')}>
+                            All Events (Both On & Off)
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => generateParticipantListPDF('OFF STAGE')}>
-                            OFF STAGE List
+                        <DropdownMenuItem onClick={() => generateExcel('ON STAGE')}>
+                            On Stage Only
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => generateExcel('OFF STAGE')}>
+                            Off Stage Only
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

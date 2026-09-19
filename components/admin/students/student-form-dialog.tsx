@@ -29,7 +29,12 @@ interface StudentFormDialogProps {
   onSuccess: () => void
 }
 
-const CLASSES = ['FOUNDATION', 'TH-1', 'TH-2', 'AL-1', 'AL-2', 'AL-3', 'AL-4']
+const CLASSES_BY_SECTION: Record<string, string[]> = {
+  Foundation: ['FD-8', 'FD-9'],
+  Aliya: ['TH-1', 'TH-2', 'AL-1', 'AL-2', 'AL-3', 'AL-4']
+}
+
+const ALL_CLASSES = ['FD-8', 'FD-9', 'TH-1', 'TH-2', 'AL-1', 'AL-2', 'AL-3', 'AL-4']
 const SECTIONS = ['Aliya', 'Foundation']
 
 export function StudentFormDialog({ open, onOpenChange, student, teams, onSuccess }: StudentFormDialogProps) {
@@ -40,18 +45,19 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
   const [formData, setFormData] = useState({
     name: "",
     chest_no: "",
-    class_grade: "FOUNDATION",
+    class_grade: "TH-1",
     section: "Aliya",
     team_id: ""
   })
 
-  // Load data on edit
+  // Load data on edit or add
   useEffect(() => {
     if (student && open) {
+      const defaultClass = student.section === 'Foundation' ? 'FD-8' : 'TH-1'
       setFormData({
         name: student.name,
         chest_no: student.chest_no || "",
-        class_grade: student.class_grade || "FOUNDATION",
+        class_grade: student.class_grade || defaultClass,
         section: student.section,
         team_id: student.team_id
       })
@@ -60,7 +66,7 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
       setFormData({
         name: "",
         chest_no: "",
-        class_grade: "FOUNDATION",
+        class_grade: "TH-1",
         section: "Aliya",
         team_id: ""
       })
@@ -69,6 +75,18 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
   }, [student, open])
 
   const supabase = createClient()
+
+  const handleSectionChange = (newSection: string) => {
+    const validClasses = CLASSES_BY_SECTION[newSection] || ALL_CLASSES
+    const isCurrentClassValid = validClasses.includes(formData.class_grade)
+    const newClass = isCurrentClassValid ? formData.class_grade : validClasses[0]
+
+    setFormData(prev => ({
+      ...prev,
+      section: newSection,
+      class_grade: newClass
+    }))
+  }
 
   const handleSubmit = async () => {
     setError(null)
@@ -93,7 +111,6 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
 
       // 2. Perform Insert/Update
       if (student) {
-        // Update - FIX: Cast to 'any' to avoid type 'never' error
         const { error: updateError } = await (supabase.from('students') as any)
           .update({
             name: formData.name,
@@ -125,6 +142,11 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
       setLoading(false)
     }
   }
+
+  const currentAvailableClasses = CLASSES_BY_SECTION[formData.section] || ALL_CLASSES
+  const selectableClasses = (formData.class_grade && !currentAvailableClasses.includes(formData.class_grade))
+    ? [formData.class_grade, ...currentAvailableClasses]
+    : currentAvailableClasses
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -167,7 +189,7 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
             <div className="col-span-3">
               <Select
                 value={formData.section}
-                onValueChange={v => setFormData({ ...formData, section: v })}
+                onValueChange={handleSectionChange}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -190,7 +212,7 @@ export function StudentFormDialog({ open, onOpenChange, student, teams, onSucces
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-white">
-                  {CLASSES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                  {selectableClasses.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>

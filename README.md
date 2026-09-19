@@ -8,7 +8,7 @@ A modern **dashboard web app** built for the **PMSA Arts Fest** — a centralize
 
 ## 🚀 Overview
 
-This project is a **Next.js** and **TypeScript** powered dashboard created as the digital hub for the **PMSA Arts Fest 2025–26**. It provides a responsive UI, dynamic content routing, and easy-to-use components that help admins and attendees interact with festival information.
+This project is a **Next.js** and **TypeScript** powered dashboard created as the digital hub for the **PMSA Arts Fest 2026–27**. It provides a responsive UI, dynamic content routing, and easy-to-use components that help admins and attendees interact with festival information.
 
 Some examples of what the dashboard can include:
 
