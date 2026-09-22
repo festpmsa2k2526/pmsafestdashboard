@@ -10,13 +10,15 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select"
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel
 } from "@/components/ui/dropdown-menu"
-import { Loader2, FileText, Printer, FileDown, ChevronDown, Check, UserCheck, UserX, Clock, FileSpreadsheet, Download } from "lucide-react"
+import { Loader2, FileText, Printer, FileDown, ChevronDown, Check, UserCheck, UserX, Clock, FileSpreadsheet, Download, Sparkles, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 import * as XLSX from 'xlsx'
+
+const CODE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
 
 interface Event {
     id: string;
@@ -30,14 +32,17 @@ interface Event {
 interface ParticipationRecord {
     id: string
     event_id: string
+    team_id: string
     status: string
     attendance_status: string | null
+    code_letter: string | null
     students: {
         name: string
         chest_no: string | null
         class_grade: string | null
         section: string
         team: {
+            id: string
             name: string
             color_hex: string
         }
@@ -59,6 +64,8 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
   const [participants, setParticipants] = useState<ParticipationRecord[]>([])
   const [completedEventIds, setCompletedEventIds] = useState<Set<string>>(new Set())
   const [headerImage, setHeaderImage] = useState<string | null>(null)
+  const [codeLetters, setCodeLetters] = useState<Record<string, string>>({})
+  const [savingCodeLetter, setSavingCodeLetter] = useState(false)
 
   const supabase = createClient()
 
@@ -123,20 +130,22 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
     initData()
   }, [events])
 
-  // 3. Load Participants for Selected Event
+  // 3. Load Participants & Code Letters for Selected Event
   useEffect(() => {
     if (!selectedEventId) {
       setParticipants([])
+      setCodeLetters({})
       return
     }
 
     async function loadEventData() {
       setLoadingEvent(true)
+      
       const { data } = await supabase
         .from('participations')
         .select(`
-          id, event_id, status, attendance_status,
-          teams ( name, color_hex ),
+          id, event_id, team_id, status, attendance_status, code_letter,
+          teams ( id, name, color_hex ),
           students!inner ( name, chest_no, class_grade, section )
         `)
         .eq('event_id', selectedEventId)
@@ -144,22 +153,32 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
 
       if (data) {
         const rawData = data as unknown as any[]
-        const formatted: ParticipationRecord[] = rawData.map((p) => ({
-          id: p.id,
-          event_id: p.event_id,
-          status: p.status,
-          attendance_status: p.attendance_status || 'pending',
-          students: {
-            name: p.students?.name || "Unknown",
-            chest_no: p.students?.chest_no || 'N/A',
-            class_grade: p.students?.class_grade || '-',
-            section: p.students?.section || '-',
-            team: {
-                name: p.teams?.name || "Unknown Team",
-                color_hex: p.teams?.color_hex || "#ccc"
+        const letterMap: Record<string, string> = {}
+
+        const formatted: ParticipationRecord[] = rawData.map((p) => {
+          if (p.code_letter) {
+            letterMap[p.id] = p.code_letter
+          }
+          return {
+            id: p.id,
+            event_id: p.event_id,
+            team_id: p.team_id,
+            status: p.status,
+            attendance_status: p.attendance_status || 'pending',
+            code_letter: p.code_letter || null,
+            students: {
+              name: p.students?.name || "Unknown",
+              chest_no: p.students?.chest_no || 'N/A',
+              class_grade: p.students?.class_grade || '-',
+              section: p.students?.section || '-',
+              team: {
+                  id: p.teams?.id || p.team_id,
+                  name: p.teams?.name || "Unknown Team",
+                  color_hex: p.teams?.color_hex || "#ccc"
+              }
             }
           }
-        }))
+        })
 
         formatted.sort((a, b) => {
             const chestA = parseInt(a.students.chest_no || '999') || 999
@@ -168,13 +187,14 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
         })
 
         setParticipants(formatted)
+        setCodeLetters(letterMap)
       }
       setLoadingEvent(false)
     }
     loadEventData()
   }, [selectedEventId])
 
-  // 4. Handle Status Change
+  // 4. Handle Attendance Status Change
   const updateAttendance = async (participationId: string, newStatus: string) => {
       setParticipants(prev => prev.map(p =>
           p.id === participationId ? { ...p, attendance_status: newStatus } : p
@@ -201,6 +221,98 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
       } catch (err) {
           console.error("Failed to update status", err)
       }
+  }
+
+  // 5. Handle Single Code Letter Change (Direct Supabase update on participations table)
+  const updateCodeLetter = async (participationId: string, letter: string) => {
+    const formatted = letter.trim().toUpperCase()
+    const valToSave = (!formatted || formatted === 'NONE' || formatted === '-') ? null : formatted
+
+    setParticipants(prev => prev.map(p =>
+      p.id === participationId ? { ...p, code_letter: valToSave } : p
+    ))
+    setCodeLetters(prev => {
+      const next = { ...prev }
+      if (!valToSave) delete next[participationId]
+      else next[participationId] = valToSave
+      return next
+    })
+
+    try {
+      const { error } = await (supabase.from('participations') as any)
+        .update({ code_letter: valToSave })
+        .eq('id', participationId)
+
+      if (error) throw error
+    } catch (err) {
+      console.error("Failed to persist code letter to database", err)
+    }
+  }
+
+  // 6. Handle Auto-Assign Code Letters (By Team or Sequentially)
+  const autoAssignCodeLetters = async (mode: 'team' | 'sequential') => {
+    if (!selectedEventId || participants.length === 0) return
+    setSavingCodeLetter(true)
+
+    const newMap: Record<string, string> = {}
+
+    if (mode === 'team') {
+      // Group participants by team. All students in the same team get the same letter (A, A, B, B...)
+      const teamToLetterMap: Record<string, string> = {}
+      let letterIndex = 0
+
+      participants.forEach((p) => {
+        const teamKey = p.students.team.id || p.team_id || p.students.team.name
+        if (!teamToLetterMap[teamKey]) {
+          teamToLetterMap[teamKey] = CODE_LETTERS[letterIndex % CODE_LETTERS.length]
+          letterIndex++
+        }
+        newMap[p.id] = teamToLetterMap[teamKey]
+      })
+    } else {
+      // Sequential: Each student gets unique letter (A, B, C, D...)
+      participants.forEach((p, idx) => {
+        newMap[p.id] = CODE_LETTERS[idx % CODE_LETTERS.length]
+      })
+    }
+
+    setCodeLetters(newMap)
+    setParticipants(prev => prev.map(p => ({
+      ...p,
+      code_letter: newMap[p.id] || null
+    })))
+
+    try {
+      await Promise.all(
+        Object.entries(newMap).map(([pId, code]) =>
+          (supabase.from('participations') as any).update({ code_letter: code }).eq('id', pId)
+        )
+      )
+    } catch (err) {
+      console.error("Failed to auto-assign code letters", err)
+    } finally {
+      setSavingCodeLetter(false)
+    }
+  }
+
+  // 7. Clear All Code Letters for Selected Event
+  const clearAllCodeLetters = async () => {
+    if (!selectedEventId) return
+    if (!confirm("Are you sure you want to clear all code letters for this event?")) return
+
+    setSavingCodeLetter(true)
+    setCodeLetters({})
+    setParticipants(prev => prev.map(p => ({ ...p, code_letter: null })))
+
+    try {
+      await (supabase.from('participations') as any)
+        .update({ code_letter: null })
+        .eq('event_id', selectedEventId)
+    } catch (err) {
+      console.error("Failed to clear code letters", err)
+    } finally {
+      setSavingCodeLetter(false)
+    }
   }
 
   // --- HELPER: Image to Data URL ---
@@ -286,7 +398,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
     return null;
   }
 
-  // --- NEW: GENERATE SCORE SHEET (JUDGMENT SHEET) ---
+  // --- GENERATE SCORE SHEET (JUDGMENT SHEET) ---
   const generateScoreSheetPDF = async (eventsToPrint: Event[]) => {
     setGeneratingPdf(true)
     const doc = new jsPDF('p', 'mm', 'a4'); // A4 size
@@ -305,11 +417,14 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
         // Fetch Event Description (Criteria) & Participants
         const [eventDetails, participantsRes] = await Promise.all([
             supabase.from('events').select('description').eq('id', event.id).single(),
-            supabase.from('participations').select('id, teams(name), students(chest_no)').eq('event_id', event.id)
+            supabase.from('participations').select('id, code_letter, teams(name), students(chest_no)').eq('event_id', event.id)
         ]);
 
         const criteria = (eventDetails.data as { description: string } | null)?.description || "";
-        const parts = participantsRes.data as any[] || [];
+        const parts = (participantsRes.data as any[]) || [];
+
+        // Find unique assigned code letters for this event if any
+        const assignedLetters = Array.from(new Set(parts.map(p => p.code_letter).filter(Boolean))).sort() as string[]
 
         // --- PAGE LAYOUT ---
         const pageWidth = doc.internal.pageSize.getWidth();
@@ -374,9 +489,8 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
         doc.text("CRITERIA:", margin, yPos);
 
         if (criteria) {
-             // Render criteria as Image to support Malayalam ligatures
-             const criteriaWidth = pageWidth - margin - 35; // Available width
-             const result = textToImage(criteria, criteriaWidth, 10); // 10pt font
+             const criteriaWidth = pageWidth - margin - 35;
+             const result = textToImage(criteria, criteriaWidth, 10);
 
              if (result) {
                  const { dataUrl, heightMM } = result;
@@ -397,6 +511,8 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
 
         if (isCategoryC) {
             effectiveCount = 4; // Strictly A, B, C, D
+        } else if (assignedLetters.length > 0) {
+            effectiveCount = Math.max(assignedLetters.length, 5);
         } else {
             const rowCount = parts.length;
             effectiveCount = Math.max(rowCount, 5);
@@ -419,7 +535,12 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
         const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         for (let i = 0; i < effectiveCount; i++) {
-            const code = letters[i % 26] + (Math.floor(i / 26) > 0 ? Math.floor(i / 26) : "");
+            let code = ""
+            if (assignedLetters.length > 0 && i < assignedLetters.length) {
+              code = assignedLetters[i]
+            } else {
+              code = letters[i % 26] + (Math.floor(i / 26) > 0 ? Math.floor(i / 26) : "")
+            }
             tableBody.push([
                 code, "", "", ""
             ]);
@@ -429,7 +550,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
             startY: yPos,
             head: [["CODE", "REMARKS", "PLACE", "GRADE"]],
             body: tableBody,
-            theme: 'grid', // Full Borders
+            theme: 'grid',
             headStyles: {
                 fillColor: [255, 255, 255],
                 textColor: [0, 0, 0],
@@ -443,7 +564,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
             bodyStyles: {
                 lineWidth: 0.3,
                 lineColor: [0, 0, 0],
-                minCellHeight: dynamicRowHeight, // Dynamic Height
+                minCellHeight: dynamicRowHeight,
                 valign: 'middle',
                 textColor: [0,0,0]
             },
@@ -507,17 +628,22 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
               const { data } = await supabase
                 .from('participations')
                 .select(`
+                   id,
+                   code_letter,
                    students ( name, chest_no, class_grade, section ),
                    teams ( name )
                 `)
                 .eq('event_id', event.id);
 
-              const rawParts = data as any[] || [];
+              const rawParts = (data as any[]) || [];
+
               const parts = rawParts.map(p => ({
+                  id: p.id,
                   chest: p.students?.chest_no || "N/A",
                   name: p.students?.name || "Unknown",
                   class: p.students?.class_grade || "",
-                  team: p.teams?.name || "Unknown"
+                  team: p.teams?.name || "Unknown",
+                  code: p.code_letter || "-"
               })).sort((a, b) => (parseInt(a.chest) || 999) - (parseInt(b.chest) || 999));
 
               if (isSingle) {
@@ -532,26 +658,27 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
                   doc.text(`Category: ${event.category} | Total: ${parts.length}`, 105, 32, { align: 'center' });
 
                   const body = parts.length > 0 
-                    ? parts.map((p, i) => [i + 1, p.chest, p.name, p.class, p.team])
-                    : [["-", "-", "No participants registered", "-", "-"]];
+                    ? parts.map((p, i) => [i + 1, p.chest, p.name, p.class, p.team, p.code])
+                    : [["-", "-", "No participants registered", "-", "-", "-"]];
 
                   autoTable(doc, {
                       startY: 38,
-                      head: [["#", "Chest No", "Name", "Class", "Team"]],
+                      head: [["#", "Chest No", "Name", "Class", "Team", "Code"]],
                       body: body,
                       theme: 'striped',
                       headStyles: { fillColor: [50, 50, 50], halign: 'center' },
                       columnStyles: {
-                          0: { cellWidth: 15, halign: 'center' },
-                          1: { cellWidth: 28, halign: 'center', fontStyle: 'bold' },
+                          0: { cellWidth: 12, halign: 'center' },
+                          1: { cellWidth: 24, halign: 'center', fontStyle: 'bold' },
                           2: { cellWidth: 'auto', halign: 'left' },
-                          3: { cellWidth: 25, halign: 'center' },
-                          4: { cellWidth: 45, halign: 'left' },
+                          3: { cellWidth: 22, halign: 'center' },
+                          4: { cellWidth: 42, halign: 'left' },
+                          5: { cellWidth: 18, halign: 'center', fontStyle: 'bold' },
                       }
                   });
               } else if (parts.length > 0) {
                   // Bulk layout
-                  const body = parts.map((p, i) => [i + 1, p.chest, p.name, p.class, p.team]);
+                  const body = parts.map((p, i) => [i + 1, p.chest, p.name, p.class, p.team, p.code]);
 
                   doc.setFontSize(14);
                   doc.setFont("helvetica", "bold");
@@ -566,7 +693,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
 
                   autoTable(doc, {
                       startY: titleY + 5,
-                      head: [["#", "Chest No", "Name", "Class", "Team"]],
+                      head: [["#", "Chest No", "Name", "Class", "Team", "Code"]],
                       body: body,
                       theme: 'striped',
                       headStyles: { fillColor: [50, 50, 50] },
@@ -618,17 +745,22 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
               const { data } = await supabase
                 .from('participations')
                 .select(`
+                   id,
+                   code_letter,
                    students ( name, chest_no, class_grade, section ),
                    teams ( name )
                 `)
                 .eq('event_id', event.id)
 
               const rawParts = (data as any[]) || []
+
               const parts = rawParts.map(p => ({
+                  id: p.id,
                   chest: p.students?.chest_no || "N/A",
                   name: p.students?.name || "Unknown",
                   class: p.students?.class_grade || "-",
-                  team: p.teams?.name || "Unknown"
+                  team: p.teams?.name || "Unknown",
+                  code: p.code_letter || ""
               })).sort((a, b) => (parseInt(a.chest) || 999) - (parseInt(b.chest) || 999))
 
               // Every program in separate A4 page
@@ -699,7 +831,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
 
               // 4. Table with Participant Info, Code Letter & Signature Column
               const body = parts.length > 0 
-                ? parts.map((p, i) => [i + 1, p.chest, p.name, p.class, p.team, "", ""]) 
+                ? parts.map((p, i) => [i + 1, p.chest, p.name, p.class, p.team, p.code, ""]) 
                 : [["-", "-", "No participants registered", "-", "-", "", ""]]
 
               // @ts-ignore
@@ -730,7 +862,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
                       2: { cellWidth: 50, halign: 'left' },
                       3: { cellWidth: 18, halign: 'center' },
                       4: { cellWidth: 32, halign: 'left' },
-                      5: { cellWidth: 24, halign: 'center' }, // Code Letter column
+                      5: { cellWidth: 24, halign: 'center', fontStyle: 'bold', fontSize: 11 }, // Code Letter column
                       6: { cellWidth: 28, halign: 'center' }  // Signature column
                   },
                   margin: { left: margin, right: margin },
@@ -770,12 +902,14 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
   const generateExcel = async (categoryFilter: 'ALL' | 'ON STAGE' | 'OFF STAGE' | 'SELECTED' = 'ALL') => {
     try {
         setGeneratingExcel(true)
+
         const { data: allData, error } = await supabase
           .from('participations')
           .select(`
             id,
             status,
             attendance_status,
+            code_letter,
             events ( id, name, event_code, category ),
             teams ( name ),
             students ( name, chest_no, class_grade, section )
@@ -818,7 +952,9 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
             "Student Name": p.students?.name || "-",
             "Class": p.students?.class_grade || "-",
             "Section": p.students?.section || "-",
-            "Team": p.teams?.name || "-"
+            "Team": p.teams?.name || "-",
+            "Code Letter": p.code_letter || "-",
+            "Attendance": p.attendance_status || "pending"
         }))
 
         const wb = XLSX.utils.book_new();
@@ -835,6 +971,8 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
           { wch: 10 }, // Class
           { wch: 14 }, // Section
           { wch: 20 }, // Team
+          { wch: 14 }, // Code Letter
+          { wch: 14 }, // Attendance
         ]
 
         const sheetTitle = categoryFilter === 'ALL'
@@ -894,12 +1032,52 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
 
             {/* Right: Actions */}
             <div className="flex flex-wrap items-center gap-2.5 w-full xl:w-auto">
-                {/* When an event IS selected: Show Event-Specific Downloads */}
+                {/* When an event IS selected: Show Event-Specific Actions & Downloads */}
                 {selectedEvent && (
-                    <div className="flex items-center gap-1.5 p-1 bg-white border border-slate-200 rounded-lg shadow-xs">
+                    <div className="flex flex-wrap items-center gap-1.5 p-1 bg-white border border-slate-200 rounded-lg shadow-xs">
                         <span className="text-[11px] font-bold text-slate-500 px-2 uppercase tracking-wider hidden sm:inline-block border-r border-slate-100">
                             {selectedEvent.event_code || 'EVENT'}:
                         </span>
+
+                        {/* Auto-Assign Code Letters Dropdown */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    disabled={savingCodeLetter || participants.length === 0}
+                                    className="h-8 px-2.5 text-xs font-semibold text-amber-700 bg-amber-50/50 hover:bg-amber-100 border-amber-200 gap-1.5"
+                                    title="Auto assign code letters A, B, C..."
+                                >
+                                    {savingCodeLetter ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-amber-600" />}
+                                    <span>Code Letters</span>
+                                    <ChevronDown className="w-3 h-3 opacity-50" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" className="bg-white min-w-[240px]">
+                                <DropdownMenuLabel className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                    Quick Assign Code Letters
+                                </DropdownMenuLabel>
+                                <DropdownMenuItem onClick={() => autoAssignCodeLetters('team')} className="cursor-pointer">
+                                    <div className="flex flex-col">
+                                        <span className="font-medium text-slate-800">By Team (Team Event)</span>
+                                        <span className="text-[11px] text-slate-500">Same letter (A, A, B, B...) for teammates</span>
+                                    </div>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => autoAssignCodeLetters('sequential')} className="cursor-pointer">
+                                    <div className="flex flex-col">
+                                        <span className="font-medium text-slate-800">By Participant (Sequential)</span>
+                                        <span className="text-[11px] text-slate-500">Unique letters (A, B, C, D...) per student</span>
+                                    </div>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={clearAllCodeLetters} className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50">
+                                    <Trash2 className="w-3.5 h-3.5 mr-2" />
+                                    <span>Clear All Code Letters</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
                         {/* 1. Score Sheet (Single Event) */}
                         <Button
                             variant="ghost"
@@ -1022,7 +1200,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
             {!selectedEventId ? (
                 <div className="h-full flex flex-col items-center justify-center text-slate-300">
                     <div className="p-6 rounded-full bg-slate-50 mb-4"><FileText className="w-10 h-10" /></div>
-                    <p className="font-medium text-slate-500">Select an event above to mark participation</p>
+                    <p className="font-medium text-slate-500">Select an event above to mark participation and code letters</p>
                 </div>
             ) : loadingEvent ? (
                 <div className="h-full flex items-center justify-center"><Loader2 className="animate-spin text-primary w-8 h-8" /></div>
@@ -1034,14 +1212,17 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
                             <TableHead className="font-bold text-slate-700">Student Name</TableHead>
                             <TableHead className="font-bold text-slate-700 hidden md:table-cell">Class</TableHead>
                             <TableHead className="font-bold text-slate-700">Team</TableHead>
+                            <TableHead className="w-32 font-bold text-slate-700 text-center">Code Letter</TableHead>
                             <TableHead className="w-[180px] text-right font-bold text-slate-700 pr-6">Participation</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {participants.length === 0 ? (
-                            <TableRow><TableCell colSpan={5} className="text-center py-16 text-muted-foreground italic">No participants found.</TableCell></TableRow>
+                            <TableRow><TableCell colSpan={6} className="text-center py-16 text-muted-foreground italic">No participants found.</TableCell></TableRow>
                         ) : (
-                            participants.map((p, idx) => (
+                            participants.map((p, idx) => {
+                                const currentCode = codeLetters[p.id] || p.code_letter || ""
+                                return (
                                 <TableRow key={p.id} className={cn("hover:bg-slate-50 transition-colors", idx % 2 === 0 ? "bg-white" : "bg-slate-50/30")}>
                                     <TableCell className="font-bold font-mono text-base text-slate-700 bg-slate-50/50 border-r">{p.students.chest_no}</TableCell>
                                     <TableCell>
@@ -1055,6 +1236,51 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
                                             <span className="font-medium text-sm text-slate-700">{p.students.team.name}</span>
                                         </div>
                                     </TableCell>
+                                    
+                                    {/* Code Letter Selector */}
+                                    <TableCell className="text-center">
+                                        <div className="flex items-center justify-center">
+                                            <Select
+                                                value={currentCode || "NONE"}
+                                                onValueChange={(val) => updateCodeLetter(p.id, val)}
+                                            >
+                                                <SelectTrigger
+                                                    className={cn(
+                                                        "h-8 w-24 text-center font-mono font-bold text-xs transition-all shadow-xs border",
+                                                        currentCode
+                                                            ? "bg-amber-50 text-amber-800 border-amber-300 ring-1 ring-amber-200"
+                                                            : "bg-white text-slate-400 border-slate-200 hover:border-slate-300"
+                                                    )}
+                                                >
+                                                    <span className="w-full text-center">
+                                                        {currentCode ? `Code ${currentCode}` : "— None —"}
+                                                    </span>
+                                                </SelectTrigger>
+                                                <SelectContent align="center" className="max-h-64 bg-white">
+                                                    <SelectItem value="NONE" className="text-slate-400 font-sans italic text-xs">
+                                                        — None —
+                                                    </SelectItem>
+                                                    {CODE_LETTERS.map((letter) => {
+                                                        const countSameLetter = Object.values(codeLetters).filter(c => c === letter).length
+                                                        return (
+                                                            <SelectItem key={letter} value={letter} className="cursor-pointer font-mono font-bold">
+                                                                <div className="flex items-center justify-between w-full gap-4">
+                                                                    <span className="text-sm text-amber-700">{letter}</span>
+                                                                    {countSameLetter > 0 && (
+                                                                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-sans font-normal">
+                                                                            {countSameLetter} {countSameLetter === 1 ? 'student' : 'students'}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            </SelectItem>
+                                                        )
+                                                    })}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </TableCell>
+
+                                    {/* Attendance Status Selector */}
                                     <TableCell className="text-right pr-4">
                                         <Select
                                             defaultValue={p.attendance_status || 'pending'}
@@ -1089,7 +1315,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
                                         </Select>
                                     </TableCell>
                                 </TableRow>
-                            ))
+                            )})
                         )}
                     </TableBody>
                 </Table>

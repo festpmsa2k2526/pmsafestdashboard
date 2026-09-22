@@ -133,6 +133,8 @@ export interface Database {
           result_position: 'FIRST' | 'SECOND' | 'THIRD' | null
           points_earned: number
           performance_grade: 'A' | 'B' | 'C' | 'NONE' | null
+          attendance_status: string | null
+          code_letter: string | null
         }
         Insert: {
           id?: string
@@ -144,6 +146,8 @@ export interface Database {
           result_position?: 'FIRST' | 'SECOND' | 'THIRD' | null
           points_earned?: number
           performance_grade?: 'A' | 'B' | 'C' | 'NONE' | null
+          attendance_status?: string | null
+          code_letter?: string | null
         }
         Update: {
           id?: string
@@ -155,6 +159,8 @@ export interface Database {
           result_position?: 'FIRST' | 'SECOND' | 'THIRD' | null
           points_earned?: number
           performance_grade?: 'A' | 'B' | 'C' | 'NONE' | null
+          attendance_status?: string | null
+          code_letter?: string | null
         }
       }
     }
