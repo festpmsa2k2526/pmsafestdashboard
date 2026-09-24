@@ -465,7 +465,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
         doc.setFontSize(9);
         doc.setFont("helvetica", "normal");
         doc.text(
-        "GRADING SYSTEM: GRADE A+ - 90% AND ABOVE, GRADE A - 80% AND ABOVE,",
+        "GRADING SYSTEM: GRADE A+ - 90% AND ABOVE, GRADE A - 80% TO 89%, GRADE B - 70% TO 79%,",
         pageWidth / 2,
         yPos,
         { align: 'center' }
@@ -474,7 +474,7 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
         yPos += 4;
 
         doc.text(
-        "GRADE B - 70% TO 79%, GRADE C - 60% TO 69%",
+        "GRADE C - 60% TO 69%, NO GRADE - BELOW 59%",
         pageWidth / 2,
         yPos,
         { align: 'center' }
