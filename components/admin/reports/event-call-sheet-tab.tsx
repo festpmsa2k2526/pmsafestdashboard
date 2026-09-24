@@ -464,7 +464,22 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
 
         doc.setFontSize(9);
         doc.setFont("helvetica", "normal");
-        doc.text("GRADING SYSTEM: GRADE A-80% AND ABOVE, GRADE B-70% TO 79%, GRADE C-60% TO 69%", pageWidth / 2, yPos, { align: 'center' });
+        doc.text(
+        "GRADING SYSTEM: GRADE A+ - 90% AND ABOVE, GRADE A - 80% AND ABOVE,",
+        pageWidth / 2,
+        yPos,
+        { align: 'center' }
+        );
+
+        yPos += 4;
+
+        doc.text(
+        "GRADE B - 70% TO 79%, GRADE C - 60% TO 69%",
+        pageWidth / 2,
+        yPos,
+        { align: 'center' }
+        );
+
         yPos += 12;
 
         // 3. Info Fields
