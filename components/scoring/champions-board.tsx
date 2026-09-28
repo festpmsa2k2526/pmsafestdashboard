@@ -69,9 +69,10 @@ export function ChampionsBoard({ refreshTrigger }: { refreshTrigger: number }) {
                     : p.events?.applicable_section === 'General';
 
                 // Check if the EVENT itself is Category 'A' (Main Item)
-                const isCategoryAEvent = p.events.grade_type === 'A';
+                const isCategoryAEvent = p.events?.grade_type === 'A';
+                const hasAGradePerf = p.performance_grade === 'A+' || p.performance_grade === 'A';
 
-                if (!isGeneral && isCategoryAEvent && p.result_position === 'FIRST' && p.performance_grade === 'A') {
+                if (!isGeneral && isCategoryAEvent && p.result_position === 'FIRST' && hasAGradePerf) {
                     s.a_grade_count++
                     if (p.events.category === 'ON STAGE') s.has_on_stage_A_win = true
                     if (p.events.category === 'OFF STAGE') s.has_off_stage_A_win = true

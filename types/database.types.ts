@@ -132,7 +132,7 @@ export interface Database {
           created_at: string
           result_position: 'FIRST' | 'SECOND' | 'THIRD' | null
           points_earned: number
-          performance_grade: 'A' | 'B' | 'C' | 'NONE' | null
+          performance_grade: 'A+' | 'A' | 'B' | 'C' | 'NONE' | null
           attendance_status: string | null
           code_letter: string | null
         }
@@ -145,7 +145,7 @@ export interface Database {
           created_at?: string
           result_position?: 'FIRST' | 'SECOND' | 'THIRD' | null
           points_earned?: number
-          performance_grade?: 'A' | 'B' | 'C' | 'NONE' | null
+          performance_grade?: 'A+' | 'A' | 'B' | 'C' | 'NONE' | null
           attendance_status?: string | null
           code_letter?: string | null
         }
@@ -158,7 +158,7 @@ export interface Database {
           created_at?: string
           result_position?: 'FIRST' | 'SECOND' | 'THIRD' | null
           points_earned?: number
-          performance_grade?: 'A' | 'B' | 'C' | 'NONE' | null
+          performance_grade?: 'A+' | 'A' | 'B' | 'C' | 'NONE' | null
           attendance_status?: string | null
           code_letter?: string | null
         }

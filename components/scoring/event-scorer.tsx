@@ -39,10 +39,10 @@ interface Participant {
   student?: { id: string; name: string; chest_no: string } | null
   team: { id: string; name: string; color_hex: string }
   result_position: 'FIRST' | 'SECOND' | 'THIRD' | null
-  performance_grade: 'A' | 'B' | 'C' | 'NONE' | null
+  performance_grade: 'A+' | 'A' | 'B' | 'C' | 'NONE' | null
 }
 
-const PERF_POINTS = { 'A': 5, 'B': 3, 'C': 1, 'NONE': 0 }
+const PERF_POINTS: Record<string, number> = { 'A+': 7, 'A': 5, 'B': 3, 'C': 1, 'NONE': 0 }
 
 interface EventScorerProps {
   section: string
@@ -512,16 +512,17 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
                                                     <div className="mt-2 pt-1.5 border-t border-dashed border-slate-200 flex items-center justify-between gap-2 animate-in fade-in zoom-in-95 duration-200">
                                                         <span className="text-[9px] font-bold uppercase text-slate-400">Perf.</span>
                                                         <div className="flex gap-0.5">
-                                                            {['A', 'B', 'C', 'NONE'].map(g => (
+                                                            {['A+', 'A', 'B', 'C', 'NONE'].map(g => (
                                                                 <button
                                                                     key={g}
                                                                     onClick={(e) => { e.stopPropagation(); updateWinnerGrade(pos as any, id, g) }}
                                                                     className={cn(
-                                                                        "text-[9px] w-5 h-5 rounded flex items-center justify-center font-bold border transition-colors",
+                                                                        "text-[9px] min-w-[20px] px-1 h-5 rounded flex items-center justify-center font-bold border transition-colors",
                                                                         grade === g
                                                                             ? "bg-slate-800 text-white border-slate-800"
                                                                             : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
                                                                     )}
+                                                                    title={g === 'NONE' ? 'No Grade (+0 pts)' : `Grade ${g} (+${PERF_POINTS[g]} pts)`}
                                                                 >
                                                                     {g === 'NONE' ? '-' : g}
                                                                 </button>
@@ -572,19 +573,20 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
                                                 {hasGrade && <Badge variant="secondary" className="h-5 px-1.5 text-[10px] bg-slate-100 text-slate-700">+{PERF_POINTS[grade as keyof typeof PERF_POINTS]} pts</Badge>}
                                             </div>
 
-                                            <div className="flex items-center justify-between gap-2 mt-auto pt-2 border-t border-slate-50">
+                                            <div className="flex items-center justify-between gap-1.5 mt-auto pt-2 border-t border-slate-50">
                                                 <span className="text-[9px] text-slate-400 font-medium">GRADE</span>
-                                                <div className="flex gap-1">
-                                                     {['A', 'B', 'C'].map(g => (
+                                                <div className="flex items-center gap-1">
+                                                     {['A+', 'A', 'B', 'C'].map(g => (
                                                         <button
                                                             key={g}
                                                             onClick={() => updateOtherGrade(id, g)}
                                                             className={cn(
-                                                                "w-6 h-6 rounded text-[10px] font-bold border transition-all",
+                                                                "min-w-[26px] px-1 h-6 rounded text-[10px] font-bold border transition-all",
                                                                 grade === g
                                                                     ? "bg-slate-800 text-white border-slate-800 shadow-sm"
                                                                     : "bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                                                             )}
+                                                            title={`Grade ${g} (+${PERF_POINTS[g]} pts)`}
                                                         >
                                                             {g}
                                                         </button>
@@ -592,10 +594,10 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
                                                      <button
                                                         onClick={() => updateOtherGrade(id, 'NONE')}
                                                         className={cn(
-                                                            "w-6 h-6 rounded text-[10px] border transition-all",
-                                                            grade === 'NONE' ? "bg-slate-100 text-slate-400 border-transparent" : "text-red-400 hover:bg-red-50 border-transparent"
+                                                            "w-6 h-6 rounded text-[10px] border transition-all flex items-center justify-center",
+                                                            grade === 'NONE' ? "bg-slate-100 text-slate-400 border-transparent" : "text-red-400 hover:bg-red-50 border-slate-200"
                                                         )}
-                                                        title="Clear"
+                                                        title="No Grade (Clear)"
                                                      >
                                                         ✕
                                                      </button>
