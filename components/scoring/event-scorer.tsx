@@ -384,10 +384,11 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
         isGroup: true,
         groupData: g,
         title: g.groupLabel,
+        codeLetter: g.codeLetter ? g.codeLetter.trim().toUpperCase() : null,
         subtitle: g.members.length > 0 
           ? g.members.map(m => `${m.name} (${m.chest_no})`).join(', ')
           : 'No students registered',
-        badge: g.codeLetter ? `Code ${g.codeLetter}` : null,
+        badge: null,
         teamColor: g.teamColor
       }))
     } else {
@@ -396,8 +397,9 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
         isGroup: false,
         participantData: p,
         title: p.student?.name || 'Unknown',
+        codeLetter: p.code_letter ? p.code_letter.trim().toUpperCase() : null,
         subtitle: p.team?.name || 'Team Entry',
-        badge: p.student?.chest_no ? `#${p.student.chest_no}` : (p.code_letter ? `Code ${p.code_letter}` : null),
+        badge: p.student?.chest_no ? `#${p.student.chest_no}` : null,
         teamColor: p.team?.color_hex
       }))
     }
@@ -724,10 +726,15 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
                         >
                           <div className="flex justify-between items-start">
                             <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2 flex-wrap">
                                 <span className={cn("font-bold text-sm truncate", isSelected ? "text-primary" : "text-slate-800")}>
                                   {item.title}
                                 </span>
+                                {item.codeLetter && (
+                                  <span className="font-mono text-[10px] font-black px-1.5 py-0.5 rounded bg-blue-100 text-blue-900 border border-blue-200 shrink-0">
+                                    Code: {item.codeLetter}
+                                  </span>
+                                )}
                                 {item.badge && (
                                   <span className="font-mono text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 shrink-0">
                                     {item.badge}
@@ -798,7 +805,14 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
                       <div key={id} className="p-2.5 rounded-lg border border-slate-100 bg-white hover:border-slate-200 flex flex-col justify-between gap-2 shadow-2xs">
                         <div>
                           <div className="flex items-center justify-between gap-1">
-                            <span className="font-bold text-xs text-slate-800 truncate">{item.title}</span>
+                            <div className="flex items-center gap-1.5 truncate">
+                              <span className="font-bold text-xs text-slate-800 truncate">{item.title}</span>
+                              {item.codeLetter && (
+                                <span className="font-mono text-[9px] font-black px-1.5 py-0.2 rounded bg-blue-100 text-blue-900 border border-blue-200 shrink-0">
+                                  Code: {item.codeLetter}
+                                </span>
+                              )}
+                            </div>
                             {item.badge && (
                               <span className="font-mono text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 shrink-0">
                                 {item.badge}

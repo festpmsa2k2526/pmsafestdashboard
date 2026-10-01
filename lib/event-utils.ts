@@ -24,8 +24,10 @@ export function isGroupEvent(event: {
   // Category C events are all group events
   if (grade === 'C') return true;
 
-  // Category B and other group events
+  // Category A, B and other special group events
   if (
+    name.includes('PHOTO FEATURE') ||
+    name.includes('PHOTOFEATURE') ||
     name.includes('BROCHURE MAKING') ||
     name.includes('STORY WAVING') ||
     name.includes('STORY WEAVING') ||
