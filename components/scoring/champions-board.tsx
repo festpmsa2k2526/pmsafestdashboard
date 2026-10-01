@@ -46,6 +46,7 @@ export function ChampionsBoard({ refreshTrigger }: { refreshTrigger: number }) {
                         team: p.students.team.name,
                         section: p.students.section,
                         total: 0,
+                        catAPoints: 0,
                         has_on_stage_A_win: false,
                         has_off_stage_A_win: false,
                         a_grade_count: 0
@@ -54,26 +55,30 @@ export function ChampionsBoard({ refreshTrigger }: { refreshTrigger: number }) {
 
                 const s = students[sid]
 
-                // 1. POINTS: Count ALL individual items (Including General & Grade B)
+                // 1. Overall & Category A Points
                 s.total += p.points_earned
+                const isCategoryAEvent = p.events?.grade_type === 'A'
+                if (isCategoryAEvent) {
+                    s.catAPoints += p.points_earned
+                }
 
-                // 2. ELIGIBILITY FOR KALA PRATHIBHA
+                // 2. Count A/A+ Performance Grades (Tie-breaker)
+                const hasAGradePerf = p.performance_grade === 'A+' || p.performance_grade === 'A'
+                if (hasAGradePerf) {
+                    s.a_grade_count++
+                }
+
+                // 3. ELIGIBILITY FOR KALA PRATHIBHA
                 // Criteria:
                 // - Must be an 'A' Grade Event (Main Event)
                 // - Must be FIRST Position
-                // - Must be 'A' Grade Performance
+                // - Must be 'A' Grade Performance (A or A+)
                 // - Must NOT be 'General' section
-
                 const isGeneral = Array.isArray(p.events?.applicable_section)
                     ? p.events.applicable_section.includes('General')
-                    : p.events?.applicable_section === 'General';
-
-                // Check if the EVENT itself is Category 'A' (Main Item)
-                const isCategoryAEvent = p.events?.grade_type === 'A';
-                const hasAGradePerf = p.performance_grade === 'A+' || p.performance_grade === 'A';
+                    : p.events?.applicable_section === 'General'
 
                 if (!isGeneral && isCategoryAEvent && p.result_position === 'FIRST' && hasAGradePerf) {
-                    s.a_grade_count++
                     if (p.events.category === 'ON STAGE') s.has_on_stage_A_win = true
                     if (p.events.category === 'OFF STAGE') s.has_off_stage_A_win = true
                 }
@@ -91,9 +96,9 @@ export function ChampionsBoard({ refreshTrigger }: { refreshTrigger: number }) {
                 let kalaWinner: any = null
 
                 if (kalaCandidates.length > 0) {
-                    // Sort by Total Points (Desc), then by Count of A Grades (Desc)
+                    // Sort by Category A Points (Desc), then by Count of A/A+ Grades (Desc)
                     kalaCandidates.sort((a: any, b: any) => {
-                        if (b.total !== a.total) return b.total - a.total
+                        if (b.catAPoints !== a.catAPoints) return b.catAPoints - a.catAPoints
                         return b.a_grade_count - a.a_grade_count
                     })
                     kalaWinner = kalaCandidates[0]
@@ -101,31 +106,33 @@ export function ChampionsBoard({ refreshTrigger }: { refreshTrigger: number }) {
                     results.push({
                         name: kalaWinner.name,
                         team: kalaWinner.team,
-                        total: kalaWinner.total,
+                        total: kalaWinner.catAPoints,
                         section: sectionName,
                         type: 'KALA'
                     })
                 }
 
                 // 2. Find Sargga Prathibha
-                // Criteria: Highest points among those who are NOT the Kala Prathibha
+                // Criteria: Highest total individual points across all scored individual events in Category A (who is not Kala Prathibha)
+                // Tie-breaker: Highest number of A/A+ grades
                 const sarggaCandidates = sectionStudents.filter((s: any) => s.id !== kalaWinner?.id)
 
                 if (sarggaCandidates.length > 0) {
-                    // Sort strictly by total points
                     sarggaCandidates.sort((a: any, b: any) => {
-                        if (b.total !== a.total) return b.total - a.total
+                        if (b.catAPoints !== a.catAPoints) return b.catAPoints - a.catAPoints
                         return b.a_grade_count - a.a_grade_count
                     })
 
                     const sarggaWinner = sarggaCandidates[0]
-                    results.push({
-                        name: sarggaWinner.name,
-                        team: sarggaWinner.team,
-                        total: sarggaWinner.total,
-                        section: sectionName,
-                        type: 'SARGGA'
-                    })
+                    if (sarggaWinner && sarggaWinner.catAPoints > 0) {
+                        results.push({
+                            name: sarggaWinner.name,
+                            team: sarggaWinner.team,
+                            total: sarggaWinner.catAPoints,
+                            section: sectionName,
+                            type: 'SARGGA'
+                        })
+                    }
                 }
             })
 

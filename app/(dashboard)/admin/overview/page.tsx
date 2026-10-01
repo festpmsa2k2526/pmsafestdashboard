@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase"
-import { Loader2, Download, BarChart3, PieChart } from "lucide-react"
+import { Loader2, Download, BarChart3, PieChart, FileSpreadsheet } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { TeamPerformance } from "@/components/overview/team-performance"
 import { SectionAnalysis } from "@/components/overview/section-analysis"
@@ -269,12 +269,20 @@ export default function OverviewPage() {
         <div className="flex items-center gap-3">
           <TvBroadcastController />
           <Button
+            variant="outline"
+            onClick={() => window.open('/api/export-scores', '_blank')}
+            className="border-slate-200 text-slate-700 hover:bg-slate-50 shadow-xs"
+          >
+            <FileSpreadsheet className="w-4 h-4 mr-2 text-emerald-600" />
+            Export CSV
+          </Button>
+          <Button
             onClick={handleDownloadPDF}
             disabled={isDownloading}
             className="bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/20"
           >
             {isDownloading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
-            Download Report
+            Download PDF
           </Button>
         </div>
       </div>

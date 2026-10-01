@@ -119,15 +119,22 @@ async function run() {
     s.totalPoints += p.points_earned;
     s.events.push(`${p.event?.name} (${p.result_position || '-'}, ${p.performance_grade || '-'} => ${p.points_earned}pts)`);
 
+    const isCatA = p.event?.grade_type === 'A';
+    if (isCatA) {
+      s.catAPoints = (s.catAPoints || 0) + p.points_earned;
+    }
+
+    const hasAGradePerf = p.performance_grade === 'A+' || p.performance_grade === 'A';
+    if (hasAGradePerf) {
+      s.a_grade_count++;
+    }
+
     const isGeneral = Array.isArray(p.event?.applicable_section)
       ? p.event.applicable_section.includes('General')
       : p.event?.applicable_section === 'General';
-    const isCategoryAEvent = p.event?.grade_type === 'A';
-    const hasAGradePerf = p.performance_grade === 'A+' || p.performance_grade === 'A';
     const isFirst = p.result_position === 'FIRST';
 
-    if (!isGeneral && isCategoryAEvent && isFirst && hasAGradePerf) {
-      s.a_grade_count++;
+    if (!isGeneral && isCatA && isFirst && hasAGradePerf) {
       if (p.event?.category === 'ON STAGE') s.has_on_stage_A_win = true;
       if (p.event?.category === 'OFF STAGE') s.has_off_stage_A_win = true;
     }
@@ -137,7 +144,7 @@ async function run() {
   console.log('\n=== KALA & SARGGA PRATHIBHA RANKINGS ===');
   sections.forEach(sec => {
     const list = Object.values(studentScores).filter(s => s.section === sec);
-    list.sort((a, b) => b.totalPoints - a.totalPoints || b.a_grade_count - a.a_grade_count);
+    list.sort((a, b) => (b.catAPoints || 0) - (a.catAPoints || 0) || b.a_grade_count - a.a_grade_count);
 
     const kalaCandidates = list.filter(s => s.has_on_stage_A_win && s.has_off_stage_A_win);
     const kalaWinner = kalaCandidates.length > 0 ? kalaCandidates[0] : null;
@@ -146,8 +153,8 @@ async function run() {
     const sarggaWinner = sarggaCandidates.length > 0 ? sarggaCandidates[0] : null;
 
     console.log(`\n--- ${sec.toUpperCase()} SECTION ---`);
-    console.log(`👑 KALA PRATHIBHA: ${kalaWinner ? `${kalaWinner.name} (${kalaWinner.team}) - ${kalaWinner.totalPoints} pts [On-Stage A: ${kalaWinner.has_on_stage_A_win}, Off-Stage A: ${kalaWinner.has_off_stage_A_win}]` : 'Not eligible / Not declared'}`);
-    console.log(`⭐ SARGGA PRATHIBHA: ${sarggaWinner ? `${sarggaWinner.name} (${sarggaWinner.team}) - ${sarggaWinner.totalPoints} pts` : 'Not declared'}`);
+    console.log(`👑 KALA PRATHIBHA: ${kalaWinner ? `${kalaWinner.name} (${kalaWinner.team}) - ${kalaWinner.catAPoints || 0} Category A pts [On-Stage A: ${kalaWinner.has_on_stage_A_win}, Off-Stage A: ${kalaWinner.has_off_stage_A_win}]` : 'Not declared'}`);
+    console.log(`⭐ SARGGA PRATHIBHA: ${sarggaWinner ? `${sarggaWinner.name} (${sarggaWinner.team}) - ${sarggaWinner.catAPoints || 0} Category A pts (${sarggaWinner.totalPoints} total pts)` : 'Not declared'}`);
 
     console.log(`Top 5 Students in ${sec}:`);
     console.table(list.slice(0, 5).map((s, idx) => ({
