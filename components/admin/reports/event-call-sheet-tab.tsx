@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Loader2, FileText, Printer, FileDown, ChevronDown, Check, UserCheck, UserX, Clock, FileSpreadsheet, Download, Sparkles, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { getEventGroupConfig, isGroupEvent } from "@/lib/event-utils"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 import * as XLSX from 'xlsx'
@@ -256,8 +257,53 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
 
     const newMap: Record<string, string> = {}
 
-    if (mode === 'team') {
-      // Group participants by team. All students in the same team get the same letter (A, A, B, B...)
+    const selectedEvt = events.find(e => e.id === selectedEventId)
+    const config = selectedEvt ? getEventGroupConfig(selectedEvt) : { isGroup: false, groupType: 'INDIVIDUAL', studentsPerGroup: 1, allowedCodeLetters: CODE_LETTERS }
+
+    if (config.isGroup) {
+      if (config.groupType === 'TWO_GROUPS_PER_TEAM') {
+        // Two groups per team events: CONVERSATION ENG & CONVERSATION MAL
+        // Total 6 groups -> Code Letters A, B, C, D, E, F
+        const teamMap: Record<string, typeof participants> = {}
+        participants.forEach(p => {
+          const tid = p.students.team.id || p.team_id || p.students.team.name
+          if (!teamMap[tid]) teamMap[tid] = []
+          teamMap[tid].push(p)
+        })
+
+        let groupIdx = 0
+        const allowedLetters = ['A', 'B', 'C', 'D', 'E', 'F']
+
+        Object.values(teamMap).forEach(teamParts => {
+          // Chunk participants into groups of 2
+          const chunkSize = config.studentsPerGroup || 2
+          for (let i = 0; i < teamParts.length; i += chunkSize) {
+            const chunk = teamParts.slice(i, i + chunkSize)
+            const letter = allowedLetters[groupIdx % allowedLetters.length]
+            chunk.forEach(p => {
+              newMap[p.id] = letter
+            })
+            groupIdx++
+          }
+        })
+      } else {
+        // One group per team events (BROCHURE MAKING, STORY WAVING, all other Cat C)
+        // Total 3 groups -> Code Letters A, B, C
+        const teamToLetterMap: Record<string, string> = {}
+        const allowedLetters = ['A', 'B', 'C']
+        let letterIndex = 0
+
+        participants.forEach((p) => {
+          const teamKey = p.students.team.id || p.team_id || p.students.team.name
+          if (!teamToLetterMap[teamKey]) {
+            teamToLetterMap[teamKey] = allowedLetters[letterIndex % allowedLetters.length]
+            letterIndex++
+          }
+          newMap[p.id] = teamToLetterMap[teamKey]
+        })
+      }
+    } else if (mode === 'team') {
+      // Individual event grouped by team
       const teamToLetterMap: Record<string, string> = {}
       let letterIndex = 0
 
@@ -1275,21 +1321,27 @@ export function EventCallSheetTab({ events }: { events: Event[] }) {
                                                     <SelectItem value="NONE" className="text-slate-400 font-sans italic text-xs">
                                                         — None —
                                                     </SelectItem>
-                                                    {CODE_LETTERS.map((letter) => {
-                                                        const countSameLetter = Object.values(codeLetters).filter(c => c === letter).length
-                                                        return (
-                                                            <SelectItem key={letter} value={letter} className="cursor-pointer font-mono font-bold">
-                                                                <div className="flex items-center justify-between w-full gap-4">
-                                                                    <span className="text-sm text-amber-700">{letter}</span>
-                                                                    {countSameLetter > 0 && (
-                                                                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-sans font-normal">
-                                                                            {countSameLetter} {countSameLetter === 1 ? 'student' : 'students'}
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-                                                            </SelectItem>
-                                                        )
-                                                    })}
+                                                    {(() => {
+                                                        const curEvt = events.find(e => e.id === selectedEventId)
+                                                        const evtConf = curEvt ? getEventGroupConfig(curEvt) : null
+                                                        const displayLetters = evtConf?.isGroup ? evtConf.allowedCodeLetters : CODE_LETTERS
+
+                                                        return displayLetters.map((letter) => {
+                                                            const countSameLetter = Object.values(codeLetters).filter(c => c === letter).length
+                                                            return (
+                                                                <SelectItem key={letter} value={letter} className="cursor-pointer font-mono font-bold">
+                                                                    <div className="flex items-center justify-between w-full gap-4">
+                                                                        <span className="text-sm text-amber-700">{letter}</span>
+                                                                        {countSameLetter > 0 && (
+                                                                            <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-sans font-normal">
+                                                                                {countSameLetter} {countSameLetter === 1 ? 'student' : 'students'}
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                </SelectItem>
+                                                            )
+                                                        })
+                                                    })()}
                                                 </SelectContent>
                                             </Select>
                                         </div>
