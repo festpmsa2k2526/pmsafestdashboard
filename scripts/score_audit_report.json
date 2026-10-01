@@ -1,0 +1,3804 @@
+{
+  "generatedAt": "2026-10-01T08:23:33.931Z",
+  "teams": [
+    {
+      "id": "ebb26178-92ec-439d-aa72-03d816ccd502",
+      "name": "FUSTAT",
+      "color": "#10b981",
+      "penalty": 30,
+      "earned": 617,
+      "first": 23,
+      "second": 22,
+      "third": 14,
+      "aliya": 280,
+      "foundation": 163,
+      "general": 81,
+      "fdnGen": 93,
+      "scoredEventsCount": 0,
+      "finalTotal": 587
+    },
+    {
+      "id": "f9167ab7-54c0-4642-bf9b-428063298616",
+      "name": "ISHBILIYA",
+      "color": "#ef4444",
+      "penalty": 10,
+      "earned": 576,
+      "first": 16,
+      "second": 21,
+      "third": 23,
+      "aliya": 300,
+      "foundation": 160,
+      "general": 25,
+      "fdnGen": 91,
+      "scoredEventsCount": 0,
+      "finalTotal": 566
+    },
+    {
+      "id": "89eaac75-f615-4499-92d0-5e0dd362b140",
+      "name": "GULBARGA",
+      "color": "#f59e0b",
+      "penalty": 10,
+      "earned": 509,
+      "first": 17,
+      "second": 13,
+      "third": 26,
+      "aliya": 315,
+      "foundation": 117,
+      "general": 49,
+      "fdnGen": 28,
+      "scoredEventsCount": 0,
+      "finalTotal": 499
+    }
+  ],
+  "unregisteredStudentsCount": 4,
+  "unregisteredStudents": [
+    {
+      "id": "b1dd170a-7f25-493c-ad2d-48995809195b",
+      "name": "MOHAMMED BAKKIR AP",
+      "chest_no": "120",
+      "section": "Aliya",
+      "team": "FUSTAT",
+      "penalty": 10
+    },
+    {
+      "id": "9b7f073d-c5cf-4d59-8707-3a4c089966d4",
+      "name": "MUHAMMED EHSAN",
+      "chest_no": "261",
+      "section": "Foundation",
+      "team": "GULBARGA",
+      "penalty": 10
+    },
+    {
+      "id": "25b68d59-46a1-4c18-8c60-db472806ae63",
+      "name": "MUHAMMED SHAMIL PP",
+      "chest_no": "222",
+      "section": "Aliya",
+      "team": "FUSTAT",
+      "penalty": 10
+    },
+    {
+      "id": "6f13f518-f6d0-431d-9fb4-59a8ca2ea865",
+      "name": "MUHAMMED ZAYAN VP",
+      "chest_no": "362",
+      "section": "Foundation",
+      "team": "ISHBILIYA",
+      "penalty": 10
+    }
+  ],
+  "scoredEventsCount": 50,
+  "scoredEvents": {
+    "6c9bb200-1738-467d-86b4-4f7ac8a901fd": {
+      "event": {
+        "id": "6c9bb200-1738-467d-86b4-4f7ac8a901fd",
+        "name": "ENCOUNTER",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALN052",
+        "grade_type": "A",
+        "description": "ഖണ്ഡനരീതി: 30\nവിഷയ വിശകലനം: 35\nഅക്കാദമിക് ശൈലി (പ്രമാണബദ്ധമായ വിശദീകരണം, വാദങ്ങളിലെ യുക്തി): 20\nസംവേദനക്ഷമത: 15\n\n",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "FIRST",
+          "grade": "B",
+          "points": 15,
+          "code_letter": null,
+          "student_name": "SALMANUL FARIS K",
+          "chest_no": "320",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "SECOND",
+          "grade": "C",
+          "points": 9,
+          "code_letter": null,
+          "student_name": "MUHAMMED T",
+          "chest_no": "309",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": null,
+          "student_name": "NABEEL MUHAMMED R",
+          "chest_no": "313",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "81177632-41b0-42f1-bdf1-9b1371dbcedc": {
+      "event": {
+        "id": "81177632-41b0-42f1-bdf1-9b1371dbcedc",
+        "name": "PENCIL DRAWING",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FDF029",
+        "grade_type": "B",
+        "description": "നൽകപ്പെടുന്ന വിഷയത്തിനനുസൃതമായ ചിത്രമാണ് വരക്കേണ്ടത്.",
+        "applicable_section": [
+          "Foundation"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 11,
+          "code_letter": "D",
+          "student_name": "ADIL P",
+          "chest_no": "155",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "A",
+          "points": 8,
+          "code_letter": "H",
+          "student_name": "ABDUL HAFIZ",
+          "chest_no": "152",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 17,
+          "code_letter": "G",
+          "student_name": "AMJAD SHAMMAS PV",
+          "chest_no": "161",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "f23c1d47-600f-4877-889b-b7e65be34a06": {
+      "event": {
+        "id": "f23c1d47-600f-4877-889b-b7e65be34a06",
+        "name": "SPEECH MAL",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALN043",
+        "grade_type": "A",
+        "description": "ആശയസമ്പുഷ്ടത:40\nഭാഷാശുദ്ധി: 20 \nഅവതരണശൈലി: 20 ശബ്ദക്രമീകരണം: 10\nശരീര ഭാഷ, ആംഗ്യം: 10",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 13,
+          "code_letter": "C",
+          "student_name": "MUHAMMED ABDUL BASITH",
+          "chest_no": "209",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "THIRD",
+          "grade": "A",
+          "points": 8,
+          "code_letter": "F",
+          "student_name": "ADIL JAVAD M",
+          "chest_no": "103",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 17,
+          "code_letter": "D",
+          "student_name": "RABEEH ISMAYIL KP",
+          "chest_no": "315",
+          "team_name": "GULBARGA"
+        }
+      ]
+    },
+    "6ed62b69-bfab-4487-8aab-2609b8373d8a": {
+      "event": {
+        "id": "6ed62b69-bfab-4487-8aab-2609b8373d8a",
+        "name": "ESSAY ENG",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FDF020",
+        "grade_type": "A",
+        "description": "വിഷയ സമർത്ഥനം: 30\nവിഷയ വിശകലനം: 30\nവിഷയ ക്രമീകരണം: 20\nഭാഷ: 20",
+        "applicable_section": [
+          "Foundation"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": "F",
+          "student_name": "MUHAMMED FIZAN N",
+          "chest_no": "263",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 11,
+          "code_letter": "H",
+          "student_name": "MUHAMMAD ANSHIF T",
+          "chest_no": "173",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 17,
+          "code_letter": "I",
+          "student_name": "AJWAD K",
+          "chest_no": "159",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "5f7f792d-5bff-4911-9dfd-0fbf24bc6370": {
+      "event": {
+        "id": "5f7f792d-5bff-4911-9dfd-0fbf24bc6370",
+        "name": "CARTOON MAKING",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FDF031",
+        "grade_type": "B",
+        "description": "ഭാഷ, സർഗാത്മകത, സൗന്ദര്യാത്മകത, ആവിഷ്‌കാരരീതി, പ്രതിപാദനരീതി, ഭാവന.",
+        "applicable_section": [
+          "Foundation"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": "E",
+          "student_name": "AHAMMED ABAN KUTTASSERY",
+          "chest_no": "158",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": "G",
+          "student_name": "AMJAD SHAMMAS PV",
+          "chest_no": "161",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": "C",
+          "student_name": "MUHAMMED SHADIN PV",
+          "chest_no": "352",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": "F",
+          "student_name": "SHABIN KT",
+          "chest_no": "377",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "5636a986-356d-4169-873d-cf47761ff9a6": {
+      "event": {
+        "id": "5636a986-356d-4169-873d-cf47761ff9a6",
+        "name": "STORY MAL",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF066",
+        "grade_type": "B",
+        "description": "ഭാഷ, സർഗാത്മകത, സൗന്ദര്യാത്മകത, ആവിഷ്‌കാരരീതി, പ്രതിപാദനരീതി, ഭാവന.",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": "C",
+          "student_name": "ADHIL SALI",
+          "chest_no": "102",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 11,
+          "code_letter": "A",
+          "student_name": "MOHAMMED SHAMNAD P",
+          "chest_no": "202",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": "B",
+          "student_name": "MUHAMMED SINAN TP",
+          "chest_no": "308",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": "E",
+          "student_name": "RABEEH ISMAYIL KP",
+          "chest_no": "315",
+          "team_name": "GULBARGA"
+        }
+      ]
+    },
+    "1bf956ab-48eb-4ab8-875c-94870831f19f": {
+      "event": {
+        "id": "1bf956ab-48eb-4ab8-875c-94870831f19f",
+        "name": "CONVERSATION MAL",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FGN035",
+        "grade_type": "C",
+        "description": "ഭാഷാശൈലി: 30\nഅവതരണം: 20\nസഹകരണം: 20\nബന്ധന രീതി: 10\n",
+        "applicable_section": [
+          "Foundation General"
+        ],
+        "max_participants_per_team": 4
+      },
+      "winners": [
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 25,
+          "code_letter": "C",
+          "student_name": "MUHAMMED AIMAN",
+          "chest_no": "254",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 20,
+          "code_letter": "A",
+          "student_name": "MUHEEN PT",
+          "chest_no": "365",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 0,
+          "code_letter": "C",
+          "student_name": "AHAMMED ABAN KUTTASSERY",
+          "chest_no": "158",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 0,
+          "code_letter": "A",
+          "student_name": "SAYYID FAHMAN KOYA THANGAL",
+          "chest_no": "376",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 13,
+          "code_letter": "F",
+          "student_name": "NAZEEL MUHAMMED",
+          "chest_no": "368",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 0,
+          "code_letter": "F",
+          "student_name": "MUHAMMED SHIFIN NP",
+          "chest_no": "354",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "a4abd5f9-12c1-4f6e-91b7-01e3eb916b7a": {
+      "event": {
+        "id": "a4abd5f9-12c1-4f6e-91b7-01e3eb916b7a",
+        "name": "SPEECH ARA",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALN045",
+        "grade_type": "A",
+        "description": "ആശയസമ്പുഷ്ടത:40\nഭാഷാശുദ്ധി: 20 \nഅവതരണശൈലി: 20 ശബ്ദക്രമീകരണം: 10\nശരീര ഭാഷ, ആംഗ്യം: 10",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 19,
+          "code_letter": "F",
+          "student_name": "ISHTHIYAK SAWAD K",
+          "chest_no": "115",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A+",
+          "points": 15,
+          "code_letter": "C",
+          "student_name": "MUSTHAFA",
+          "chest_no": "312",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "THIRD",
+          "grade": "A",
+          "points": 8,
+          "code_letter": "B",
+          "student_name": "SABAH ABDUL HAMEED A",
+          "chest_no": "318",
+          "team_name": "GULBARGA"
+        }
+      ]
+    },
+    "d38790f8-a2a8-42f4-b5e1-4a2e4437c1e9": {
+      "event": {
+        "id": "d38790f8-a2a8-42f4-b5e1-4a2e4437c1e9",
+        "name": "BOOK REVIEW",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALN059",
+        "grade_type": "A",
+        "description": "നിരൂപണം, വിശകലനം: 30\nഭാഷ: 20\nഉള്ളടക്കം: 20\nസമഗ്രത: 20\nഘടന: 10\n",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 11,
+          "code_letter": "A",
+          "student_name": "ADHIL SALI",
+          "chest_no": "102",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 17,
+          "code_letter": "B",
+          "student_name": "AMJAD MK",
+          "chest_no": "111",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": "C",
+          "student_name": "MOHAMMED SHAMNAD P",
+          "chest_no": "202",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": "F",
+          "student_name": "VASEEM KM",
+          "chest_no": "323",
+          "team_name": "GULBARGA"
+        }
+      ]
+    },
+    "a4a1f342-20f6-45b4-85bc-44e055990209": {
+      "event": {
+        "id": "a4a1f342-20f6-45b4-85bc-44e055990209",
+        "name": "Q & H PAINTING",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF077",
+        "grade_type": "B",
+        "description": "ആശയ ചിത്രീകരണം: 40\nസർഗാത്മകത, ഭംഗി: 35\nസംവേദന ക്ഷമത: 15\nപൂർണ്ണത: 10",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "FIRST",
+          "grade": "B",
+          "points": 13,
+          "code_letter": "A",
+          "student_name": "MOHAMMED SUFIYAN PM",
+          "chest_no": "205",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": null,
+          "points": 3,
+          "code_letter": "F",
+          "student_name": "PM MUHAMMED SHAMIL",
+          "chest_no": "314",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": "E",
+          "student_name": "ABDUL RAHEEM",
+          "chest_no": "101",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "4ae02dc2-0e59-4a41-97a3-f5132569830a": {
+      "event": {
+        "id": "4ae02dc2-0e59-4a41-97a3-f5132569830a",
+        "name": "QIRAATH",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALN042",
+        "grade_type": "B",
+        "description": "തജ് വീദ്:50\n പാരായണ ശൈലി:30, അവധാനത:20\n",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "A+",
+          "points": 13,
+          "code_letter": "E",
+          "student_name": "MUHAMMED ABDUL BASITH",
+          "chest_no": "209",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 17,
+          "code_letter": "F",
+          "student_name": "RABEEH ISMAYIL KP",
+          "chest_no": "315",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": "B",
+          "student_name": "MUHAMMED SINAN AK",
+          "chest_no": "305",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "b0a82ad9-596d-42ce-ae1c-d82e330d66a5": {
+      "event": {
+        "id": "b0a82ad9-596d-42ce-ae1c-d82e330d66a5",
+        "name": "SPELLING BEE",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALN056",
+        "grade_type": "B",
+        "description": "വ്യക്തത, കൃത്യത, പൂർണ്ണത",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": null,
+          "student_name": "MOHAMMED SUFIYAN PM",
+          "chest_no": "205",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": null,
+          "student_name": "MUHAMMED SHAMEEM EC",
+          "chest_no": "221",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": null,
+          "student_name": "RAZEEK FARIZ",
+          "chest_no": "317",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": null,
+          "grade": "C",
+          "points": 1,
+          "code_letter": null,
+          "student_name": "MUHAMMED SHANIF",
+          "chest_no": "302",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": null,
+          "student_name": "MIDHLAJ A",
+          "chest_no": "116",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "358020f0-c2d4-4e3f-9388-71ffea9a6f07": {
+      "event": {
+        "id": "358020f0-c2d4-4e3f-9388-71ffea9a6f07",
+        "name": "CARTOON MAKING",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF080",
+        "grade_type": "B",
+        "description": "ഭാഷ, സർഗാത്മകത, സൗന്ദര്യാത്മകത, ആവിഷ്‌കാരരീതി, പ്രതിപാദനരീതി, ഭാവന..",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": "E",
+          "student_name": "MOHAMMED SUFIYAN PM",
+          "chest_no": "205",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": "F",
+          "student_name": "MOHAMMED SWALIH AM",
+          "chest_no": "206",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": "A",
+          "student_name": "MUHANMED FEZBIN P",
+          "chest_no": "311",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "21ed4d27-b829-4d08-9af7-06464dafef86": {
+      "event": {
+        "id": "21ed4d27-b829-4d08-9af7-06464dafef86",
+        "name": "ESSAY URD",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "GEF091",
+        "grade_type": "A",
+        "description": "വിഷയ സമർത്ഥനം: 30\nവിഷയ വിശകലനം: 30\nവിഷയ ക്രമീകരണം: 20\nഭാഷ: 20",
+        "applicable_section": [
+          "General"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": null,
+          "student_name": "MUHAMMED SADIQ",
+          "chest_no": "220",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 17,
+          "code_letter": "B",
+          "student_name": "AHMAD SHAMEEM V",
+          "chest_no": "107",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 11,
+          "code_letter": "C",
+          "student_name": "MUHAMMAD SHAHAD KP",
+          "chest_no": "208",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "7e57de8b-1a6e-4ead-bf69-7c84c2058a22": {
+      "event": {
+        "id": "7e57de8b-1a6e-4ead-bf69-7c84c2058a22",
+        "name": "POEM ARA",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF065",
+        "grade_type": "B",
+        "description": "ഭാഷ, സർഗാത്മകത, സൗന്ദര്യാത്മകത, ആവിഷ്‌കാരരീതി, പ്രതിപാദനരീതി, ഭാവന.",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": "D",
+          "student_name": "ISHTHIYAK SAWAD K",
+          "chest_no": "115",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 17,
+          "code_letter": "B",
+          "student_name": "AJSAL SIRAJ",
+          "chest_no": "109",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 11,
+          "code_letter": "E",
+          "student_name": "RASHIK M",
+          "chest_no": "316",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "84099eed-0701-43ca-a0bb-7d50f249b922": {
+      "event": {
+        "id": "84099eed-0701-43ca-a0bb-7d50f249b922",
+        "name": "SPEECH ENG",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FDN003",
+        "grade_type": "A",
+        "description": "ആശയസമ്പുഷ്ടത:40\nഭാഷാശുദ്ധി: 20 \nഅവതരണശൈലി: 20 ശബ്ദക്രമീകരണം: 10\nശരീര ഭാഷ, ആംഗ്യം: 10\n",
+        "applicable_section": [
+          "Foundation"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 13,
+          "code_letter": "E",
+          "student_name": "MUHAMMED THAMEEM",
+          "chest_no": "358",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": "D",
+          "student_name": "MUHAMMED MISBAH PC",
+          "chest_no": "272",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 17,
+          "code_letter": "G",
+          "student_name": "MUHAMMED UVAIS KP",
+          "chest_no": "359",
+          "team_name": "GULBARGA"
+        }
+      ]
+    },
+    "6eda5f8a-a798-41f9-8462-c3db2e7c6283": {
+      "event": {
+        "id": "6eda5f8a-a798-41f9-8462-c3db2e7c6283",
+        "name": "HAIKU POEM",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF082",
+        "grade_type": "B",
+        "description": "The Rules and Regulations will be available soon",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "A",
+          "points": 8,
+          "code_letter": "B",
+          "student_name": "MOHAMMED FAHEEM PV",
+          "chest_no": "121",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": null,
+          "grade": "B",
+          "points": 3,
+          "code_letter": "C",
+          "student_name": "MOHAMMED SHAMNAD P",
+          "chest_no": "202",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": null,
+          "grade": "C",
+          "points": 1,
+          "code_letter": "D",
+          "student_name": "MUHAMMED RAYEES CH",
+          "chest_no": "219",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 11,
+          "code_letter": "F",
+          "student_name": "MUHAMMED RASHID",
+          "chest_no": "218",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": null,
+          "grade": "C",
+          "points": 1,
+          "code_letter": "A",
+          "student_name": "SABITH ALI AV",
+          "chest_no": "319",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 17,
+          "code_letter": "E",
+          "student_name": "MUHAMMAD SHAHAD KP",
+          "chest_no": "208",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "29b38e02-43d7-477c-9250-b3b876afbac8": {
+      "event": {
+        "id": "29b38e02-43d7-477c-9250-b3b876afbac8",
+        "name": "RJ TALK",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "GEN089",
+        "grade_type": "B",
+        "description": "സന്ദർഭത്തെ മാനേജ് ചെയ്യുന്ന വിധം: 40\nമനശാസ്ത്ര സമീപനം: 40 \nശരീര ഭാഷ: 20",
+        "applicable_section": [
+          "General"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": null,
+          "student_name": "FAHAD UK",
+          "chest_no": "113",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": null,
+          "student_name": "SABITH ALI AV",
+          "chest_no": "319",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": null,
+          "student_name": "ADIL JAVAD M",
+          "chest_no": "103",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "56bfcede-8a0b-496c-8827-bfadb4c29cf1": {
+      "event": {
+        "id": "56bfcede-8a0b-496c-8827-bfadb4c29cf1",
+        "name": "CALLIGRAPHY",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF076",
+        "grade_type": "B",
+        "description": "നൽകപ്പെടുന്ന വാചകത്തെ അറബി കാലിഗ്രഫിയിൽ വരയ്ക്കുക. വാചകം മത്സരത്തിൽ രണ്ടുദിവസം മുമ്പ് നൽകുന്നതാണ്. കാലിഗ്രഫി പെൻ/ മാർക്കർ ഉപയോഗിച്ചാണ് വരക്കേണ്ടത്.",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "FIRST",
+          "grade": "B",
+          "points": 13,
+          "code_letter": "B",
+          "student_name": "MOHAMMED SUFIYAN PM",
+          "chest_no": "205",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": "D",
+          "student_name": "MUHANMED FEZBIN P",
+          "chest_no": "311",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "THIRD",
+          "grade": null,
+          "points": 3,
+          "code_letter": "C",
+          "student_name": "MUHAMMED SINAN TP",
+          "chest_no": "308",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "1b79103a-52c5-4d04-be87-986eaec3c1da": {
+      "event": {
+        "id": "1b79103a-52c5-4d04-be87-986eaec3c1da",
+        "name": "READING ENG",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FDN012",
+        "grade_type": "B",
+        "description": "വ്യാകരണങ്ങളിലെ കൃത്യത, അക്ഷരസ്ഫുടത, ഉച്ചാരണശുദ്ധി, വായന ശൈലി",
+        "applicable_section": [
+          "Foundation"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": null,
+          "student_name": "MUHAMMED ZEESHAN V",
+          "chest_no": "363",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": null,
+          "student_name": "ATHIF JAVAD M",
+          "chest_no": "162",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": null,
+          "student_name": "MUHAMMAD ANSHIF T",
+          "chest_no": "173",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "203fab71-3d90-4919-8cea-9c6d4e63896e": {
+      "event": {
+        "id": "203fab71-3d90-4919-8cea-9c6d4e63896e",
+        "name": "MINI STORY ENG",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF072",
+        "grade_type": "B",
+        "description": "ഭാഷ, ആശയ സമ്പുഷ്ടത, സർഗാത്മകത, രചനാശൈലി.",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": "B",
+          "student_name": "MOHAMMED FAHEEM PV",
+          "chest_no": "121",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": "E",
+          "student_name": "FAHAD UK",
+          "chest_no": "113",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": "C",
+          "student_name": "MUHAMMAD SHAHAD KP",
+          "chest_no": "208",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": "F",
+          "student_name": "AJANAS KAREEM",
+          "chest_no": "108",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "a46138ef-9f19-42dc-bc40-0e36046daf1c": {
+      "event": {
+        "id": "a46138ef-9f19-42dc-bc40-0e36046daf1c",
+        "name": "INSPIRING TALK ENG",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALN051",
+        "grade_type": "A",
+        "description": "ആശയ സമ്പുഷ്ടത: 35\nഅവതരണ ശൈലി: 25\nശരീര ഭാഷ, ആംഗ്യം: 20\nഭാഷാശുദ്ധി: 10\nസമഗ്രത: 10\n\n",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 17,
+          "code_letter": "D",
+          "student_name": "FAHAD UK",
+          "chest_no": "113",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "A",
+          "points": 8,
+          "code_letter": "E",
+          "student_name": "PM MUHAMMED SHAMIL",
+          "chest_no": "314",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 13,
+          "code_letter": "A",
+          "student_name": "NABEEL MUHAMMED R",
+          "chest_no": "313",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "f13827ed-0d30-436f-96f3-96eefdf2f88a": {
+      "event": {
+        "id": "f13827ed-0d30-436f-96f3-96eefdf2f88a",
+        "name": "ESSAY ENG",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF062",
+        "grade_type": "A",
+        "description": "വിഷയ സമർത്ഥനം: 30\nവിഷയ വിശകലനം: 30\nവിഷയ ക്രമീകരണം: 20\nഭാഷ: 20",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": "C",
+          "student_name": "MOHAMMED SINAN PC",
+          "chest_no": "204",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 17,
+          "code_letter": "E",
+          "student_name": "NABEEL MUHAMMED R",
+          "chest_no": "313",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 11,
+          "code_letter": "D",
+          "student_name": "MUHAMMAD SHAHAD KP",
+          "chest_no": "208",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "07cf7de3-b7c7-4da0-93d4-628ff4912691": {
+      "event": {
+        "id": "07cf7de3-b7c7-4da0-93d4-628ff4912691",
+        "name": "BOOK REVIEW",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FDN017",
+        "grade_type": "B",
+        "description": "നിരൂപണം, വിശകലനം: 30\nഭാഷ: 20\nഉള്ളടക്കം: 20\nസമഗ്രത: 20\nഘടന: 10\n",
+        "applicable_section": [
+          "Foundation"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 17,
+          "code_letter": "E",
+          "student_name": "AFSWAH",
+          "chest_no": "157",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": "G",
+          "student_name": "MUHAMMED ASHMIL",
+          "chest_no": "260",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": "I",
+          "student_name": "MUHAMMED ZEESHAN V",
+          "chest_no": "363",
+          "team_name": "GULBARGA"
+        }
+      ]
+    },
+    "1ff976cc-64f0-457d-8953-544931946bdf": {
+      "event": {
+        "id": "1ff976cc-64f0-457d-8953-544931946bdf",
+        "name": "MINI STORY MAL",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF073",
+        "grade_type": "B",
+        "description": "ഭാഷ, ആശയ സമ്പുഷ്ടത, സർഗാത്മകത, രചനാശൈലി.",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": "A",
+          "student_name": "AHMAD A",
+          "chest_no": "106",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": "C",
+          "student_name": "MOHAMMED SHAMNAD P",
+          "chest_no": "202",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": null,
+          "points": 3,
+          "code_letter": "F",
+          "student_name": "SABITH ALI AV",
+          "chest_no": "319",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "66a5fd4e-6907-46d2-857e-85c66ef3220e": {
+      "event": {
+        "id": "66a5fd4e-6907-46d2-857e-85c66ef3220e",
+        "name": "CONVERSATION ENG",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FGN036",
+        "grade_type": "C",
+        "description": "ഭാഷാശൈലി: 30\nഅവതരണം: 20\nസഹകരണം: 20\nബന്ധന രീതി: 10\n",
+        "applicable_section": [
+          "Foundation General"
+        ],
+        "max_participants_per_team": 4
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 13,
+          "code_letter": "C",
+          "student_name": "MUHEEN PT",
+          "chest_no": "365",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 20,
+          "code_letter": "A",
+          "student_name": "MUHAMMED AAQIL",
+          "chest_no": "252",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 13,
+          "code_letter": "E",
+          "student_name": "MUHAMMAD ANSHIF T",
+          "chest_no": "173",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 27,
+          "code_letter": "B",
+          "student_name": "NASIH SAIFUDHEEN",
+          "chest_no": "367",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 0,
+          "code_letter": "B",
+          "student_name": "MUHAMMED SHIHAB KALLIYATH",
+          "chest_no": "355",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 0,
+          "code_letter": "E",
+          "student_name": "AJWAD K",
+          "chest_no": "159",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 0,
+          "code_letter": "A",
+          "student_name": "MOHAMMED SANEEN PC",
+          "chest_no": "172",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 0,
+          "code_letter": "C",
+          "student_name": "MUHAMMED MISBAH PC",
+          "chest_no": "272",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "e443d5d7-cc6a-4f18-9112-e2c500121be9": {
+      "event": {
+        "id": "e443d5d7-cc6a-4f18-9112-e2c500121be9",
+        "name": "SONG MAL",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FDN005",
+        "grade_type": "B",
+        "description": "ഭാഷ,അവതരണ ഭംഗി, ആശയ സമ്പുഷ്ടി, ശ്രുതി, ഭാവം, ലയം, താളം, സ്വരഭംഗി, സാഹിത്യശുദ്ധി.",
+        "applicable_section": [
+          "Foundation"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": "A",
+          "student_name": "MUHAMMED SHAMMAS KK",
+          "chest_no": "353",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": "H",
+          "student_name": "FADHI AHAMED T",
+          "chest_no": "163",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 11,
+          "code_letter": "F",
+          "student_name": "MUHAMMED ASHMIL",
+          "chest_no": "260",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "e70b92b2-a1f2-42e4-8083-6c8edc7f7011": {
+      "event": {
+        "id": "e70b92b2-a1f2-42e4-8083-6c8edc7f7011",
+        "name": "GENIUS PROFILE",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FDN018",
+        "grade_type": "A",
+        "description": "അവതരണ ശൈലി, സമഗ്രത, ശരീരഭാഷ, വ്യത്യസ്തത, ഭാവം",
+        "applicable_section": [
+          "Foundation"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 11,
+          "code_letter": null,
+          "student_name": "AFSWAH",
+          "chest_no": "157",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "B",
+          "points": 15,
+          "code_letter": null,
+          "student_name": "NAZEEL MUHAMMED",
+          "chest_no": "368",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": null,
+          "student_name": "MUHAMMED HANI",
+          "chest_no": "264",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": null,
+          "student_name": "MUHAMMED AIMAN",
+          "chest_no": "254",
+          "team_name": "GULBARGA"
+        }
+      ]
+    },
+    "23f50dcb-1f49-469c-99b7-a1af2cd04b9a": {
+      "event": {
+        "id": "23f50dcb-1f49-469c-99b7-a1af2cd04b9a",
+        "name": "PROMPT MAKING",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF081",
+        "grade_type": "B",
+        "description": "കൃത്യതയും വ്യക്തതയും: 30\nഔട്ട്പുട്ടിന്റെ നിലവാരം: 40\nസർഗ്ഗാത്മകതയും ലാളിത്യവും: 20\nപ്രോംപ്റ്റ് ഘടന:10",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": "C",
+          "student_name": "MOHAMMED FAHEEM PV",
+          "chest_no": "121",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": null,
+          "grade": "C",
+          "points": 1,
+          "code_letter": "B",
+          "student_name": "AL AMEEN",
+          "chest_no": "110",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": "E",
+          "student_name": "MUHAMMED RADHIL P",
+          "chest_no": "217",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": "D",
+          "student_name": "MIDHLAJ A",
+          "chest_no": "116",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": null,
+          "grade": "C",
+          "points": 1,
+          "code_letter": "F",
+          "student_name": "NABEEL MUHAMMED R",
+          "chest_no": "313",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "6f5d0419-195d-4c3d-85de-289ce3c76669": {
+      "event": {
+        "id": "6f5d0419-195d-4c3d-85de-289ce3c76669",
+        "name": "POEM ENG",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF064",
+        "grade_type": "B",
+        "description": "ഭാഷ, സർഗാത്മകത, സൗന്ദര്യാത്മകത, ആവിഷ്‌കാരരീതി, പ്രതിപാദനരീതി, ഭാവന.",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": "B",
+          "student_name": "MOHAMMED FAHEEM PV",
+          "chest_no": "121",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 11,
+          "code_letter": "C",
+          "student_name": "MOHAMMED SINAN PC",
+          "chest_no": "204",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 17,
+          "code_letter": "D",
+          "student_name": "MUHAMMAD SHAHAD KP",
+          "chest_no": "208",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "453b64aa-58cd-4292-bb13-1073944bee2a": {
+      "event": {
+        "id": "453b64aa-58cd-4292-bb13-1073944bee2a",
+        "name": "STORY ENG",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF067",
+        "grade_type": "B",
+        "description": "ഭാഷ, സർഗാത്മകത, സൗന്ദര്യാത്മകത, ആവിഷ്‌കാരരീതി, പ്രതിപാദനരീതി, ഭാവന.",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": "B",
+          "student_name": "PM MUHAMMED SHAMIL",
+          "chest_no": "314",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": "A",
+          "student_name": "AL AMEEN",
+          "chest_no": "110",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": "E",
+          "student_name": "FAHAD UK",
+          "chest_no": "113",
+          "team_name": "GULBARGA"
+        }
+      ]
+    },
+    "a6370b6b-794b-4dbb-92d0-0cda42785aca": {
+      "event": {
+        "id": "a6370b6b-794b-4dbb-92d0-0cda42785aca",
+        "name": "PAINTING",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FDF030",
+        "grade_type": "B",
+        "description": "വിഷയവുമായുള്ള ബന്ധം, ആശയ ചിത്രീകരണം, വൃത്തി, ഭംഗി.",
+        "applicable_section": [
+          "Foundation"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "A",
+          "points": 8,
+          "code_letter": "G",
+          "student_name": "MUHEEN PT",
+          "chest_no": "365",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 17,
+          "code_letter": "A",
+          "student_name": "ADIL P",
+          "chest_no": "155",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 11,
+          "code_letter": "D",
+          "student_name": "MUHAMMED HASHIL",
+          "chest_no": "265",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "799e02f7-f1ff-4009-ac55-f904c0bbaf24": {
+      "event": {
+        "id": "799e02f7-f1ff-4009-ac55-f904c0bbaf24",
+        "name": "ARABIC COMMENTARY",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "GEN088",
+        "grade_type": "B",
+        "description": "ഭാഷാശൈലി: 30\nപരസ്പ‌രധാരണ: 25\nപദസമ്പത്ത്: 25\nസമഗ്രത: 20",
+        "applicable_section": [
+          "General"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 0,
+          "code_letter": "C",
+          "student_name": "ANAS ANWAR BASHA",
+          "chest_no": "112",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": "C",
+          "student_name": "MUHADIL AC",
+          "chest_no": "207",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 17,
+          "code_letter": "B",
+          "student_name": "AHMAD A",
+          "chest_no": "106",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 11,
+          "code_letter": "A",
+          "student_name": "MUHAMMED SHAMIL V T",
+          "chest_no": "301",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 0,
+          "code_letter": "B",
+          "student_name": "MUHAMMED SHAMEEM EC",
+          "chest_no": "221",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 0,
+          "code_letter": "A",
+          "student_name": "MUHAMMED RASHID",
+          "chest_no": "218",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "0e22e7bb-0c70-493e-bc4b-64f5df7089c6": {
+      "event": {
+        "id": "0e22e7bb-0c70-493e-bc4b-64f5df7089c6",
+        "name": "QIRAATH",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FDN001",
+        "grade_type": "B",
+        "description": "തജ് വീദ്:50\n പാരായണ ശൈലി:30, അവധാനത:20\n",
+        "applicable_section": [
+          "Foundation"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "A+",
+          "points": 13,
+          "code_letter": null,
+          "student_name": "ABDULLAH HAMDAN",
+          "chest_no": "154",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "THIRD",
+          "grade": "A",
+          "points": 8,
+          "code_letter": null,
+          "student_name": "MUHAMMED RABEEH AP",
+          "chest_no": "273",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": null,
+          "student_name": "FALAHUDEEN TF",
+          "chest_no": "164",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 17,
+          "code_letter": null,
+          "student_name": "MUHAMMED ANSIL MK",
+          "chest_no": "258",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "300eea99-41c9-43d0-ac67-2a26ef8f91d2": {
+      "event": {
+        "id": "300eea99-41c9-43d0-ac67-2a26ef8f91d2",
+        "name": "REPORT ARA",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF071",
+        "grade_type": "B",
+        "description": "വാർത്താഘടന: 40\n പത്രഭാഷ: 40\n സമഗ്രത: 20\n",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": null,
+          "points": 6,
+          "code_letter": "F",
+          "student_name": "ADNAN KT",
+          "chest_no": "104",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": null,
+          "points": 3,
+          "code_letter": "A",
+          "student_name": "AHMAD SHAMEEM V",
+          "chest_no": "107",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": "E",
+          "student_name": "RASHIK M",
+          "chest_no": "316",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "a761ba06-518c-4045-a7b4-0121cef4ac13": {
+      "event": {
+        "id": "a761ba06-518c-4045-a7b4-0121cef4ac13",
+        "name": "REPORT MAL",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF069",
+        "grade_type": "B",
+        "description": "വാർത്താഘടന: 40\n പത്രഭാഷ: 40\n സമഗ്രത: 20\n",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 11,
+          "code_letter": "F",
+          "student_name": "VASEEM KM",
+          "chest_no": "323",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": "E",
+          "student_name": "RABEEH ISMAYIL KP",
+          "chest_no": "315",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": "A",
+          "student_name": "ADIL JAVAD M",
+          "chest_no": "103",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "ac6d9e66-1505-4aa2-bd65-03db63a2cc1b": {
+      "event": {
+        "id": "ac6d9e66-1505-4aa2-bd65-03db63a2cc1b",
+        "name": "POEM ENG",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FDF021",
+        "grade_type": "A",
+        "description": "ഭാഷ, സർഗാത്മകത, സൗന്ദര്യാത്മകത, ആവിഷ്‌കാരരീതി, പ്രതിപാദനരീതി, ഭാവന.",
+        "applicable_section": [
+          "Foundation"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 11,
+          "code_letter": "D",
+          "student_name": "MUHAMMED MISBAH PC",
+          "chest_no": "272",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 17,
+          "code_letter": "I",
+          "student_name": "NASIH SAIFUDHEEN",
+          "chest_no": "367",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": "E",
+          "student_name": "MUHAMMED SHIHAB KALLIYATH",
+          "chest_no": "355",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "80f952b6-a4ac-4c32-ac22-fb1f2a9ac5c7": {
+      "event": {
+        "id": "80f952b6-a4ac-4c32-ac22-fb1f2a9ac5c7",
+        "name": "STORY ENG",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FDF024",
+        "grade_type": "B",
+        "description": "ഭാഷ, സർഗാത്മകത, സൗന്ദര്യാത്മകത, ആവിഷ്‌കാരരീതി, പ്രതിപാദനരീതി, ഭാവന.",
+        "applicable_section": [
+          "Foundation"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": "E",
+          "student_name": "MUHAMMED MISBAH PC",
+          "chest_no": "272",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": "D",
+          "student_name": "MUHAMMED AMAAN S",
+          "chest_no": "255",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": "I",
+          "student_name": "NASIH SAIFUDHEEN",
+          "chest_no": "367",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "1a9efa3d-ed5d-4dc9-aed3-2cb872e9607d": {
+      "event": {
+        "id": "1a9efa3d-ed5d-4dc9-aed3-2cb872e9607d",
+        "name": "STORY ARA",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF068",
+        "grade_type": "B",
+        "description": "ഭാഷ, സർഗാത്മകത, സൗന്ദര്യാത്മകത, ആവിഷ്‌കാരരീതി, പ്രതിപാദനരീതി, ഭാവന.",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": "A",
+          "student_name": "AHMAD SHAMEEM V",
+          "chest_no": "107",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": "D",
+          "student_name": "MUHAMMED SHAMIL V T",
+          "chest_no": "301",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": "B",
+          "student_name": "RASHIK M",
+          "chest_no": "316",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "0372e80b-9964-4386-9103-cbc36854175c": {
+      "event": {
+        "id": "0372e80b-9964-4386-9103-cbc36854175c",
+        "name": "AZAN",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FDN014",
+        "grade_type": "B",
+        "description": "ഉച്ചാരണ ശുദ്ധി, തജ്‌വീദ് നിയമം, ആദാബുകൾ, ശൈലി.",
+        "applicable_section": [
+          "Foundation General"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": "E",
+          "student_name": "ABDULLAH HAMDAN",
+          "chest_no": "154",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "THIRD",
+          "grade": null,
+          "points": 3,
+          "code_letter": "G",
+          "student_name": "FADHI AHAMED T",
+          "chest_no": "163",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": "I",
+          "student_name": "MUHAMMED ANSIL MK",
+          "chest_no": "258",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "822d7546-ac37-4ef5-911a-8027d70818b2": {
+      "event": {
+        "id": "822d7546-ac37-4ef5-911a-8027d70818b2",
+        "name": "SONG ARA",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FDN006",
+        "grade_type": "B",
+        "description": "അവതരണ ഭംഗി, ആശയ സമ്പുഷ്ടത, ശ്രുതി, ഭാവം, ലയം, താളം, ആശയഗ്രഹണം, സ്വരഭംഗി",
+        "applicable_section": [
+          "Foundation"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "A",
+          "points": 8,
+          "code_letter": "D",
+          "student_name": "MUHAMMED ASHMIL",
+          "chest_no": "260",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 17,
+          "code_letter": "C",
+          "student_name": "FADHI AHAMED T",
+          "chest_no": "163",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "A+",
+          "points": 13,
+          "code_letter": "I",
+          "student_name": "MUHAMMED ANSIL MK",
+          "chest_no": "258",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "8bdb3f4c-7263-4e23-9ced-0d471f5d42cd": {
+      "event": {
+        "id": "8bdb3f4c-7263-4e23-9ced-0d471f5d42cd",
+        "name": "THINK TALK",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALN050",
+        "grade_type": "A",
+        "description": "ആശയ സമ്പുഷ്ടത: 35\nസംവേദനക്ഷമത, ഭാഷ: 20\nഅവതരണ ശൈലി: 20 \nവിഷയത്തിന്റെ സമഗ്രത: 15\nസ്ലൈഡ്: 10\n",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": null,
+          "student_name": "AL AMEEN",
+          "chest_no": "110",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 17,
+          "code_letter": null,
+          "student_name": "AJSAL SIRAJ",
+          "chest_no": "109",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 11,
+          "code_letter": null,
+          "student_name": "MUHAMMED RAYEES CH",
+          "chest_no": "219",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "5c5c197c-4a73-445a-bcfa-a740371af439": {
+      "event": {
+        "id": "5c5c197c-4a73-445a-bcfa-a740371af439",
+        "name": "REPORT ENG",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALF070",
+        "grade_type": "B",
+        "description": "വാർത്താഘടന: 40\n പത്രഭാഷ: 40\n സമഗ്രത: 20\n",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": null,
+          "points": 6,
+          "code_letter": "D",
+          "student_name": "MUHAMMED ABDUL BASITH",
+          "chest_no": "209",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "B",
+          "points": 13,
+          "code_letter": "E",
+          "student_name": "NABEEL MUHAMMED R",
+          "chest_no": "313",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "THIRD",
+          "grade": null,
+          "points": 3,
+          "code_letter": "B",
+          "student_name": "AJANAS KAREEM",
+          "chest_no": "108",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "244cf0ff-7730-4378-9458-f7f752ad8a3e": {
+      "event": {
+        "id": "244cf0ff-7730-4378-9458-f7f752ad8a3e",
+        "name": "BROCHURE MAKING",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "GEF090",
+        "grade_type": "B",
+        "description": "ലേ ഔട്ട് ഡിസൈൻ: 40\nഉള്ളടക്കം: 30\nപൂർണ്ണത: 15\nക്രമീകരണം: 15",
+        "applicable_section": [
+          "General"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": null,
+          "points": 3,
+          "code_letter": "A",
+          "student_name": "MOHAMMED FAHEEM PV",
+          "chest_no": "121",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": null,
+          "points": 0,
+          "code_letter": "A",
+          "student_name": "MOHAMMED SHAMNAD P",
+          "chest_no": "202",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": null,
+          "points": 10,
+          "code_letter": "B",
+          "student_name": "ADHIL SALI",
+          "chest_no": "102",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": null,
+          "points": 0,
+          "code_letter": "B",
+          "student_name": "ADIL JAVAD M",
+          "chest_no": "103",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": null,
+          "points": 0,
+          "code_letter": "B",
+          "student_name": "MUHAMMED SHAMEEM EC",
+          "chest_no": "221",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "THIRD",
+          "grade": null,
+          "points": 0,
+          "code_letter": "A",
+          "student_name": "MOHAMMED SWALIH AM",
+          "chest_no": "206",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "SECOND",
+          "grade": null,
+          "points": 0,
+          "code_letter": "C",
+          "student_name": "MUHAMMED FAIZ AV",
+          "chest_no": "216",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "SECOND",
+          "grade": null,
+          "points": 6,
+          "code_letter": "C",
+          "student_name": "MUHAMMED RAYEES CH",
+          "chest_no": "219",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "SECOND",
+          "grade": null,
+          "points": 0,
+          "code_letter": "C",
+          "student_name": "NABEEL MUHAMMED R",
+          "chest_no": "313",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "c06ccc1a-2934-43da-aa62-79f0bbc7b38a": {
+      "event": {
+        "id": "c06ccc1a-2934-43da-aa62-79f0bbc7b38a",
+        "name": "CALLIGRAPHY",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FGF039",
+        "grade_type": "B",
+        "description": "വൃത്തി, വ്യക്തത, പൂർണ്ണത, ആശയ ചിത്രീകരണം, ഭംഗി.",
+        "applicable_section": [
+          "Foundation General"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": "C",
+          "student_name": "MOHAMMED IZAAN ASHRAF",
+          "chest_no": "171",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 9,
+          "code_letter": "G",
+          "student_name": "MUHAMMED SHAMMAS KK",
+          "chest_no": "353",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A",
+          "points": 15,
+          "code_letter": "I",
+          "student_name": "SAYYID ABDUL BASITH",
+          "chest_no": "375",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "e6dfad27-d934-4a1d-9c59-bfb956b732ad": {
+      "event": {
+        "id": "e6dfad27-d934-4a1d-9c59-bfb956b732ad",
+        "name": "POSTER MAKING",
+        "category": "OFF STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "FGF041",
+        "grade_type": "B",
+        "description": "ആകർഷണീയത, ആശയം, ഉള്ളടക്കം, ക്രമീകരണം, വ്യത്യസ്തത ",
+        "applicable_section": [
+          "Foundation General"
+        ],
+        "max_participants_per_team": 3
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "C",
+          "points": 4,
+          "code_letter": "D",
+          "student_name": "ABDUL HAFIZ",
+          "chest_no": "152",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "C",
+          "points": 7,
+          "code_letter": "G",
+          "student_name": "AMJAD SHAMMAS PV",
+          "chest_no": "161",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "B",
+          "points": 13,
+          "code_letter": "E",
+          "student_name": "MUHAMMED HASHIL",
+          "chest_no": "265",
+          "team_name": "FUSTAT"
+        }
+      ]
+    },
+    "d1bd43d8-2397-4fc6-a7a1-27250c782970": {
+      "event": {
+        "id": "d1bd43d8-2397-4fc6-a7a1-27250c782970",
+        "name": "SPOT TRANSLATION EN TO ML",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALN047",
+        "grade_type": "A",
+        "description": "ആശയവ്യക്തത: 30\nഅവതരണഭംഗി: 20 \nവിവർത്തനരീതി: 20\nഭാഷാശുദ്ധി: 15",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": "F",
+          "student_name": "PM MUHAMMED SHAMIL",
+          "chest_no": "314",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "B",
+          "points": 15,
+          "code_letter": "A",
+          "student_name": "AJSAL SIRAJ",
+          "chest_no": "109",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 11,
+          "code_letter": "E",
+          "student_name": "FAHAD UK",
+          "chest_no": "113",
+          "team_name": "GULBARGA"
+        }
+      ]
+    },
+    "ea50c3e5-c0ca-471f-af06-7c295246bcd7": {
+      "event": {
+        "id": "ea50c3e5-c0ca-471f-af06-7c295246bcd7",
+        "name": "SONG MALAYALAM",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALN054",
+        "grade_type": "B",
+        "description": "ഭാഷ,അവതരണ ഭംഗി, ആശയ സമ്പുഷ്ടി, ശ്രുതി, ഭാവം, ലയം, താളം, സ്വരഭംഗി, സാഹിത്യശുദ്ധി.",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 11,
+          "code_letter": "B",
+          "student_name": "RASHIK M",
+          "chest_no": "316",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "THIRD",
+          "grade": "A",
+          "points": 8,
+          "code_letter": "D",
+          "student_name": "MOHAMMED SHAMNAD P",
+          "chest_no": "202",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 17,
+          "code_letter": "F",
+          "student_name": "ISHTHIYAK SAWAD K",
+          "chest_no": "115",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "be19cf42-573c-45c7-b494-90a4ac3b3102": {
+      "event": {
+        "id": "be19cf42-573c-45c7-b494-90a4ac3b3102",
+        "name": "SPEECH ENG",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "ALN044",
+        "grade_type": "A",
+        "description": "ആശയസമ്പുഷ്ടത:40\nഭാഷാശുദ്ധി: 20 \nഅവതരണശൈലി: 20 ശബ്ദക്രമീകരണം: 10\nശരീര ഭാഷ, ആംഗ്യം: 10",
+        "applicable_section": [
+          "Aliya"
+        ],
+        "max_participants_per_team": 2
+      },
+      "winners": [
+        {
+          "position": "THIRD",
+          "grade": "B",
+          "points": 6,
+          "code_letter": "F",
+          "student_name": "PM MUHAMMED SHAMIL",
+          "chest_no": "314",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 19,
+          "code_letter": "C",
+          "student_name": "NABEEL MUHAMMED R",
+          "chest_no": "313",
+          "team_name": "ISHBILIYA"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 19,
+          "code_letter": "B",
+          "student_name": "HISHAM ISMAIL",
+          "chest_no": "114",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "SECOND",
+          "grade": "B",
+          "points": 11,
+          "code_letter": "E",
+          "student_name": "MUHAMMED SHANIF",
+          "chest_no": "302",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    },
+    "4022d9b5-0322-4975-977a-ec9aee4f6abc": {
+      "event": {
+        "id": "4022d9b5-0322-4975-977a-ec9aee4f6abc",
+        "name": "MY PITCH",
+        "category": "ON STAGE",
+        "created_at": "2026-09-10T08:52:39.758997+00:00",
+        "event_code": "GEN057",
+        "grade_type": "A",
+        "description": "അവതരണ ശൈലി:30 ആശയത്തിന്റെ പുതുമയും സാധ്യതയും:20\nപ്രശ്ന-പരിഹാര വ്യക്തത:20 പ്രായോഗികത:15\nമൂലധനം കണ്ടെത്തുന്ന രീതി:15\n",
+        "applicable_section": [
+          "General"
+        ],
+        "max_participants_per_team": 1
+      },
+      "winners": [
+        {
+          "position": "SECOND",
+          "grade": "A",
+          "points": 13,
+          "code_letter": "A",
+          "student_name": "ADHIL SALI",
+          "chest_no": "102",
+          "team_name": "FUSTAT"
+        },
+        {
+          "position": "FIRST",
+          "grade": "A+",
+          "points": 19,
+          "code_letter": "B",
+          "student_name": "FAHAD UK",
+          "chest_no": "113",
+          "team_name": "GULBARGA"
+        },
+        {
+          "position": "THIRD",
+          "grade": "A",
+          "points": 8,
+          "code_letter": "C",
+          "student_name": "MUHAMMED T",
+          "chest_no": "309",
+          "team_name": "ISHBILIYA"
+        }
+      ]
+    }
+  },
+  "championships": {
+    "Aliya": {
+      "kalaWinner": {
+        "id": "3211d02f-3116-407e-a3bb-ba31df78a071",
+        "name": "NABEEL MUHAMMED R",
+        "chest_no": "313",
+        "team": "ISHBILIYA",
+        "section": "Aliya",
+        "totalPoints": 67,
+        "has_on_stage_A_win": true,
+        "has_off_stage_A_win": true,
+        "a_grade_count": 2,
+        "wins": [
+          {
+            "event": "ESSAY ENG",
+            "category": "OFF STAGE",
+            "grade_type": "A",
+            "section": [
+              "Aliya"
+            ],
+            "position": "FIRST",
+            "grade": "A",
+            "points": 17
+          },
+          {
+            "event": "REPORT ENG",
+            "category": "OFF STAGE",
+            "grade_type": "B",
+            "section": [
+              "Aliya"
+            ],
+            "position": "FIRST",
+            "grade": "B",
+            "points": 13
+          },
+          {
+            "event": "PROMPT MAKING",
+            "category": "OFF STAGE",
+            "grade_type": "B",
+            "section": [
+              "Aliya"
+            ],
+            "position": null,
+            "grade": "C",
+            "points": 1
+          },
+          {
+            "event": "ENCOUNTER",
+            "category": "ON STAGE",
+            "grade_type": "A",
+            "section": [
+              "Aliya"
+            ],
+            "position": "THIRD",
+            "grade": "C",
+            "points": 4
+          },
+          {
+            "event": "INSPIRING TALK ENG",
+            "category": "ON STAGE",
+            "grade_type": "A",
+            "section": [
+              "Aliya"
+            ],
+            "position": "SECOND",
+            "grade": "A",
+            "points": 13
+          },
+          {
+            "event": "SPEECH ENG",
+            "category": "ON STAGE",
+            "grade_type": "A",
+            "section": [
+              "Aliya"
+            ],
+            "position": "FIRST",
+            "grade": "A+",
+            "points": 19
+          }
+        ]
+      },
+      "sarggaWinner": {
+        "id": "36f0c692-a2de-4572-8b5e-7d28e91a9bfc",
+        "name": "FAHAD UK",
+        "chest_no": "113",
+        "team": "GULBARGA",
+        "section": "Aliya",
+        "totalPoints": 72,
+        "has_on_stage_A_win": true,
+        "has_off_stage_A_win": false,
+        "a_grade_count": 1,
+        "wins": [
+          {
+            "event": "RJ TALK",
+            "category": "ON STAGE",
+            "grade_type": "B",
+            "section": [
+              "General"
+            ],
+            "position": "THIRD",
+            "grade": "B",
+            "points": 6
+          },
+          {
+            "event": "INSPIRING TALK ENG",
+            "category": "ON STAGE",
+            "grade_type": "A",
+            "section": [
+              "Aliya"
+            ],
+            "position": "FIRST",
+            "grade": "A",
+            "points": 17
+          },
+          {
+            "event": "MINI STORY ENG",
+            "category": "OFF STAGE",
+            "grade_type": "B",
+            "section": [
+              "Aliya"
+            ],
+            "position": "FIRST",
+            "grade": "A",
+            "points": 15
+          },
+          {
+            "event": "STORY ENG",
+            "category": "OFF STAGE",
+            "grade_type": "B",
+            "section": [
+              "Aliya"
+            ],
+            "position": "THIRD",
+            "grade": "C",
+            "points": 4
+          },
+          {
+            "event": "MY PITCH",
+            "category": "ON STAGE",
+            "grade_type": "A",
+            "section": [
+              "General"
+            ],
+            "position": "FIRST",
+            "grade": "A+",
+            "points": 19
+          },
+          {
+            "event": "SPOT TRANSLATION EN TO ML",
+            "category": "ON STAGE",
+            "grade_type": "A",
+            "section": [
+              "Aliya"
+            ],
+            "position": "SECOND",
+            "grade": "B",
+            "points": 11
+          }
+        ]
+      },
+      "topStudents": [
+        {
+          "id": "36f0c692-a2de-4572-8b5e-7d28e91a9bfc",
+          "name": "FAHAD UK",
+          "chest_no": "113",
+          "team": "GULBARGA",
+          "section": "Aliya",
+          "totalPoints": 72,
+          "has_on_stage_A_win": true,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 1,
+          "wins": [
+            {
+              "event": "RJ TALK",
+              "category": "ON STAGE",
+              "grade_type": "B",
+              "section": [
+                "General"
+              ],
+              "position": "THIRD",
+              "grade": "B",
+              "points": 6
+            },
+            {
+              "event": "INSPIRING TALK ENG",
+              "category": "ON STAGE",
+              "grade_type": "A",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "A",
+              "points": 17
+            },
+            {
+              "event": "MINI STORY ENG",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "A",
+              "points": 15
+            },
+            {
+              "event": "STORY ENG",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "THIRD",
+              "grade": "C",
+              "points": 4
+            },
+            {
+              "event": "MY PITCH",
+              "category": "ON STAGE",
+              "grade_type": "A",
+              "section": [
+                "General"
+              ],
+              "position": "FIRST",
+              "grade": "A+",
+              "points": 19
+            },
+            {
+              "event": "SPOT TRANSLATION EN TO ML",
+              "category": "ON STAGE",
+              "grade_type": "A",
+              "section": [
+                "Aliya"
+              ],
+              "position": "SECOND",
+              "grade": "B",
+              "points": 11
+            }
+          ]
+        },
+        {
+          "id": "3211d02f-3116-407e-a3bb-ba31df78a071",
+          "name": "NABEEL MUHAMMED R",
+          "chest_no": "313",
+          "team": "ISHBILIYA",
+          "section": "Aliya",
+          "totalPoints": 67,
+          "has_on_stage_A_win": true,
+          "has_off_stage_A_win": true,
+          "a_grade_count": 2,
+          "wins": [
+            {
+              "event": "ESSAY ENG",
+              "category": "OFF STAGE",
+              "grade_type": "A",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "A",
+              "points": 17
+            },
+            {
+              "event": "REPORT ENG",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "B",
+              "points": 13
+            },
+            {
+              "event": "PROMPT MAKING",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": null,
+              "grade": "C",
+              "points": 1
+            },
+            {
+              "event": "ENCOUNTER",
+              "category": "ON STAGE",
+              "grade_type": "A",
+              "section": [
+                "Aliya"
+              ],
+              "position": "THIRD",
+              "grade": "C",
+              "points": 4
+            },
+            {
+              "event": "INSPIRING TALK ENG",
+              "category": "ON STAGE",
+              "grade_type": "A",
+              "section": [
+                "Aliya"
+              ],
+              "position": "SECOND",
+              "grade": "A",
+              "points": 13
+            },
+            {
+              "event": "SPEECH ENG",
+              "category": "ON STAGE",
+              "grade_type": "A",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "A+",
+              "points": 19
+            }
+          ]
+        },
+        {
+          "id": "cc43aef3-cbdd-4979-a777-510771806e11",
+          "name": "MUHAMMAD SHAHAD KP",
+          "chest_no": "208",
+          "team": "FUSTAT",
+          "section": "Aliya",
+          "totalPoints": 65,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 0,
+          "wins": [
+            {
+              "event": "HAIKU POEM",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "A+",
+              "points": 17
+            },
+            {
+              "event": "ESSAY ENG",
+              "category": "OFF STAGE",
+              "grade_type": "A",
+              "section": [
+                "Aliya"
+              ],
+              "position": "SECOND",
+              "grade": "B",
+              "points": 11
+            },
+            {
+              "event": "MINI STORY ENG",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "SECOND",
+              "grade": "B",
+              "points": 9
+            },
+            {
+              "event": "ESSAY URD",
+              "category": "OFF STAGE",
+              "grade_type": "A",
+              "section": [
+                "General"
+              ],
+              "position": "SECOND",
+              "grade": "B",
+              "points": 11
+            },
+            {
+              "event": "POEM ENG",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "A+",
+              "points": 17
+            }
+          ]
+        },
+        {
+          "id": "3a175f14-3f7f-4bda-824b-c887580fd3af",
+          "name": "AJSAL SIRAJ",
+          "chest_no": "109",
+          "team": "ISHBILIYA",
+          "section": "Aliya",
+          "totalPoints": 49,
+          "has_on_stage_A_win": true,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 1,
+          "wins": [
+            {
+              "event": "POEM ARA",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "A+",
+              "points": 17
+            },
+            {
+              "event": "SPOT TRANSLATION EN TO ML",
+              "category": "ON STAGE",
+              "grade_type": "A",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "B",
+              "points": 15
+            },
+            {
+              "event": "THINK TALK",
+              "category": "ON STAGE",
+              "grade_type": "A",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "A",
+              "points": 17
+            }
+          ]
+        },
+        {
+          "id": "7b5d9f93-86d7-45bb-8b83-7d654788e210",
+          "name": "RABEEH ISMAYIL KP",
+          "chest_no": "315",
+          "team": "GULBARGA",
+          "section": "Aliya",
+          "totalPoints": 46,
+          "has_on_stage_A_win": true,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 1,
+          "wins": [
+            {
+              "event": "REPORT MAL",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "THIRD",
+              "grade": "B",
+              "points": 6
+            },
+            {
+              "event": "STORY MAL",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "THIRD",
+              "grade": "B",
+              "points": 6
+            },
+            {
+              "event": "QIRAATH",
+              "category": "ON STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "A+",
+              "points": 17
+            },
+            {
+              "event": "SPEECH MAL",
+              "category": "ON STAGE",
+              "grade_type": "A",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "A",
+              "points": 17
+            }
+          ]
+        },
+        {
+          "id": "21a591ed-7877-4390-acad-08a387790672",
+          "name": "RASHIK M",
+          "chest_no": "316",
+          "team": "FUSTAT",
+          "section": "Aliya",
+          "totalPoints": 46,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 0,
+          "wins": [
+            {
+              "event": "SONG MALAYALAM",
+              "category": "ON STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "SECOND",
+              "grade": "A",
+              "points": 11
+            },
+            {
+              "event": "POEM ARA",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "SECOND",
+              "grade": "A",
+              "points": 11
+            },
+            {
+              "event": "REPORT ARA",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "A",
+              "points": 15
+            },
+            {
+              "event": "STORY ARA",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "SECOND",
+              "grade": "B",
+              "points": 9
+            }
+          ]
+        },
+        {
+          "id": "d6f34c3d-bac5-4da2-bb75-0b90ea888b8d",
+          "name": "MOHAMMED SUFIYAN PM",
+          "chest_no": "205",
+          "team": "GULBARGA",
+          "section": "Aliya",
+          "totalPoints": 44,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 0,
+          "wins": [
+            {
+              "event": "Q & H PAINTING",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "B",
+              "points": 13
+            },
+            {
+              "event": "SPELLING BEE",
+              "category": "ON STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "SECOND",
+              "grade": "B",
+              "points": 9
+            },
+            {
+              "event": "CARTOON MAKING",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "SECOND",
+              "grade": "B",
+              "points": 9
+            },
+            {
+              "event": "CALLIGRAPHY",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "B",
+              "points": 13
+            }
+          ]
+        },
+        {
+          "id": "362e11b1-425b-4002-b3c9-57c94aef5cd0",
+          "name": "ISHTHIYAK SAWAD K",
+          "chest_no": "115",
+          "team": "ISHBILIYA",
+          "section": "Aliya",
+          "totalPoints": 42,
+          "has_on_stage_A_win": true,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 1,
+          "wins": [
+            {
+              "event": "SPEECH ARA",
+              "category": "ON STAGE",
+              "grade_type": "A",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "A+",
+              "points": 19
+            },
+            {
+              "event": "POEM ARA",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "THIRD",
+              "grade": "B",
+              "points": 6
+            },
+            {
+              "event": "SONG MALAYALAM",
+              "category": "ON STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "A+",
+              "points": 17
+            }
+          ]
+        },
+        {
+          "id": "b0223b07-580e-4e1e-ad83-c9ee6abf659f",
+          "name": "MOHAMMED FAHEEM PV",
+          "chest_no": "121",
+          "team": "GULBARGA",
+          "section": "Aliya",
+          "totalPoints": 41,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 0,
+          "wins": [
+            {
+              "event": "HAIKU POEM",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "THIRD",
+              "grade": "A",
+              "points": 8
+            },
+            {
+              "event": "MINI STORY ENG",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "SECOND",
+              "grade": "B",
+              "points": 9
+            },
+            {
+              "event": "PROMPT MAKING",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "FIRST",
+              "grade": "A",
+              "points": 15
+            },
+            {
+              "event": "POEM ENG",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "THIRD",
+              "grade": "B",
+              "points": 6
+            },
+            {
+              "event": "BROCHURE MAKING",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "General"
+              ],
+              "position": "THIRD",
+              "grade": null,
+              "points": 3
+            }
+          ]
+        },
+        {
+          "id": "4fa37a4d-56d0-4fdb-a8ae-f05ba899f340",
+          "name": "ADHIL SALI",
+          "chest_no": "102",
+          "team": "FUSTAT",
+          "section": "Aliya",
+          "totalPoints": 40,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 0,
+          "wins": [
+            {
+              "event": "STORY MAL",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Aliya"
+              ],
+              "position": "THIRD",
+              "grade": "B",
+              "points": 6
+            },
+            {
+              "event": "BOOK REVIEW",
+              "category": "OFF STAGE",
+              "grade_type": "A",
+              "section": [
+                "Aliya"
+              ],
+              "position": "SECOND",
+              "grade": "B",
+              "points": 11
+            },
+            {
+              "event": "MY PITCH",
+              "category": "ON STAGE",
+              "grade_type": "A",
+              "section": [
+                "General"
+              ],
+              "position": "SECOND",
+              "grade": "A",
+              "points": 13
+            },
+            {
+              "event": "BROCHURE MAKING",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "General"
+              ],
+              "position": "FIRST",
+              "grade": null,
+              "points": 10
+            }
+          ]
+        }
+      ]
+    },
+    "Foundation": {
+      "kalaWinner": null,
+      "sarggaWinner": {
+        "id": "cc0d8f96-a624-48a8-b12b-e91624a2ecc5",
+        "name": "MUHAMMED ANSIL MK",
+        "chest_no": "258",
+        "team": "ISHBILIYA",
+        "section": "Foundation",
+        "totalPoints": 45,
+        "has_on_stage_A_win": false,
+        "has_off_stage_A_win": false,
+        "a_grade_count": 0,
+        "wins": [
+          {
+            "event": "SONG ARA",
+            "category": "ON STAGE",
+            "grade_type": "B",
+            "section": [
+              "Foundation"
+            ],
+            "position": "SECOND",
+            "grade": "A+",
+            "points": 13
+          },
+          {
+            "event": "QIRAATH",
+            "category": "ON STAGE",
+            "grade_type": "B",
+            "section": [
+              "Foundation"
+            ],
+            "position": "FIRST",
+            "grade": "A+",
+            "points": 17
+          },
+          {
+            "event": "AZAN",
+            "category": "ON STAGE",
+            "grade_type": "B",
+            "section": [
+              "Foundation General"
+            ],
+            "position": "FIRST",
+            "grade": "A",
+            "points": 15
+          }
+        ]
+      },
+      "topStudents": [
+        {
+          "id": "cc0d8f96-a624-48a8-b12b-e91624a2ecc5",
+          "name": "MUHAMMED ANSIL MK",
+          "chest_no": "258",
+          "team": "ISHBILIYA",
+          "section": "Foundation",
+          "totalPoints": 45,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 0,
+          "wins": [
+            {
+              "event": "SONG ARA",
+              "category": "ON STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "SECOND",
+              "grade": "A+",
+              "points": 13
+            },
+            {
+              "event": "QIRAATH",
+              "category": "ON STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "FIRST",
+              "grade": "A+",
+              "points": 17
+            },
+            {
+              "event": "AZAN",
+              "category": "ON STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation General"
+              ],
+              "position": "FIRST",
+              "grade": "A",
+              "points": 15
+            }
+          ]
+        },
+        {
+          "id": "6cddeeb2-0428-4efc-873e-ea2fad89929f",
+          "name": "FADHI AHAMED T",
+          "chest_no": "163",
+          "team": "GULBARGA",
+          "section": "Foundation",
+          "totalPoints": 35,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 0,
+          "wins": [
+            {
+              "event": "SONG ARA",
+              "category": "ON STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "FIRST",
+              "grade": "A+",
+              "points": 17
+            },
+            {
+              "event": "SONG MAL",
+              "category": "ON STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "FIRST",
+              "grade": "A",
+              "points": 15
+            },
+            {
+              "event": "AZAN",
+              "category": "ON STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation General"
+              ],
+              "position": "THIRD",
+              "grade": null,
+              "points": 3
+            }
+          ]
+        },
+        {
+          "id": "4bd44070-b0ad-4456-8192-64f6153dc4ea",
+          "name": "AMJAD SHAMMAS PV",
+          "chest_no": "161",
+          "team": "FUSTAT",
+          "section": "Foundation",
+          "totalPoints": 33,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 0,
+          "wins": [
+            {
+              "event": "CARTOON MAKING",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "SECOND",
+              "grade": "B",
+              "points": 9
+            },
+            {
+              "event": "PENCIL DRAWING",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "FIRST",
+              "grade": "A+",
+              "points": 17
+            },
+            {
+              "event": "POSTER MAKING",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation General"
+              ],
+              "position": "SECOND",
+              "grade": "C",
+              "points": 7
+            }
+          ]
+        },
+        {
+          "id": "c58c004b-9ae7-4283-a16d-07e112619ea3",
+          "name": "MUHAMMED MISBAH PC",
+          "chest_no": "272",
+          "team": "ISHBILIYA",
+          "section": "Foundation",
+          "totalPoints": 32,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 0,
+          "wins": [
+            {
+              "event": "POEM ENG",
+              "category": "OFF STAGE",
+              "grade_type": "A",
+              "section": [
+                "Foundation"
+              ],
+              "position": "SECOND",
+              "grade": "B",
+              "points": 11
+            },
+            {
+              "event": "STORY ENG",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "FIRST",
+              "grade": "A",
+              "points": 15
+            },
+            {
+              "event": "SPEECH ENG",
+              "category": "ON STAGE",
+              "grade_type": "A",
+              "section": [
+                "Foundation"
+              ],
+              "position": "THIRD",
+              "grade": "B",
+              "points": 6
+            }
+          ]
+        },
+        {
+          "id": "207e5091-f2c9-450b-9ab0-33d282b760d0",
+          "name": "ADIL P",
+          "chest_no": "155",
+          "team": "GULBARGA",
+          "section": "Foundation",
+          "totalPoints": 28,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 0,
+          "wins": [
+            {
+              "event": "PENCIL DRAWING",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "SECOND",
+              "grade": "A",
+              "points": 11
+            },
+            {
+              "event": "PAINTING",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "FIRST",
+              "grade": "A+",
+              "points": 17
+            }
+          ]
+        },
+        {
+          "id": "68df385d-0ef0-41ab-8473-87f9217661ce",
+          "name": "AFSWAH",
+          "chest_no": "157",
+          "team": "ISHBILIYA",
+          "section": "Foundation",
+          "totalPoints": 28,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 0,
+          "wins": [
+            {
+              "event": "BOOK REVIEW",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "FIRST",
+              "grade": "A+",
+              "points": 17
+            },
+            {
+              "event": "GENIUS PROFILE",
+              "category": "ON STAGE",
+              "grade_type": "A",
+              "section": [
+                "Foundation"
+              ],
+              "position": "SECOND",
+              "grade": "B",
+              "points": 11
+            }
+          ]
+        },
+        {
+          "id": "345844ea-d909-4941-b2da-0c88353abacc",
+          "name": "NASIH SAIFUDHEEN",
+          "chest_no": "367",
+          "team": "FUSTAT",
+          "section": "Foundation",
+          "totalPoints": 26,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": true,
+          "a_grade_count": 1,
+          "wins": [
+            {
+              "event": "STORY ENG",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "SECOND",
+              "grade": "B",
+              "points": 9
+            },
+            {
+              "event": "POEM ENG",
+              "category": "OFF STAGE",
+              "grade_type": "A",
+              "section": [
+                "Foundation"
+              ],
+              "position": "FIRST",
+              "grade": "A",
+              "points": 17
+            }
+          ]
+        },
+        {
+          "id": "5b06af98-9aba-4200-bea0-101b2d58cefd",
+          "name": "MUHAMMAD ANSHIF T",
+          "chest_no": "173",
+          "team": "FUSTAT",
+          "section": "Foundation",
+          "totalPoints": 26,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 0,
+          "wins": [
+            {
+              "event": "ESSAY ENG",
+              "category": "OFF STAGE",
+              "grade_type": "A",
+              "section": [
+                "Foundation"
+              ],
+              "position": "SECOND",
+              "grade": "B",
+              "points": 11
+            },
+            {
+              "event": "READING ENG",
+              "category": "ON STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "FIRST",
+              "grade": "A",
+              "points": 15
+            }
+          ]
+        },
+        {
+          "id": "8e4804fa-cd6a-4031-a658-61b5f352046d",
+          "name": "MUHAMMED HASHIL",
+          "chest_no": "265",
+          "team": "FUSTAT",
+          "section": "Foundation",
+          "totalPoints": 24,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 0,
+          "wins": [
+            {
+              "event": "PAINTING",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "SECOND",
+              "grade": "A",
+              "points": 11
+            },
+            {
+              "event": "POSTER MAKING",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation General"
+              ],
+              "position": "FIRST",
+              "grade": "B",
+              "points": 13
+            }
+          ]
+        },
+        {
+          "id": "2b971a49-8cd1-4565-86bf-a3598bd849ed",
+          "name": "MUHAMMED ASHMIL",
+          "chest_no": "260",
+          "team": "ISHBILIYA",
+          "section": "Foundation",
+          "totalPoints": 23,
+          "has_on_stage_A_win": false,
+          "has_off_stage_A_win": false,
+          "a_grade_count": 0,
+          "wins": [
+            {
+              "event": "BOOK REVIEW",
+              "category": "OFF STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "THIRD",
+              "grade": "C",
+              "points": 4
+            },
+            {
+              "event": "SONG ARA",
+              "category": "ON STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "THIRD",
+              "grade": "A",
+              "points": 8
+            },
+            {
+              "event": "SONG MAL",
+              "category": "ON STAGE",
+              "grade_type": "B",
+              "section": [
+                "Foundation"
+              ],
+              "position": "SECOND",
+              "grade": "A",
+              "points": 11
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
