@@ -84,6 +84,13 @@ interface GroupEntry {
 
 const PERF_POINTS: Record<string, number> = { 'A+': 7, 'A': 5, 'B': 3, 'C': 1, 'NONE': 0 }
 
+function getGradeButtonClass(g: string, isSelected: boolean) {
+  if (isSelected) {
+    return "bg-black hover:bg-black text-white border-black ring-2 ring-black/40 font-black shadow-md scale-105"
+  }
+  return "bg-white hover:bg-slate-100 text-slate-700 border-slate-300 font-bold"
+}
+
 interface EventScorerProps {
   section: string
   category: string
@@ -751,18 +758,16 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
 
                           {/* Grade Select Buttons */}
                           {isSelected && (
-                            <div className="mt-2.5 pt-2 border-t border-dashed border-slate-200 flex items-center justify-between gap-1 animate-in fade-in zoom-in-95 duration-200">
-                              <span className="text-[9px] font-bold uppercase text-slate-400">Perf Grade:</span>
-                              <div className="flex gap-0.5">
+                            <div className="mt-2.5 pt-2 border-t border-dashed border-slate-300 flex items-center justify-between gap-1 animate-in fade-in zoom-in-95 duration-200">
+                              <span className="text-[10px] font-extrabold uppercase text-slate-600">Perf Grade:</span>
+                              <div className="flex gap-1">
                                 {['A+', 'A', 'B', 'C', 'NONE'].map(g => (
                                   <button
                                     key={g}
                                     onClick={(e) => { e.stopPropagation(); updateWinnerGrade(pos, id, g) }}
                                     className={cn(
-                                      "text-[9px] min-w-[24px] px-1.5 h-6 rounded flex items-center justify-center font-bold border transition-colors",
-                                      grade === g 
-                                        ? "bg-primary text-primary-foreground border-primary shadow-xs" 
-                                        : "bg-white hover:bg-slate-100 text-slate-600 border-slate-200"
+                                      "text-[10px] min-w-[26px] px-2 h-6 rounded-md flex items-center justify-center font-bold border transition-all active:scale-95",
+                                      getGradeButtonClass(g, grade === g)
                                     )}
                                   >
                                     {g}
@@ -800,40 +805,56 @@ export function EventScorer({ section, category, onScoreSaved }: EventScorerProp
                   {otherItems.map(item => {
                     const id = item.id
                     const currentGrade = otherGrades.get(id) || 'NONE'
+                    const hasGrade = currentGrade && currentGrade !== 'NONE'
 
                     return (
-                      <div key={id} className="p-2.5 rounded-lg border border-slate-100 bg-white hover:border-slate-200 flex flex-col justify-between gap-2 shadow-2xs">
+                      <div 
+                        key={id} 
+                        className={cn(
+                          "p-3 rounded-xl border transition-all duration-200 flex flex-col justify-between gap-2.5 shadow-2xs",
+                          hasGrade
+                            ? "bg-blue-50/70 border-blue-400 ring-2 ring-blue-200 shadow-md"
+                            : "bg-white border-slate-200 hover:border-slate-300"
+                        )}
+                      >
                         <div>
                           <div className="flex items-center justify-between gap-1">
                             <div className="flex items-center gap-1.5 truncate">
-                              <span className="font-bold text-xs text-slate-800 truncate">{item.title}</span>
+                              <span className={cn("font-bold text-xs truncate", hasGrade ? "text-blue-950 font-black" : "text-slate-800")}>
+                                {item.title}
+                              </span>
                               {item.codeLetter && (
                                 <span className="font-mono text-[9px] font-black px-1.5 py-0.2 rounded bg-blue-100 text-blue-900 border border-blue-200 shrink-0">
                                   Code: {item.codeLetter}
                                 </span>
                               )}
                             </div>
-                            {item.badge && (
-                              <span className="font-mono text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 shrink-0">
-                                {item.badge}
-                              </span>
-                            )}
+                            <div className="flex items-center gap-1">
+                              {hasGrade && (
+                                <Badge className="h-4 px-1.5 text-[9px] font-black uppercase text-white bg-black border-0 shadow-xs">
+                                  Grade {currentGrade}
+                                </Badge>
+                              )}
+                              {item.badge && (
+                                <span className="font-mono text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 shrink-0">
+                                  {item.badge}
+                                </span>
+                              )}
+                            </div>
                           </div>
                           <p className="text-[10px] text-slate-500 truncate mt-0.5">{item.subtitle}</p>
                         </div>
 
-                        <div className="flex items-center justify-between pt-1.5 border-t border-slate-50">
-                          <span className="text-[9px] font-semibold text-slate-400">Grade:</span>
-                          <div className="flex gap-0.5">
+                        <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                          <span className="text-[9px] font-extrabold uppercase text-slate-500">Grade:</span>
+                          <div className="flex gap-1">
                             {['A+', 'A', 'B', 'C', 'NONE'].map(g => (
                               <button
                                 key={g}
                                 onClick={() => updateOtherGrade(id, g)}
                                 className={cn(
-                                  "text-[9px] min-w-[20px] px-1 h-5 rounded flex items-center justify-center font-bold border transition-colors",
-                                  currentGrade === g 
-                                    ? "bg-primary text-primary-foreground border-primary" 
-                                    : "bg-white hover:bg-slate-50 text-slate-600 border-slate-200"
+                                  "text-[9px] min-w-[24px] px-1.5 h-5.5 rounded flex items-center justify-center font-bold border transition-all active:scale-95",
+                                  getGradeButtonClass(g, currentGrade === g)
                                 )}
                               >
                                 {g}
