@@ -137,11 +137,10 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
                 return maxP <= 5;
             })
 
-            // Compliance Check (Must have 1 On Stage AND 1 Off Stage from the filtered list)
-            const hasOnStage = countingParts.some(p => p.events?.category === 'ON STAGE')
-            const hasOffStage = countingParts.some(p => p.events?.category === 'OFF STAGE')
+            // Compliance Check (Must have at least 1 registered event)
+            const hasAnyEvent = countingParts.length > 0
 
-            if (!hasOnStage || !hasOffStage) {
+            if (!hasAnyEvent) {
                 compliancePenalty += 10
                 nonCompliantCount++
             }
@@ -226,7 +225,7 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
                                 <AlertCircle className="w-5 h-5" />
                             </div>
                             <div>
-                                <div className="text-xs font-bold text-orange-700 uppercase tracking-wider">Non Completed</div>
+                                <div className="text-xs font-bold text-orange-700 uppercase tracking-wider">Unregistered</div>
                                 <div className="text-sm text-orange-600/80">{penalties.nonCompliantCount} Students</div>
                             </div>
                         </div>
@@ -331,8 +330,8 @@ export function TeamDetailsDialog({ team, open, onOpenChange }: { team: Team | n
                                     <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-xs text-yellow-800 flex gap-2">
                                         <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                                         <p>
-                                            <strong>Penalty Rule:</strong> Students must participate in at least 1 On-Stage AND 1 Off-Stage event to avoid the -10 point compliance penalty.
-                                            <br />Note: Group events (Max Participants &gt; 5) are <strong>excluded</strong> from this count.
+                                            <strong>Penalty Rule:</strong> Students must participate in at least one event (On-Stage or Off-Stage) to avoid the -10 point unregistered penalty.
+                                            <br />Note: Group events (Max Participants &gt; 5) are <strong>excluded</strong> from individual requirement counting.
                                         </p>
                                     </div>
                                 </>

@@ -7,6 +7,7 @@ import { IndividualLeaderboard } from "@/components/scoring/individual-leaderboa
 import { ChampionsBoard } from "@/components/scoring/champions-board"
 import { Button } from "@/components/ui/button"
 import { Edit3, RefreshCw } from "lucide-react"
+import { TvBroadcastController } from "@/components/admin/tv-broadcast-controller"
 
 export default function LeaderboardPage() {
   const router = useRouter()
@@ -27,6 +28,7 @@ export default function LeaderboardPage() {
          </div>
 
          <div className="flex items-center gap-2">
+            <TvBroadcastController />
             <Button variant="ghost" size="icon" onClick={handleRefresh} title="Refresh Data">
                 <RefreshCw className="w-4 h-4" />
             </Button>

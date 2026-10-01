@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { TeamPerformance } from "@/components/overview/team-performance"
 import { SectionAnalysis } from "@/components/overview/section-analysis"
 import { TopStudents } from "@/components/overview/top-students"
+import { TvBroadcastController } from "@/components/admin/tv-broadcast-controller"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 
@@ -265,14 +266,17 @@ export default function OverviewPage() {
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Event Overview</h1>
           <p className="text-slate-500 mt-1 text-sm">Real-time statistics, team standings, and performance analytics.</p>
         </div>
-        <Button
-          onClick={handleDownloadPDF}
-          disabled={isDownloading}
-          className="bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/20"
-        >
-          {isDownloading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
-          Download Report
-        </Button>
+        <div className="flex items-center gap-3">
+          <TvBroadcastController />
+          <Button
+            onClick={handleDownloadPDF}
+            disabled={isDownloading}
+            className="bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/20"
+          >
+            {isDownloading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+            Download Report
+          </Button>
+        </div>
       </div>
 
       {/* Grid Layout */}

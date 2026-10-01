@@ -49,29 +49,34 @@ export function ParticipantStatusTab({ students }: { students: Student[] }) {
       const hasOnStage = countingParts.some(p => p.events?.category === 'ON STAGE')
       const hasOffStage = countingParts.some(p => p.events?.category === 'OFF STAGE')
 
-      // 4. Determine Compliance
-      const isCompliant = hasOnStage && hasOffStage
+      // 4. Determine Compliance (Deduct 10 pts ONLY if student has 0 registered events)
+      const hasAnyEvent = countingParts.length > 0
+      const isCompliant = hasAnyEvent
       const penalty = isCompliant ? 0 : 10
       totalPenalty += penalty
 
       let statusLabel = "Good"
       let statusColor = "bg-emerald-100 text-emerald-700 border-emerald-200"
 
-      if (!hasOnStage && !hasOffStage) {
-          statusLabel = "No Valid Events"
+      if (!hasAnyEvent) {
+          statusLabel = "Not Registered"
           statusColor = "bg-red-100 text-red-700 border-red-200"
-      } else if (!hasOnStage) {
-          statusLabel = "Missing On-Stage"
-          statusColor = "bg-orange-100 text-orange-700 border-orange-200"
-      } else if (!hasOffStage) {
-          statusLabel = "Missing Off-Stage"
+      } else if (hasOnStage && hasOffStage) {
+          statusLabel = "On & Off Stage"
+          statusColor = "bg-emerald-100 text-emerald-700 border-emerald-200"
+      } else if (hasOnStage) {
+          statusLabel = "On-Stage"
           statusColor = "bg-blue-100 text-blue-700 border-blue-200"
+      } else if (hasOffStage) {
+          statusLabel = "Off-Stage"
+          statusColor = "bg-purple-100 text-purple-700 border-purple-200"
       }
 
       return {
         ...student,
         hasOnStage,
         hasOffStage,
+        hasAnyEvent,
         isCompliant,
         penalty,
         statusLabel,
@@ -238,9 +243,9 @@ export function ParticipantStatusTab({ students }: { students: Student[] }) {
       <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-xs text-yellow-800 flex gap-2 items-start">
           <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
           <p>
-              <strong>*Important Rule:</strong> To avoid the -10 point compliance penalty, a student must participate in at least one On-Stage and one Off-Stage event.
+              <strong>*Important Rule:</strong> To avoid the -10 point unregistered penalty, a student must participate in at least one event (On-Stage or Off-Stage).
               <br/>
-              <span className="opacity-80">Note: Large group events (Max Participants &gt; 5) are excluded from this specific requirement count.</span>
+              <span className="opacity-80">Note: Large group events (Max Participants &gt; 5) are excluded from individual participation counting.</span>
           </p>
       </div>
     </div>
