@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Loader2, User, Calendar, FileDown, Trophy, Medal } from "lucide-react"
+import { PptxExportDropdown } from "./pptx-export-dropdown"
 
 interface Props {
     studentId: string | null
@@ -128,7 +129,7 @@ export function StudentReportModal({ studentId, open, onOpenChange }: Props) {
                 </div>
 
                 {!loading && data && (
-                    <div className="flex items-center gap-4 bg-white p-2 rounded-lg border shadow-sm">
+                    <div className="flex items-center gap-3 bg-white p-2 rounded-lg border shadow-sm">
                         <div className="text-right px-2">
                             <div className="text-2xl font-black text-indigo-600 leading-none">
                                 {data.parts.reduce((acc: number, curr: any) => acc + (curr.points_earned || 0), 0)}
@@ -136,8 +137,14 @@ export function StudentReportModal({ studentId, open, onOpenChange }: Props) {
                             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Pts</div>
                         </div>
                         <Button onClick={generatePDF} size="sm" className="h-9 bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm">
-                            <FileDown className="w-4 h-4 mr-2" /> PDF
+                            <FileDown className="w-4 h-4 mr-1.5" /> PDF
                         </Button>
+                        <PptxExportDropdown
+                          studentId={data.student.id}
+                          size="sm"
+                          variant="outline"
+                          className="h-9 border-orange-200 text-orange-700 hover:bg-orange-50"
+                        />
                     </div>
                 )}
             </div>

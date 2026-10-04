@@ -8,6 +8,7 @@ import { TeamPerformance } from "@/components/overview/team-performance"
 import { SectionAnalysis } from "@/components/overview/section-analysis"
 import { TopStudents } from "@/components/overview/top-students"
 import { TvBroadcastController } from "@/components/admin/tv-broadcast-controller"
+import { PptxExportDropdown } from "@/components/admin/reports/pptx-export-dropdown"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 
@@ -266,8 +267,9 @@ export default function OverviewPage() {
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Event Overview</h1>
           <p className="text-slate-500 mt-1 text-sm">Real-time statistics, team standings, and performance analytics.</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <TvBroadcastController />
+          <PptxExportDropdown variant="outline" className="border-orange-200 text-orange-700 hover:bg-orange-50" />
           <Button
             variant="outline"
             onClick={() => window.open('/api/export-scores', '_blank')}

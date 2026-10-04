@@ -14,6 +14,7 @@ import { ZeroParticipationTab } from "@/components/admin/reports/zero-participat
 import { SectionExclusiveTab } from "@/components/admin/reports/section-exclusive-tab"
 import { EventCallSheetTab } from "@/components/admin/reports/event-call-sheet-tab"
 import { StudentSheetTab } from "@/components/admin/reports/student-sheet-tab"
+import { PptxExportDropdown } from "@/components/admin/reports/pptx-export-dropdown"
 
 // --- TYPES ---
 interface Team { id: string; name: string; color_hex: string }
@@ -75,10 +76,11 @@ export default function AdminReports() {
           <p className="text-muted-foreground text-sm">Deep dive into participation metrics and generate lists.</p>
         </div>
 
-        {/* Filters shown for certain tabs contextually, but kept here for access */}
-        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+        {/* Actions & Filters */}
+        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto items-center">
+           <PptxExportDropdown variant="default" className="bg-orange-600 hover:bg-orange-700 text-white" />
            {/* These filters apply mainly to the analysis tabs (Zero/Exclusive) */}
-           <div className="relative w-full sm:w-60">
+           <div className="relative w-full sm:w-52">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Global Search..."
@@ -88,7 +90,7 @@ export default function AdminReports() {
               />
            </div>
            <Select value={selectedTeam} onValueChange={setSelectedTeam}>
-            <SelectTrigger className="w-full sm:w-[180px] bg-slate-50 border-slate-200">
+            <SelectTrigger className="w-full sm:w-[150px] bg-slate-50 border-slate-200">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Filter className="w-4 h-4" />
                 <SelectValue placeholder="All Teams" />

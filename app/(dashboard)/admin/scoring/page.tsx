@@ -113,22 +113,18 @@ export default function ScoringPage() {
 
             typedEvents.forEach((event) => {
                 const eventResults = (results as Array<{ event_id: string; result_position: string; student: { name: string; chest_no: string }; team: { name: string } }>)?.filter(r => r.event_id === event.id) || [];
-                const isTeamEvent = (event as any).grade_type === 'C'; // Category C = Group Item
-
                 const getWinners = (pos: string) => {
-                    // Filter for ALL winners in this position (handles ties)
+                    // Filter for ALL winners in this position (handles ties and group members)
                     const winners = eventResults.filter(r => r.result_position === pos);
 
                     if (winners.length === 0) return "-";
 
-                    // Map each winner to a string and join them with newlines
+                    // Map each winner to a string: student name with chest no and team (or team name if team-only)
                     return winners.map(w => {
-                        if (isTeamEvent) {
-                            // Show Team Name for Category C
-                            return w.team?.name || "Unknown Team";
+                        if (w.student?.name) {
+                            return `${w.student.name}${w.student.chest_no ? ` (${w.student.chest_no})` : ''} - ${w.team?.name || ''}`;
                         } else {
-                            // Show Participant Name, Chest No AND Team Name for others
-                            return `${w.student?.name || "Unknown"} (${w.student?.chest_no || "N/A"}) - ${w.team?.name || ""}`;
+                            return w.team?.name || "Unknown Team";
                         }
                     }).join("\n");
                 };
@@ -310,7 +306,6 @@ export default function ScoringPage() {
 
                 typedEvents.forEach(event => {
                     const eventResults = typedResults.filter(r => r.event_id === event.id) || [];
-                    const isTeamEvent = event.grade_type === 'C';
 
                     // Sort results by position rank
                     const positionRank: Record<string, number> = { 'FIRST': 1, 'SECOND': 2, 'THIRD': 3 };
@@ -318,10 +313,10 @@ export default function ScoringPage() {
 
                     eventResults.forEach(r => {
                         let participantName = "";
-                        if (isTeamEvent) {
-                            participantName = r.team?.name || "Unknown Team";
+                        if (r.student?.name) {
+                            participantName = `${r.student.name}${r.student.chest_no ? ` (${r.student.chest_no})` : ''} - ${r.team?.name || ''}`;
                         } else {
-                            participantName = `${r.student?.name || "Unknown"} (${r.student?.chest_no || "N/A"})`;
+                            participantName = r.team?.name || "Unknown Team";
                         }
 
                         sheetRows.push([
